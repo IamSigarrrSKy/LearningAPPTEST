@@ -2721,7 +2721,9 @@ const EXQ = EXAM_SETS.flatMap((s,si)=>s.q.map(x=>{
     short:`${s.name} ข้อ ${x.no}`, steps:[x.exp],
     text:`<img class="qimg" src="${x.img}" width="${x.w}" height="${x.h}" loading="lazy" alt="โจทย์ ${s.name} ข้อ ${x.no}">`};
   if(x.type==='num') return {...base, type:'num', answer:parseFloat(x.ans), ansText:x.ans, unit:'', tol:.01, numErr:[]};
-  return {...base, type:'mc', choices:[1,2,3,4,5].map(n=>String(n)===x.ans ? {t:String(n), ok:1}
+  // a few keys accept two answers ("ตอบ 3) หรือ 5)") — both count as correct
+  const okSet=new Set([x.ans, ...(x.alt||[])]);
+  return {...base, type:'mc', choices:[1,2,3,4,5].map(n=>okSet.has(String(n)) ? {t:String(n), ok:1}
     : {t:String(n), err:'exam', why:'ดูแนวคิดในเฉลยของข้อนี้'})};
 }));
 Q.push(...EXQ);
@@ -2864,7 +2866,7 @@ function renderLevelBody(){
           <div class="sub">${last?`ล่าสุด ${last.score}/${last.total} · ดีที่สุด ${best}%`:'ยังไม่เคยทำ'}</div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
       }).join('')}</div>
-      <p class="note" style="margin-top:10px">ข้อสอบจากชุด “ข้อสอบจริง จัดหน้าใหม่” และเฉลยพร้อมแนวคิดของเคมีพี่สกาย · ปี 2562, 2567, 2568 ยังไม่มีในคลัง</p>`;
+      <p class="note" style="margin-top:10px">ข้อสอบจากชุด “ข้อสอบจริง จัดหน้าใหม่” และเฉลยพร้อมแนวคิดของเคมีพี่สกาย · ยังไม่มีในคลัง: ${[['2562','9 วิชาสามัญ'],['2567','A-Level']].filter(([y])=>!EXAM_SETS.some(s=>String(s.year)===y)).map(([y,k])=>`${k} ${y}`).join(', ')||'—'}</p>`;
     B.querySelectorAll('.tcard.exam').forEach(b=>b.onclick=()=>{ SEL=new Set([b.dataset.set]); SIZE='year'; renderLevelBody(); });
   } else {
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
@@ -3019,7 +3021,7 @@ function check(){
 }
 function showFeedback(q,a){
   const fb=$('#fb'), g=a.g;
-  const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.ansText??q.answer} ${q.unit}`;
+  const right = q.type==='mc' ? q.choices.filter(c=>c.ok).map(c=>c.t).join(' หรือ ') : `${q.ansText??q.answer} ${q.unit}`;
   fb.className='feedback on '+(g.correct?'ok':'bad');
   fb.innerHTML = g.correct
     ? `<h4>✓ ถูกต้อง</h4><ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`
@@ -3531,12 +3533,12 @@ function renderResult(rec){
   // review
   $('#reviewList').innerHTML=ids.map((id,k)=>{
     const q=QBY[id], x=P[id], cls=x.c?'r':(x.err==='skip'?'s':'w');
-    const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.ansText??q.answer} ${q.unit}`;
+    const right = q.type==='mc' ? q.choices.filter(c=>c.ok).map(c=>c.t).join(' หรือ ') : `${q.ansText??q.answer} ${q.unit}`;
     const mine = q.type==='mc' ? (x.choice!=null?q.choices[x.choice].t:'—') : (x.value?`${x.value} ${q.unit}`:'—');
     const conf=['ไม่ระบุ','เดา','พอได้','มั่นใจ'][x.conf];
     return `<details class="ritem" id="rv${id}" ${!x.c?'':''}>
       <summary><span class="mk ${cls}">${x.c?'✓':(x.err==='skip'?'—':'✗')}</span>
-        <span><b>ข้อ ${k+1}.</b> ${q.short}<br><small style="color:var(--muted)">${TOPICS[q.topic].name} · ${q.kind==='calc'?'คำนวณ':'ความเข้าใจ'} · ${x.time}s · ${conf}${q.src?` · ชีทบทที่ ${TOPICS[q.topic].ch} ข้อ ${q.src}`:''}</small></span>
+        <span><b>ข้อ ${k+1}.</b> ${q.short}<br><small style="color:var(--muted)">${TOPICS[q.topic].name} · ${q.kind==='calc'?'คำนวณ':'ความเข้าใจ'} · ${x.time}s · ${conf}${q.exam?' · ข้อสอบจริง':q.src?` · ชีทบทที่ ${TOPICS[q.topic].ch} ข้อ ${q.src}`:''}</small></span>
         <span style="color:var(--muted)">▾</span></summary>
       <div class="body">
         <div>${q.text}</div>
