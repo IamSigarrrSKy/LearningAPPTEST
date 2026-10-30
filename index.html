@@ -85,10 +85,14 @@ sub,sup{font-size:.72em;line-height:0}
 .hero h1 em{font-style:normal;color:var(--accent);position:relative}
 .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:8px;background:color-mix(in srgb,var(--accent) 25%,transparent);border-radius:4px;z-index:-1}
 .hero p{color:var(--soft);font-size:17px;max-width:540px}
-.incl{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;max-width:560px}
-.incl li{display:flex;flex-direction:column;padding:8px 12px;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--surface) 75%,transparent);border-radius:0 10px 10px 0}
-.incl b{font-weight:600;font-size:15px}
-.incl span{color:var(--muted);font-size:14px}
+.incl{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px;max-width:620px}
+.incl li{display:flex;gap:12px;align-items:flex-start}
+.incl .tile{--c:inherit;flex:none;width:46px;height:46px;font:600 18px Mitr,sans-serif;border-radius:10px;transform:rotate(var(--r,0deg))}
+.incl li:nth-child(odd) .tile{--r:-4deg} .incl li:nth-child(even) .tile{--r:3deg}
+.incl .tile small{font-size:8px;top:2px;left:4px}
+.incl b{display:block;font-weight:600;font-size:15px;line-height:1.35}
+.incl div>span{display:block;color:var(--muted);font-size:13.5px;line-height:1.45;margin-top:2px}
+@media (max-width:575px){.incl{grid-template-columns:1fr;gap:12px}}
 .hubcard.sel{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
 #subject .hubcard{min-height:118px}
 @media (max-width:575px){
@@ -538,11 +542,12 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
         <div class="kicker">ChemLab by Sky</div>
         <h1>ข้อสอบ<em>วิทยาศาสตร์</em><br>และแบบฝึกหัด</h1>
         <p>ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น ทุกข้อมีเฉลยพร้อมแนวคิด และบอกได้ว่าพลาดตรงไหน</p>
+        <!-- what's inside, drawn as a mini periodic table: one element tile per collection -->
         <ul class="incl">
-          <li><b>📖 แบบฝึกหัดรายบท</b><span>ม.4–ม.6 จากชีทเคมีพี่สกาย สุ่มโจทย์แนวเดียวกันไม่ซ้ำ ดูพัฒนาการได้</span></li>
-          <li><b>🎯 ข้อสอบจริง A-Level / 9 วิชาสามัญ</b><span>ย้อนหลังตั้งแต่ปี 2560 ทำรายปี หรือคละปีแบบสนามจริง</span></li>
-          <li><b>🌏 IJSO · 🧭 NETSAT</b><span>ข้อสอบแข่งขันและสอบตรง กำลังทยอยเพิ่ม</span></li>
-          <li><b>🏆 เก็บ XP และเหรียญ</b><span>เลเวลอัปทุกครั้งที่ทำ ชิงอันดับกับเพื่อนใน Leaderboard</span></li>
+          <li style="--c:#ff6b4a"><span class="tile"><small>1</small>Bt</span><div><b>แบบฝึกหัดรายบท</b><span>ม.4–ม.6 จากชีทเคมีพี่สกาย สุ่มโจทย์แนวเดียวกันไม่ซ้ำ ดูพัฒนาการได้</span></div></li>
+          <li style="--c:#9b5de5"><span class="tile"><small>2</small>Al</span><div><b>ข้อสอบจริง A-Level / 9 วิชาสามัญ</b><span>ย้อนหลังตั้งแต่ปี 2560 ทำรายปี หรือคละปีแบบสนามจริง</span></div></li>
+          <li style="--c:#16936a"><span class="tile"><small>3</small>Ij</span><div><b>IJSO · NETSAT</b><span>ข้อสอบแข่งขันและสอบตรง กำลังทยอยเพิ่ม</span></div></li>
+          <li style="--c:#d99413"><span class="tile"><small>4</small>Xp</span><div><b>เก็บ XP และเหรียญ</b><span>เลเวลอัปทุกครั้งที่ทำ ชิงอันดับใน Leaderboard</span></div></li>
         </ul>
       </div>
       <div class="tiles-art" aria-hidden="true">
