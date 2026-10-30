@@ -520,6 +520,34 @@ dialog.tdlg{max-width:720px;max-height:min(88vh,780px);overflow:auto;padding:20p
 .field input[type=text],.field input[type=url],.field input[type=password]{font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface2);color:var(--ink)}
 .field small{color:var(--muted)}
 .chk-row{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-bottom:12px}
+/* "learn with Kru Sky" call-to-action: a slim strip under explanations + a profile dialog */
+.skyhelp{display:flex;align-items:center;gap:12px;margin-top:14px;padding:10px 12px 10px 10px;border-radius:14px;
+  background:linear-gradient(110deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent 70%)}
+.skyhelp .tile{width:42px;height:42px;font-size:16px;border-radius:12px;transform:rotate(-5deg)}
+.skyhelp .tile small{font-size:8px;top:2px;left:4px}
+.skyhelp p{margin:0;flex:1;min-width:0;font-size:13.5px;line-height:1.45;color:var(--soft)}
+.skyhelp p b{color:var(--ink);font-weight:600}
+.skyhelp .btn{min-height:36px;padding:6px 14px;font-size:13.5px;white-space:nowrap}
+@media (max-width:520px){ .skyhelp{flex-wrap:wrap} .skyhelp .btn{width:100%} }
+dialog.skydlg{max-width:520px}
+.skyhead{display:flex;gap:16px;align-items:center;margin-bottom:14px}
+.skyhead .tile{width:72px;height:72px;font-size:28px;border-radius:18px;transform:rotate(-6deg)}
+.skyhead h3{margin:0 0 2px}
+.skyhead p{margin:0;font-size:14px}
+.creds{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:10px}
+.creds li{display:flex;gap:10px;align-items:center;font-size:14px;line-height:1.4}
+.creds .tile{width:34px;height:34px;font-size:13px;border-radius:10px;border-width:1.5px}
+.creds li:nth-child(odd) .tile{transform:rotate(-4deg)} .creds li:nth-child(even) .tile{transform:rotate(3deg)}
+.price{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 6px}
+.price b{font:700 34px Mitr,sans-serif;color:var(--accent);line-height:1}
+.price span{color:var(--soft);font-size:14px}
+.trial{display:inline-block;margin:0 0 16px;padding:4px 12px;border-radius:999px;font-size:13.5px;font-weight:600;
+  background:var(--ok-bg);color:var(--ok)}
+.skyact{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.btn.line{background:#06c755;color:#fff;border-color:#06c755;text-decoration:none}
+.skyact .qr{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--muted)}
+.skyact .qr img{width:96px;height:96px;border-radius:10px;background:#fff;padding:4px}
+@media (max-width:600px){ .skyact .qr{display:none} .skyact .btn.line{flex:1} }
 .teachlink{display:block;background:none;border:0;padding:0;margin:-2px 0 14px;color:var(--accent);font:inherit;font-size:13.5px;text-align:left;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer}
 #stuTeacherNote.ok{color:#2f9e6b} #stuTeacherNote.miss{color:#c2410c}
 .dest{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin:2px 0 12px;border:0;padding:0}
@@ -777,6 +805,23 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
     <label class="chk-row"><input type="checkbox" id="stuShow" checked> แสดงชื่อและโรงเรียนใน Leaderboard (ใช้ชื่อเล่นได้ · เอาติ๊กออกเพื่อซ่อน)</label>
     <div class="row"><button type="button" class="btn ghost" id="nameCancel" hidden>ยกเลิก</button><button type="submit" class="btn primary">เริ่มใช้งาน</button></div>
   </form>
+</dialog>
+
+<dialog id="skyDlg" class="skydlg" aria-labelledby="skyTitle">
+  <div class="skyhead"><span class="tile" style="--c:var(--accent)"><small>✦</small>Sk</span>
+    <div><h3 id="skyTitle">เรียนเคมีกับครูสกาย</h3><p id="skyFor">ติวตัวต่อตัว ม.4–ม.6 · A-Level · สอวน.</p></div></div>
+  <ul class="creds">
+    <li><span class="tile" style="--c:#ff6b4a"><small>1</small>Bs</span>ปริญญาตรี–โท เคมี มหาวิทยาลัยขอนแก่น</li>
+    <li><span class="tile" style="--c:#7c5cff"><small>2</small>Ph</span>ปัจจุบันกำลังศึกษาปริญญาเอก</li>
+    <li><span class="tile" style="--c:#d99413"><small>3</small>Os</span>เคยติดค่าย 1 สอวน. เคมี</li>
+  </ul>
+  <p class="price"><b>200 ฿</b><span>ต่อชั่วโมง · ตัวต่อตัว · คอร์สแบบแพ็กเกจถูกลงอีก</span></p>
+  <span class="trial">🎁 ทดลองเรียนฟรี 1 ชั่วโมง</span>
+  <div class="skyact">
+    <a class="btn line" href="https://lin.ee/nzor2b7" target="_blank" rel="noopener">💬 ทักไลน์ครูสกาย</a>
+    <span class="qr"><img src="img/line-qr.png" alt="QR code ไลน์ครูสกาย" width="96" height="96">สแกนด้วยมือถือ</span>
+  </div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="skyClose">ปิด</button></div>
 </dialog>
 
 <dialog id="teachDlg" aria-labelledby="teachTitle">
@@ -3343,6 +3388,9 @@ function showFeedback(q,a){
     : `<h4>✗ ยังไม่ถูก — คำตอบคือ ${right}</h4>
        <div><b>วินิจฉัย:</b> ${ERR[g.err].name}${g.why?` · ${g.why}`:''}</div>
        <ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+  // offered once per topic per session, on the first question that needed it (and again when revisiting that question)
+  const sk=S.sky||(S.sky={});
+  if((!g.correct || a.conf===1) && (sk[q.topic]??=q.id)===q.id) fb.insertAdjacentHTML('beforeend', skyHelp(q.topic, new Set()));
 }
 function next(){ if(S.i===S.ids.length-1) trySubmit(); else go(S.i+1); }
 function go(i){ if(i<0||i>=S.ids.length) return; bankTime(); S.i=i; renderQ(); }
@@ -3376,7 +3424,7 @@ function ask(title, body, yes, fn){
 }
 
 document.addEventListener('keydown',e=>{
-  if(!$('#quiz').classList.contains('on') || $('#dlg').open || $('#cfgDlg').open || $('#trophyDlg').open || $('#pad').classList.contains('on')) return;
+  if(!$('#quiz').classList.contains('on') || $('#dlg').open || $('#cfgDlg').open || $('#trophyDlg').open || $('#skyDlg').open || $('#pad').classList.contains('on')) return;
   if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   const id=S.ids[S.i], q=QBY[id];
   const k=(q.exam?'12345':'1234').indexOf(e.key);
@@ -3594,7 +3642,7 @@ $('#nameForm').onsubmit=e=>{
   if(!name){ e.preventDefault(); $('#stuName').focus(); return; }
   if(!school){ e.preventDefault(); $('#stuSchool').focus(); return; }
   const teacher=$('#stuTeacher').value.trim().replace(/\s+/g,' ');
-  try{ localStorage.setItem(STU_KEY, JSON.stringify({name, school, teacher, show:$('#stuShow').checked})); }catch(err){}
+  try{ localStorage.setItem(STU_KEY, JSON.stringify({name, school, teacher, teacherLinked:!!teacher&&teachFound, show:$('#stuShow').checked})); }catch(err){}
   renderWho(); renderPlayer(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
   if(backendUrl()) callBackend({action:'profile', ...whoFields()}).then(()=>{ BOARD.at=0; renderBoard(); }).catch(()=>{});
 };
@@ -3602,21 +3650,44 @@ $('#nameForm').onsubmit=e=>{
 $('#nameDlg').addEventListener('cancel',e=>{ if($('#nameDlg').dataset.first) e.preventDefault(); });
 $('#nameCancel').onclick=()=>$('#nameDlg').close();
 // tells the student, as they type, whether the teacher name matches a registered teacher
-let teachTimer=0, teachSeq=0;
+let teachTimer=0, teachSeq=0, teachFound=false;
 function checkTeacher(){
   clearTimeout(teachTimer);
   const v=$('#stuTeacher').value.trim(), note=$('#stuTeacherNote'), seq=++teachSeq;
   const say=(t,c)=>{ if(seq!==teachSeq) return; note.textContent=t; note.className=c||''; };
+  teachFound=false;
   if(!v) return say('ใส่ชื่อครู กระดาษทดและผลสอบจะส่งเข้า Drive ของครู · เว้นว่างได้');
   if(!backendUrl()) return say('ยังไม่ได้เชื่อมต่อระบบ · บันทึกชื่อครูไว้ก่อนได้');
   say('กำลังหาชื่อครู…');
   teachTimer=setTimeout(async()=>{
     try{ const r=await callBackend({action:'teacher_check', pid:playerId(), teacher:v});
+      if(seq===teachSeq) teachFound=!!r.found;
       r.found ? say(`✓ ส่งงานถึง ${r.name}${r.school?` · ${r.school}`:''}`,'ok') : say('ไม่พบชื่อครูนี้ · งานจะส่งเข้า Drive ส่วนกลางของ ChemLab','miss'); }
     catch(e){ say('ตรวจชื่อครูไม่ได้ตอนนี้ · บันทึกไว้ก่อนได้'); }
   },600);
 }
 $('#stuTeacher').addEventListener('input',checkTeacher);
+
+/* ---- "learn with Kru Sky": shown while the student has no other registered teacher ---- */
+// topics: one topic key or a list; seen: topics already offered on this screen, so each is offered once
+function skyHelp(topics, seen){
+  const s=getStudent()||{};
+  if(s.teacherLinked) return '';
+  const list=[].concat(topics).filter(t=>TOPICS[t] && !seen.has(t));
+  if(!list.length) return '';
+  list.forEach(t=>seen.add(t));
+  const names=list.map(t=>`“${TOPICS[t].name}”`).join(' และ ');
+  return `<div class="skyhelp"><span class="tile" style="--c:var(--accent)"><small>✦</small>Sk</span>
+    <p><b>ยังงง ${names} อยู่ใช่ไหม?</b><br>เรียนตัวต่อตัวกับครูสกาย · ทดลองเรียนฟรี 1 ชม.</p>
+    <button type="button" class="btn primary skyBtn" data-topic="${esc(list.map(t=>TOPICS[t].name).join(', '))}">อยากเข้าใจ →</button></div>`;
+}
+function openSky(topic){
+  $('#skyFor').textContent = topic ? `ติวเรื่อง ${topic} และเคมี ม.4–ม.6 · A-Level · สอวน.` : 'ติวตัวต่อตัว ม.4–ม.6 · A-Level · สอวน.';
+  $('#skyDlg').showModal();
+}
+document.addEventListener('click', e=>{ const b=e.target.closest('.skyBtn'); if(b) openSky(b.dataset.topic); });
+$('#skyClose').onclick=()=>$('#skyDlg').close();
+$('#skyDlg').addEventListener('click', e=>{ if(e.target===$('#skyDlg')) $('#skyDlg').close(); });
 
 /* ---- teacher registration: where this teacher's students send their work ---- */
 const TEACH={email:null};
@@ -3997,9 +4068,11 @@ function renderResult(rec){
   if(M.q4.length) recs.push({h:'เคลียร์ความเข้าใจผิด', p:`มี ${M.q4.length} ข้อที่มั่นใจแต่ตอบผิด อ่านเหตุผลในเฉลยข้อเหล่านี้ก่อน เพราะความเข้าใจผิดที่มั่นใจจะพลาดซ้ำในข้อสอบจริง`});
   if(M.q2.length) recs.push({h:'ย้ำข้อที่เดาถูก', p:`${M.q2.length} ข้อถูกแต่ไม่มั่นใจ อธิบายวิธีคิดของข้อนั้นด้วยตัวเองอีกรอบ ให้กลายเป็นความเข้าใจจริง`});
   if(!recs.length) recs.push({h:'ขยับระดับความยาก', p:'ทำได้ครบทุกข้ออย่างมั่นใจ ลองทำโจทย์ระดับ A-Level ในหัวข้อเดียวกันต่อ'});
-  $('#recs').innerHTML=recs.slice(0,3).map((r,k)=>`<div class="rec"><div class="n">0${k+1}</div><h4>${r.h}</h4><p>${r.p}</p></div>`).join('');
+  $('#recs').innerHTML=recs.slice(0,3).map((r,k)=>`<div class="rec"><div class="n">0${k+1}</div><h4>${r.h}</h4><p>${r.p}</p></div>`).join('')
+    + (weak.length ? skyHelp(weak.map(([t])=>t), new Set()) : '');
 
   // review
+  const skySeen=new Set();
   $('#reviewList').innerHTML=ids.map((id,k)=>{
     const q=QBY[id], x=P[id], cls=x.c?'r':(x.err==='skip'?'s':'w');
     const right = q.type==='mc' ? q.choices.filter(c=>c.ok).map(c=>c.t).join(' หรือ ') : `${q.ansText??q.answer} ${q.unit}`;
@@ -4014,6 +4087,7 @@ function renderResult(rec){
         <div class="ans-line"><span class="pill ${x.c?'r':'w'}">คุณตอบ: ${mine}</span>${x.c?'':`<span class="pill r">คำตอบ: ${right}</span>`}</div>
         ${!x.c?`<div class="diag"><b>${ERR[x.err].name}</b>${x.why?` — ${x.why}`:''}</div>`:''}
         <ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+        ${!x.c||x.conf===1?skyHelp(q.topic, skySeen):''}
       </div></details>`;
   }).join('');
   W.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>{ const d=$('#rv'+b.dataset.goto); d.open=true; d.scrollIntoView({behavior:'smooth',block:'center'}); });
