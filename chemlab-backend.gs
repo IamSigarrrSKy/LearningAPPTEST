@@ -3,8 +3,9 @@
  *
  * Stores in the owner's Google Drive:
  *   - Spreadsheet "ChemLab ข้อมูล"  → sheet "players" (one row per player, for the leaderboard)
- *                                     sheet "attempts" (one row per submitted exam, for the teacher section later)
+ *                                     sheet "attempts" (one row per submitted exam: score, wrong questions, weak chapters…)
  *                                     sheet "teachers" (teachers who receive their students' work, see below)
+ *                                     sheets "สรุปรายนักเรียน" / "สรุปข้อที่ผิดบ่อย" (rebuilt every hour by refreshSummaries)
  *   - Folder "ChemLab กระดาษทด"     → scratch-pad images, moved to trash after KEEP_DAYS days
  *
  * Teachers: a teacher registers on the website with a Google Drive folder link (shared with the owner as Editor)
@@ -14,7 +15,7 @@
  *
  * Install (once):
  *   1. script.google.com → New project → paste this file
- *   2. Run 'setup' and allow Drive + Sheets access
+ *   2. Run 'setup' and allow Drive + Sheets access (run it again after pasting a newer version: it adds new triggers/columns)
  *   3. Deploy → New deployment → Web app · Execute as: Me · Who has access: Anyone
  *   4. Put the /exec URL in config.js of the website (window.CHEMLAB_BACKEND = '...')
  *   5. Optional: Project Settings → Script Properties → SHARE_EMAIL = the address teachers share folders with
@@ -45,7 +46,11 @@ const LIMITS = {                     // [max calls, per seconds]
 const MAX_IMAGE_CHARS = 3 * 1024 * 1024;   // base64 data URL of one PNG
 const MAX_QUESTIONS = 80;
 const PLAYER_COLS = ['pid', 'name', 'school', 'show', 'xp', 'runs', 'answered', 'correct', 'created', 'updated', 'teacher'];
-const ATTEMPT_COLS = ['received', 'pid', 'name', 'school', 'date', 'mode', 'level', 'size', 'topics', 'score', 'total', 'seconds', 'xp', 'answers', 'teacher'];
+// set → sureWrong are written for people; detail ("label~ok~chapter~mistake" | …) feeds the summary sheets
+const ATTEMPT_COLS = ['received', 'pid', 'name', 'school', 'date', 'mode', 'level', 'size', 'topics', 'score', 'total', 'seconds', 'xp', 'answers', 'teacher',
+  'set', 'wrong', 'chapters', 'mistakes', 'sureWrong', 'detail'];
+const SUMMARY_STUDENTS = 'สรุปรายนักเรียน';
+const SUMMARY_ITEMS = 'สรุปข้อที่ผิดบ่อย';
 const TEACHER_COLS = ['key', 'name', 'school', 'kind', 'target', 'approved', 'pinHash', 'salt', 'sheetId', 'created', 'updated'];
 
 /* ---------- web entry points ---------- */
@@ -105,6 +110,7 @@ function submit_(b) {
     answers.push([id, c, err, clampInt_(p[3], 0, 3), clampInt_(p[4], 0, 7200)].join(':'));
   });
   if (per.length >= 5) xp += 20;
+  const report = report_(per, r);
   const t = findTeacher_(who.teacher);
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
@@ -114,10 +120,13 @@ function submit_(b) {
     const row = [now, who.pid, who.name, who.school,
       new Date(clampInt_(r.date, 0, now.getTime() + 864e5) || now.getTime()), cleanText_(r.mode, 10), cleanText_(r.lv, 10),
       cleanText_(r.size, 10), (Array.isArray(r.topics) ? r.topics : []).slice(0, 20).map(x => cleanText_(x, 30)).join(','),
-      correct, per.length, clampInt_(r.dur, 0, 86400), xp, answers.join(' '), t ? t.name : ''];
+      correct, per.length, clampInt_(r.dur, 0, 86400), xp, answers.join(' '), t ? t.name : '',
+      report.set, report.wrong, report.chapters, report.mistakes, report.sureWrong, report.detail];
     sheet_('attempts', ATTEMPT_COLS).appendRow(row);
     // a teacher with a Drive folder gets the same row in a spreadsheet inside that folder
-    if (t && t.kind === 'folder') { try { teacherBook_(t).getSheets()[0].appendRow(row); } catch (e) { /* the owner's copy is kept */ } }
+    if (t && t.kind === 'folder') {
+      try { const sh = teacherBook_(t).getSheets()[0]; ensureCols_(sh, ATTEMPT_COLS); sh.appendRow(row); } catch (e) { /* the owner's copy is kept */ }
+    }
     total = upsert_(who, p => {
       p.xp += xp; p.runs += 1; p.answered += answered; p.correct += correct;
     }, t).xp;
@@ -160,6 +169,33 @@ function upload_(b) {
   const file = (folder || getFolder_()).createFile(blob);
   file.setDescription(note + ' · ลบอัตโนมัติหลัง ' + KEEP_DAYS + ' วัน');
   return { ok: true, id: file.getId(), name, to };
+}
+
+// Turns per[i] = [id, ok, mistakeCode, confidence, seconds] and rec.items[i] = [label, chapter, mistakeName]
+// into sentences a teacher can read. Old pages send no items: the question id stands in for the label.
+function report_(per, rec) {
+  const items = Array.isArray(rec.items) ? rec.items : [];
+  const rows = per.map((p, i) => {
+    const it = Array.isArray(items[i]) ? items[i] : [];
+    const label = cleanText_(it[0], 70).replace(/[|~]/g, '/') || '#' + (Math.floor(Number(p[0])) || 0);
+    const err = cleanText_(p[2], 12);
+    return { label, ok: !!p[1], skip: err === 'skip', chapter: cleanText_(it[1], 40).replace(/[|~]/g, '/'),
+      mistake: p[1] ? '' : cleanText_(it[2], 40).replace(/[|~]/g, '/'), sure: clampInt_(p[3], 0, 3) === 3 };
+  });
+  const wrong = rows.filter(x => !x.ok);
+  const byChapter = {};
+  rows.forEach(x => { if (!x.chapter) return; const c = byChapter[x.chapter] = byChapter[x.chapter] || [0, 0]; c[1]++; if (x.ok) c[0]++; });
+  const mistakes = {};
+  wrong.forEach(x => { if (x.mistake) mistakes[x.mistake] = (mistakes[x.mistake] || 0) + 1; });
+  return {
+    set: cleanText_(rec.title, 120),
+    wrong: wrong.map(x => x.label + (x.skip ? ' (ไม่ตอบ)' : '')).join(' · ') || 'ถูกทุกข้อ',
+    // weakest chapter first
+    chapters: Object.entries(byChapter).sort((a, b) => a[1][0] / a[1][1] - b[1][0] / b[1][1]).map(([c, v]) => c + ' ' + v[0] + '/' + v[1]).join(' · '),
+    mistakes: Object.entries(mistakes).sort((a, b) => b[1] - a[1]).map(([m, n]) => m + ' ×' + n).join(' · '),
+    sureWrong: wrong.filter(x => x.sure).map(x => x.label).join(' · '),
+    detail: rows.map(x => [x.label, x.ok ? 1 : 0, x.chapter, x.mistake].join('~')).join('|').slice(0, 40000),
+  };
 }
 
 /* ---------- teacher actions ---------- */
@@ -213,8 +249,10 @@ function setup() {
   sheet_('players', PLAYER_COLS);
   sheet_('attempts', ATTEMPT_COLS);
   sheet_('teachers', TEACHER_COLS);
-  ScriptApp.getProjectTriggers().filter(t => t.getHandlerFunction() === 'cleanupOld').forEach(t => ScriptApp.deleteTrigger(t));
+  ScriptApp.getProjectTriggers().filter(t => ['cleanupOld', 'refreshSummaries'].includes(t.getHandlerFunction())).forEach(t => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger('cleanupOld').timeBased().everyDays(1).atHour(3).create();
+  ScriptApp.newTrigger('refreshSummaries').timeBased().everyHours(1).create();
+  refreshSummaries();
   Logger.log('พร้อมแล้ว · ชีท: ' + book_().getUrl() + ' · โฟลเดอร์: ' + getFolder_().getUrl());
 }
 // moves scratch images older than KEEP_DAYS to the trash (Drive empties the trash itself after 30 days)
@@ -226,6 +264,15 @@ function cleanupOld() {
   });
   Logger.log('ย้ายไปถังขยะ ' + n + ' ไฟล์');
 }
+// rebuilds the two summary sheets in the owner's spreadsheet and in every Drive-folder teacher's spreadsheet
+// (teachers with their own copy of this script get them from their own hourly trigger)
+function refreshSummaries() {
+  buildSummaries_(book_(), sheet_('attempts', ATTEMPT_COLS), true);
+  teachers_().rows.filter(t => t.kind === 'folder' && t.approved && t.sheetId).forEach(t => {
+    try { const ss = SpreadsheetApp.openById(t.sheetId); buildSummaries_(ss, ss.getSheets()[0], false); } catch (e) { /* sheet deleted or unshared */ }
+  });
+}
+
 // hide a player from the leaderboard (e.g. an inappropriate name): run with the player's pid from the sheet
 function hidePlayer(pid) {
   const P = players_(), r = P.rows.find(x => x.pid === pid);
@@ -257,6 +304,8 @@ function sheet_(name, cols) {
     sh.setFrozenRows(1);
     const first = ss.getSheets()[0];
     if (first.getName() !== name && first.getLastRow() === 0 && ss.getSheets().length > 1) ss.deleteSheet(first);
+  } else {
+    ensureCols_(sh, cols);
   }
   return sh;
 }
@@ -283,6 +332,64 @@ function upsert_(who, change, teacher) {
   change(r);
   P.sheet.getRange(r._row, 1, 1, PLAYER_COLS.length).setValues([PLAYER_COLS.map(c => r[c])]);
   return r;
+}
+// older sheets were created with fewer columns: extend the header row so new columns get a name
+function ensureCols_(sh, cols) {
+  if (sh.getLastColumn() < cols.length) sh.getRange(1, 1, 1, cols.length).setValues([cols]);
+}
+function buildSummaries_(ss, src, withTeacher) {
+  const vals = src.getDataRange().getValues();
+  if (vals.length < 2) return;
+  const col = {};
+  vals[0].forEach((h, i) => { col[String(h)] = i; });
+  const get = (r, k) => (col[k] == null ? '' : r[col[k]]);
+  const students = {}, items = {};
+  vals.slice(1).forEach(r => {
+    const pid = String(get(r, 'pid'));
+    if (!pid) return;
+    const s = students[pid] = students[pid] || { name: '', school: '', teacher: '', runs: 0, score: 0, total: 0, last: null, lastSet: '', lastScore: '', chapters: {}, mistakes: {}, sure: 0 };
+    const when = get(r, 'received');
+    s.name = get(r, 'name'); s.school = get(r, 'school'); s.teacher = get(r, 'teacher') || s.teacher;
+    s.runs++; s.score += Number(get(r, 'score')) || 0; s.total += Number(get(r, 'total')) || 0;
+    if (!s.last || when > s.last) { s.last = when; s.lastSet = get(r, 'set'); s.lastScore = get(r, 'score') + '/' + get(r, 'total'); }
+    if (get(r, 'sureWrong')) s.sure += String(get(r, 'sureWrong')).split(' · ').length;
+    String(get(r, 'detail') || '').split('|').forEach(d => {
+      if (!d) return;
+      const [label, ok, chapter, mistake] = d.split('~');
+      const wrong = ok !== '1';
+      if (chapter) { const c = s.chapters[chapter] = s.chapters[chapter] || [0, 0]; c[1]++; if (wrong) c[0]++; }
+      if (wrong && mistake) s.mistakes[mistake] = (s.mistakes[mistake] || 0) + 1;
+      const it = items[label] = items[label] || { chapter: chapter || '', n: 0, wrong: 0, who: {}, mistakes: {} };
+      it.n++;
+      if (wrong) { it.wrong++; it.who[pid] = 1; if (mistake) it.mistakes[mistake] = (it.mistakes[mistake] || 0) + 1; }
+    });
+  });
+  const top = (o, k) => Object.entries(o).sort((a, b) => b[1] - a[1]).slice(0, k).map(([m, n]) => m + ' ×' + n).join(' · ');
+  const stamp = 'อัปเดตอัตโนมัติทุกชั่วโมง · ล่าสุด ' + Utilities.formatDate(new Date(), 'Asia/Bangkok', 'd/M/yyyy HH:mm');
+
+  const sHead = ['ชื่อ', 'โรงเรียน'].concat(withTeacher ? ['ครู'] : [],
+    ['ทำ (ครั้ง)', 'ถูก/ทั้งหมด', 'ร้อยละ', 'ทำล่าสุด', 'ชุดล่าสุด', 'คะแนนล่าสุด', 'บทที่ควรทบทวน (ผิด/ทำ)', 'ผิดบ่อยเพราะ', 'มั่นใจแต่ผิด (ข้อ)']);
+  const sRows = Object.values(students).sort((a, b) => a.score / (a.total || 1) - b.score / (b.total || 1)).map(s => {
+    const weak = Object.entries(s.chapters).filter(([, v]) => v[0] > 0).sort((a, b) => b[1][0] / b[1][1] - a[1][0] / a[1][1] || b[1][0] - a[1][0])
+      .slice(0, 3).map(([c, v]) => c + ' ' + v[0] + '/' + v[1]).join(' · ');
+    return [s.name, s.school].concat(withTeacher ? [s.teacher] : [],
+      [s.runs, s.score + '/' + s.total, s.total ? Math.round(s.score / s.total * 100) : 0, s.last, s.lastSet, s.lastScore, weak, top(s.mistakes, 2), s.sure]);
+  });
+  writeSummary_(ss, SUMMARY_STUDENTS, stamp + ' · เรียงจากคนที่ต้องช่วยมากที่สุด', sHead, sRows);
+
+  const iHead = ['ข้อ / รูปแบบโจทย์', 'บท', 'ทำ (ครั้ง)', 'ผิด (ครั้ง)', 'ร้อยละที่ผิด', 'จำนวนคนที่ผิด', 'ผิดบ่อยเพราะ'];
+  const iRows = Object.entries(items).filter(([, v]) => v.wrong > 0)
+    .sort((a, b) => b[1].wrong / b[1].n - a[1].wrong / a[1].n || b[1].wrong - a[1].wrong).slice(0, 300)
+    .map(([label, v]) => [label, v.chapter, v.n, v.wrong, Math.round(v.wrong / v.n * 100), Object.keys(v.who).length, top(v.mistakes, 2)]);
+  writeSummary_(ss, SUMMARY_ITEMS, stamp + ' · เรียงจากข้อที่ผิดมากที่สุด', iHead, iRows);
+}
+function writeSummary_(ss, name, note, head, rows) {
+  const sh = ss.getSheetByName(name) || ss.insertSheet(name);
+  sh.clearContents();
+  sh.getRange(1, 1).setValue(note);
+  sh.getRange(2, 1, 1, head.length).setValues([head]).setFontWeight('bold');
+  if (rows.length) sh.getRange(3, 1, rows.length, head.length).setValues(rows);
+  sh.setFrozenRows(2);
 }
 function getFolder_() {
   const it = DriveApp.getFoldersByName(FOLDER_NAME);

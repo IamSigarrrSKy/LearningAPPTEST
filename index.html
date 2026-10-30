@@ -285,7 +285,7 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .pthead input{font:inherit;width:150px;padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface2);color:var(--ink)}
 .ptscroll{overflow-x:auto;padding:6px 2px 10px;-webkit-overflow-scrolling:touch}
 .ptgrid{display:grid;grid-template-columns:repeat(18,minmax(46px,1fr));gap:4px;min-width:880px}
-.el{--c:#888;position:relative;aspect-ratio:1/1.08;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--c) 55%,transparent);
+.el{--c:var(--accent);position:relative;aspect-ratio:1/1.08;border-radius:9px;border:1.5px solid color-mix(in srgb,var(--c) 55%,transparent);
   background:linear-gradient(135deg,var(--glass-hi),color-mix(in srgb,var(--c) 14%,var(--glass-lo)));
   box-shadow:inset 0 1px 2px var(--glass-in),inset 0 -2px 4px color-mix(in srgb,var(--c) 14%,transparent);
   display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;color:var(--ink);font:inherit;cursor:pointer;
@@ -300,12 +300,16 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .el.mark{cursor:default;border-style:dashed;background:transparent;box-shadow:none}
 .el.mark b{font-size:10px;font-family:"JetBrains Mono"}
 .ptgrid .frow{grid-column:1/-1;height:8px}
+.pthd{align-self:end;text-align:center;font:600 10px "JetBrains Mono";color:var(--muted);line-height:1.2;padding-bottom:2px}
+.pthd b{display:block;font-weight:500;font-size:9.5px;color:var(--soft)}
+/* staircase drawn in the 4px gaps around the cell so it never covers the tile */
+.el.stair::before,.el.stair::after{content:"";position:absolute;background:var(--ink);border-radius:2px;pointer-events:none}
+.el.stair::before{left:-4px;top:-4px;bottom:-4px;width:3px}
+.el.stair::after{left:-4px;right:-4px;bottom:-4px;height:3px}
+.ptnote{font-size:12.5px;color:var(--soft);margin:2px 0 0}
 .ptinfo{display:flex;gap:14px;align-items:center;min-height:62px;margin:6px 0 8px}
 .ptinfo .tile{width:58px;height:58px;font-size:22px;border-radius:14px;transform:rotate(-5deg)}
 .ptinfo b{font-size:17px} .ptinfo span{display:block;color:var(--soft);font-size:14px}
-.ptlegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--soft)}
-.ptlegend span{display:inline-flex;align-items:center;gap:6px}
-.ptlegend span::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--c)}
 .pthint{font-size:12px;color:var(--muted);margin:6px 0 0}
 @media (min-width:900px){ .pthint{display:none} }
 .pt{border:1px solid var(--line);border-radius:8px;padding:4px 6px;text-align:center;background:var(--surface2)}
@@ -845,7 +849,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
     <button class="iconbtn" id="ptClose" aria-label="ปิด">✕</button></div>
   <div class="ptinfo" id="ptInfo" aria-live="polite"></div>
   <div class="ptscroll"><div class="ptgrid" id="ptGrid"></div></div>
-  <div class="ptlegend" id="ptLegend"></div>
+  <p class="ptnote">มวลอะตอมตามค่าที่ข้อสอบ สทศ. กำหนดให้ · เส้นหนาคือเส้นขั้นบันได</p>
   <p class="pthint">เลื่อนตารางไปทางซ้าย–ขวาได้ · หมุนจอแนวนอนจะเห็นทั้งตาราง</p>
 </dialog>
 
@@ -3322,30 +3326,20 @@ $('#lastResultBtn').onclick=()=>{ const r=lastOf(LV); if(r) renderResult(r); };
 $('#ptable').innerHTML = PT.map(([s,m])=>`<div class="pt"><b>${s}</b><span>${m}</span></div>`).join('');
 
 /* ---- full periodic table: symbol, atomic number, standard atomic mass ([n] = mass number of the most stable isotope) ---- */
-const ELEM=('H 1.008|He 4.003|Li 6.94|Be 9.012|B 10.81|C 12.01|N 14.01|O 16.00|F 19.00|Ne 20.18|Na 22.99|Mg 24.31|Al 26.98|Si 28.09|P 30.97|S 32.06|Cl 35.45|Ar 39.95|'
- +'K 39.10|Ca 40.08|Sc 44.96|Ti 47.87|V 50.94|Cr 52.00|Mn 54.94|Fe 55.85|Co 58.93|Ni 58.69|Cu 63.55|Zn 65.38|Ga 69.72|Ge 72.63|As 74.92|Se 78.97|Br 79.90|Kr 83.80|'
- +'Rb 85.47|Sr 87.62|Y 88.91|Zr 91.22|Nb 92.91|Mo 95.95|Tc [98]|Ru 101.07|Rh 102.91|Pd 106.42|Ag 107.87|Cd 112.41|In 114.82|Sn 118.71|Sb 121.76|Te 127.60|I 126.90|Xe 131.29|'
- +'Cs 132.91|Ba 137.33|La 138.91|Ce 140.12|Pr 140.91|Nd 144.24|Pm [145]|Sm 150.36|Eu 151.96|Gd 157.25|Tb 158.93|Dy 162.50|Ho 164.93|Er 167.26|Tm 168.93|Yb 173.05|Lu 174.97|'
- +'Hf 178.49|Ta 180.95|W 183.84|Re 186.21|Os 190.23|Ir 192.22|Pt 195.08|Au 196.97|Hg 200.59|Tl 204.38|Pb 207.2|Bi 208.98|Po [209]|At [210]|Rn [222]|'
- +'Fr [223]|Ra [226]|Ac [227]|Th 232.04|Pa 231.04|U 238.03|Np [237]|Pu [244]|Am [243]|Cm [247]|Bk [247]|Cf [251]|Es [252]|Fm [257]|Md [258]|No [259]|Lr [266]|'
+// Masses follow the สทศ. paper ("ค่าที่กำหนดให้"): whole numbers, with Cl 35.5, Rb 85.5, Sr 87.5 and Sn 118.5 as printed there.
+// Elements the paper does not list are rounded the same way (Cu 63.5 as in Thai textbooks); [n] = mass number of the most stable isotope.
+const ELEM=('H 1|He 4|Li 7|Be 9|B 11|C 12|N 14|O 16|F 19|Ne 20|Na 23|Mg 24|Al 27|Si 28|P 31|S 32|Cl 35.5|Ar 40|'
+ +'K 39|Ca 40|Sc 45|Ti 48|V 51|Cr 52|Mn 55|Fe 56|Co 59|Ni 59|Cu 63.5|Zn 65|Ga 70|Ge 73|As 75|Se 79|Br 80|Kr 84|'
+ +'Rb 85.5|Sr 87.5|Y 89|Zr 91|Nb 93|Mo 96|Tc [98]|Ru 101|Rh 103|Pd 106|Ag 108|Cd 112|In 115|Sn 118.5|Sb 122|Te 128|I 127|Xe 131|'
+ +'Cs 133|Ba 137|La 139|Ce 140|Pr 141|Nd 144|Pm [145]|Sm 150|Eu 152|Gd 157|Tb 159|Dy 162.5|Ho 165|Er 167|Tm 169|Yb 173|Lu 175|'
+ +'Hf 178.5|Ta 181|W 184|Re 186|Os 190|Ir 192|Pt 195|Au 197|Hg 201|Tl 204|Pb 207|Bi 209|Po [209]|At [210]|Rn [222]|'
+ +'Fr [223]|Ra [226]|Ac [227]|Th 232|Pa 231|U 238|Np [237]|Pu [244]|Am [243]|Cm [247]|Bk [247]|Cf [251]|Es [252]|Fm [257]|Md [258]|No [259]|Lr [266]|'
  +'Rf [267]|Db [268]|Sg [269]|Bh [270]|Hs [269]|Mt [278]|Ds [281]|Rg [282]|Cn [285]|Nh [286]|Fl [289]|Mc [290]|Lv [293]|Ts [294]|Og [294]')
   .split('|').map((x,i)=>{ const [s,m]=x.split(' '); return {z:i+1, s, m}; });
-const ECAT={
-  alk:{n:'โลหะแอลคาไล', c:'#ff6b4a', z:[3,11,19,37,55,87]},
-  ae:{n:'โลหะแอลคาไลน์เอิร์ท', c:'#d99413', z:[4,12,20,38,56,88]},
-  tr:{n:'โลหะทรานซิชัน', c:'#3b82f6', z:[]},
-  post:{n:'โลหะหลังทรานซิชัน', c:'#0ea5b7', z:[13,31,49,50,81,82,83,84,113,114,115,116]},
-  semi:{n:'ธาตุกึ่งโลหะ', c:'#16936a', z:[5,14,32,33,51,52]},
-  non:{n:'อโลหะ', c:'#7c5cff', z:[1,6,7,8,15,16,34]},
-  hal:{n:'แฮโลเจน', c:'#e0438f', z:[9,17,35,53,85,117]},
-  gas:{n:'แก๊สมีตระกูล', c:'#9b5de5', z:[2,10,18,36,54,86,118]},
-  lan:{n:'แลนทาไนด์', c:'#f97316', z:[]},
-  act:{n:'แอกทิไนด์', c:'#a16207', z:[]},
-};
-function ecat(z){
-  if(z>=57&&z<=71) return 'lan'; if(z>=89&&z<=103) return 'act';
-  return Object.keys(ECAT).find(k=>ECAT[k].z.includes(z)) || 'tr';
-}
+// group headings as printed on the paper (old A/B numbering over the 1–18 numbers)
+const PT_GROUPS=['IA','IIA','IIIB','IVB','VB','VIB','VIIB','VIIIB','VIIIB','VIIIB','IB','IIB','IIIA','IVA','VA','VIA','VIIA','VIIIA'];
+// the metal / non-metal staircase runs down the left and bottom edges of these cells, like the exam's table
+const PT_STAIR=new Set([5,14,33,52,85]);
 // [period, group] of every element; La–Lu and Ac–Lr sit in the two f-block rows under the table
 function epos(z){
   const starts=[[1,1],[3,2],[11,3],[19,4],[37,5],[55,6],[87,7]];
@@ -3356,24 +3350,25 @@ function epos(z){
   if(per<=5) return [per, k+1];
   return [per, k<2 ? k+1 : k-13];    // after La–Lu / Ac–Lr (15 elements) the row resumes at group 4
 }
+// one colour for every cell: colour-coding metals, halogens etc. would answer exam questions
 function renderPT(){
   const cells=[];
   ELEM.forEach(e=>{ const [r,g]=epos(e.z); cells.push({r,g,e}); });
   cells.push({r:6,g:3,mark:'57–71'},{r:7,g:3,mark:'89–103'});
-  $('#ptGrid').innerHTML = cells.map(({r,g,e,mark})=>{
-    const row = r>=9 ? r+1 : r;      // leave row 8 as the gap before the f-block
-    if(mark) return `<div class="el mark" style="grid-row:${row};grid-column:${g};--c:${ECAT[r===6?'lan':'act'].c}"><b>${mark}</b></div>`;
-    return `<button type="button" class="el" data-z="${e.z}" style="grid-row:${row};grid-column:${g};--c:${ECAT[ecat(e.z)].c}" aria-label="${e.s} เลขอะตอม ${e.z} มวลอะตอม ${e.m}"><small>${e.z}</small><b>${e.s}</b><i>${e.m}</i></button>`;
-  }).join('') + `<div class="frow" style="grid-row:9"></div>`;
-  $('#ptLegend').innerHTML = Object.values(ECAT).map(c=>`<span style="--c:${c.c}">${c.n}</span>`).join('');
+  const head = PT_GROUPS.map((n,i)=>`<div class="pthd" style="grid-row:1;grid-column:${i+1}">${n}<b>${i+1}</b></div>`).join('');
+  $('#ptGrid').innerHTML = head + cells.map(({r,g,e,mark})=>{
+    const row = (r>=9 ? r+1 : r) + 1;      // row 1 holds the group headings; a gap row sits before the f-block
+    if(mark) return `<div class="el mark" style="grid-row:${row};grid-column:${g}"><b>${mark}</b></div>`;
+    return `<button type="button" class="el${PT_STAIR.has(e.z)?' stair':''}" data-z="${e.z}" style="grid-row:${row};grid-column:${g}" aria-label="${e.s} เลขอะตอม ${e.z} มวลอะตอม ${e.m}"><small>${e.z}</small><b>${e.s}</b><i>${e.m}</i></button>`;
+  }).join('') + `<div class="frow" style="grid-row:10"></div>`;
   $('#ptGrid').querySelectorAll('.el[data-z]').forEach(b=>b.onclick=()=>pickEl(+b.dataset.z));
 }
 function pickEl(z){
-  const e=ELEM[z-1], c=ECAT[ecat(z)];
+  const e=ELEM[z-1];
   $('#ptGrid').querySelectorAll('.el.on').forEach(x=>x.classList.remove('on'));
   const b=$(`#ptGrid .el[data-z="${z}"]`); b.classList.add('on'); b.scrollIntoView({block:'nearest',inline:'center'});
-  $('#ptInfo').innerHTML=`<span class="tile" style="--c:${c.c}"><small>${z}</small>${e.s}</span>
-    <div><b>${e.s} · เลขอะตอม ${z}</b><span>มวลอะตอม ${e.m}${e.m[0]==='['?' (เลขมวลของไอโซโทปที่เสถียรที่สุด)':''} · ${c.n}</span></div>`;
+  $('#ptInfo').innerHTML=`<span class="tile"><small>${z}</small>${e.s}</span>
+    <div><b>${e.s} · เลขอะตอม ${z}</b><span>มวลอะตอม ${e.m}${e.m[0]==='['?' (เลขมวลของไอโซโทปที่เสถียรที่สุด)':''}</span></div>`;
 }
 $('#ptFind').addEventListener('input',()=>{
   const v=$('#ptFind').value.trim().toLowerCase(), g=$('#ptGrid');
@@ -3876,10 +3871,15 @@ async function callBackend(body){
   return j;
 }
 function whoFields(){ const s=getStudent()||{}; return {pid:playerId(), name:s.name||'', school:s.school||'', teacher:s.teacher||'', show:s.show!==false}; }
+// items[i] names per[i] for the teacher: [question label, chapter, mistake type]; real exams use the paper's own question number
 function attemptPayload(rec){
-  const m=rec.meta||{};
+  const m=rec.meta||{}, ent=Object.entries(rec.per);
   return {date:rec.date, mode:rec.mode, lv:m.lv||'', size:String(m.size||''), topics:(m.topics||[]).slice(0,20), score:rec.score, total:rec.total, dur:rec.dur,
-    per:Object.entries(rec.per).map(([id,p])=>[+id, p.c?1:0, p.err||'', p.conf||0, p.time||0])};
+    title:scopeLabelOf(rec),
+    per:ent.map(([id,p])=>[+id, p.c?1:0, p.err||'', p.conf||0, p.time||0]),
+    items:ent.map(([id,p])=>{ const q=QBY[id]||{};
+      return [q.exam ? `${q.examName} ข้อ ${q.no}` : (q.short||'#'+id), TOPICS[q.topic]?.name||'',
+        p.c||!p.err||p.err==='skip'||p.err==='exam' ? '' : ERR[p.err]?.name||'']; })};
 }
 function loadPending(){ try{ return JSON.parse(localStorage.getItem(PENDING_KEY))||[]; }catch(e){ return []; } }
 function savePending(a){ try{ localStorage.setItem(PENDING_KEY, JSON.stringify(a.slice(-20))); }catch(e){} }
@@ -4003,13 +4003,18 @@ function progressHTML(rec, ids){
     </div>${trend}</div>`;
 }
 
-function renderResult(rec){
-  show('result');
+// what this attempt covered, in words: "ม.4 · โมล, พันธะ" or "ข้อสอบจริง A-Level 2566"
+function scopeLabelOf(rec){
   // records saved before levels existed have no meta → treat them as the whole bank
   const m = rec.meta || {lv:'alevel', topics:[], size:'all'};
   const examName = m.lv==='alevel' && m.size==='year' ? (EXAM_SETS.find(s=>s.id===(m.topics||[])[0])||{}).name : null;
-  const scopeLabel = !rec.meta ? 'ทุกบท' : m.lv!=='alevel' ? `${LEVELS[m.lv].name} · ${m.topics.map(t=>TOPICS[t]?.name||t).join(', ')}`
+  return !rec.meta ? 'ทุกบท' : m.lv!=='alevel' ? `${LEVELS[m.lv].name} · ${m.topics.map(t=>TOPICS[t]?.name||t).join(', ')}`
     : m.size==='aonly' ? 'โจทย์ท้าทายจากชีท' : examName ? `ข้อสอบจริง ${examName}` : `${seriesOfTopics(m.topics)} คละชุด`;
+}
+function renderResult(rec){
+  show('result');
+  const m = rec.meta || {lv:'alevel', topics:[], size:'all'};
+  const scopeLabel = scopeLabelOf(rec);
   const scopeIds = new Set(m.size==='aonly' ? ALEVEL_IDS : m.lv==='alevel' && m.size==='year' ? poolFor('alevel', m.topics)
     : m.lv==='alevel' ? poolFor('alevel', m.topics.some(t=>t.startsWith('series:'))?m.topics:['series:A-Level']) : poolFor(m.lv, m.topics));
   const scopeQ = Q.filter(q=>scopeIds.has(q.id));
