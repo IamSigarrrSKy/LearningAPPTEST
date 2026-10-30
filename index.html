@@ -17,6 +17,7 @@
   --ok-bg:#e3f5ec; --bad-bg:#fde8e9; --warn-bg:#fdf1d8;
   --shadow:0 1px 2px rgba(29,36,51,.06),0 10px 28px -14px rgba(29,36,51,.25);
   --hex:rgba(29,36,51,.05);
+  --glass-hi:rgba(255,255,255,.85); --glass-lo:rgba(255,255,255,.55); --glass-in:rgba(255,255,255,.9);
   --r:18px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -26,6 +27,7 @@
   --ok-bg:#163428; --bad-bg:#3a1b1f; --warn-bg:#3a2e16;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
   --hex:rgba(255,255,255,.035);
+  --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
 }}
 :root[data-theme="dark"]{
   --bg:#12151d; --bg2:#1a1e29; --surface:#1c212d; --surface2:#232937;
@@ -34,6 +36,7 @@
   --ok-bg:#163428; --bad-bg:#3a1b1f; --warn-bg:#3a2e16;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
   --hex:rgba(255,255,255,.035);
+  --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -57,15 +60,34 @@ sub,sup{font-size:.72em;line-height:0}
 /* top bar */
 .top{display:flex;align-items:center;gap:12px;padding:16px 0}
 .brand{display:flex;align-items:center;gap:10px;font-family:Mitr;font-size:20px;font-weight:500}
-.brand .tile{width:38px;height:38px;font-size:16px}
+.brand .tile{width:38px;height:38px;font-size:16px;border-radius:11px}
 .spacer{flex:1}
 .iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;height:40px;min-width:40px;padding:0 12px;display:inline-flex;align-items:center;gap:6px}
 .iconbtn:hover{border-color:var(--soft)}
 
-/* element tile */
-.tile{--c:var(--accent);position:relative;display:inline-grid;place-items:center;width:64px;height:64px;border-radius:12px;
-  background:color-mix(in srgb,var(--c) 16%,var(--surface));border:2px solid var(--c);color:var(--ink);
-  font-family:Mitr;font-weight:600;font-size:24px;flex:none}
+/* element tile: 3D tactile glass badge, tinted by --c */
+.tile{--c:var(--accent);position:relative;display:inline-grid;place-items:center;width:64px;height:64px;border-radius:16px;
+  background:linear-gradient(135deg,var(--glass-hi) 0%,color-mix(in srgb,var(--c) 14%,var(--glass-lo)) 100%);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:2px solid color-mix(in srgb,var(--c) 55%,transparent);color:var(--ink);
+  box-shadow:0 10px 20px -5px color-mix(in srgb,var(--c) 18%,transparent),0 4px 6px -2px rgba(0,0,0,.05),
+    inset 0 2px 4px var(--glass-in),inset 0 -3px 6px color-mix(in srgb,var(--c) 15%,transparent);
+  font-family:Mitr;font-weight:600;font-size:24px;flex:none;
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.tile:hover{transform:translateY(-6px) rotate(2deg) scale(1.04);
+  box-shadow:0 16px 28px -6px color-mix(in srgb,var(--c) 28%,transparent),
+    inset 0 2px 5px var(--glass-in),inset 0 -3px 6px color-mix(in srgb,var(--c) 15%,transparent)}
+@media (prefers-reduced-motion:reduce){ .tile,.tile:hover{transition:none;transform:none} }
+/* 3D icon art (img/*.webp): a rounded badge with the same glass rim */
+.art{display:block;border-radius:22%;border:2px solid color-mix(in srgb,var(--c,var(--accent)) 40%,transparent);
+  box-shadow:0 10px 20px -6px color-mix(in srgb,var(--c,var(--accent)) 28%,transparent),inset 0 2px 4px var(--glass-in)}
+.subject .ico .art{width:68px;height:68px;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.subject:not(:disabled):hover .ico .art{transform:translateY(-4px) rotate(-3deg) scale(1.05)}
+.subject:disabled .ico .art{filter:saturate(.75)}
+.trophyBtn .art{width:28px;height:28px;border-width:1px;border-radius:8px;box-shadow:none}
+.iconbtn.trophyBtn{padding:0 6px}
+h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;vertical-align:-9px;margin-right:4px;border-width:1px}
+.btn .art{display:inline-block;width:22px;height:22px;border-radius:6px;border-width:1px;box-shadow:none;vertical-align:-5px}
 .tile small{position:absolute;top:3px;left:6px;font:600 10px "JetBrains Mono";color:var(--c)}
 
 /* buttons */
@@ -87,7 +109,7 @@ sub,sup{font-size:.72em;line-height:0}
 .hero p{color:var(--soft);font-size:17px;max-width:540px}
 .incl{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px;max-width:620px}
 .incl li{display:flex;gap:12px;align-items:flex-start}
-.incl .tile{--c:inherit;flex:none;width:46px;height:46px;font:600 18px Mitr,sans-serif;border-radius:10px;transform:rotate(var(--r,0deg))}
+.incl .tile{--c:inherit;flex:none;width:46px;height:46px;font:600 18px Mitr,sans-serif;border-radius:13px;transform:rotate(var(--r,0deg))}
 .incl li:nth-child(odd) .tile{--r:-4deg} .incl li:nth-child(even) .tile{--r:3deg}
 .incl .tile small{font-size:8px;top:2px;left:4px}
 .incl b{display:block;font-weight:600;font-size:15px;line-height:1.35}
@@ -104,7 +126,7 @@ sub,sup{font-size:.72em;line-height:0}
   #subject .hubcard .tag{margin-top:2px}
 }
 .tiles-art{position:relative;height:300px}
-.tiles-art .tile{position:absolute;width:86px;height:86px;font-size:32px;box-shadow:var(--shadow);animation:float 6s ease-in-out infinite}
+.tiles-art .tile{position:absolute;width:86px;height:86px;font-size:32px;border-radius:20px;animation:float 6s ease-in-out infinite}
 .tiles-art .tile small{font-size:12px}
 .tiles-art .tile i{position:absolute;bottom:4px;font:500 9px "JetBrains Mono";font-style:normal;color:var(--muted)}
 @keyframes float{50%{transform:translateY(-10px) rotate(var(--rot,0deg))}}
@@ -568,7 +590,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <div class="spacer"></div>
       <button class="iconbtn" id="whoBtn" aria-label="เปลี่ยนชื่อผู้ใช้">👤 <span id="whoName">ใส่ชื่อ</span></button>
       <button class="iconbtn" id="homeCfg" aria-label="ตั้งค่าการเชื่อมต่อ">⚙️</button>
-      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล">🏆<span class="tbadge" hidden></span></button>
+      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><img class="art" src="img/trophy-72.webp" alt="" width="28" height="28"><span class="tbadge" hidden></span></button>
       <button class="iconbtn themeBtn" aria-label="สลับธีมสว่าง/มืด">◐</button>
     </div>
 
@@ -599,13 +621,13 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
     <div class="section-title"><h2>เลือกวิชา</h2><span>เริ่มจากเคมี วิชาอื่นตามมา</span></div>
     <div class="subjects">
-      <button class="subject" style="--c:#ff6b4a" id="chemCard"><span class="blob"></span><span class="ico">⚗️</span><h3>เคมี</h3><p>แบบฝึกหัด ม.4–ม.6 · A-Level · IJSO · NETSAT</p><span class="go">เข้าสู่คลังข้อสอบ →</span></button>
-      <button class="subject" style="--c:#3b82f6" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🧲</span><h3>ฟิสิกส์</h3><p>การเคลื่อนที่ แรง ไฟฟ้า</p></button>
-      <button class="subject" style="--c:#16936a" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🧬</span><h3>ชีววิทยา</h3><p>เซลล์ พันธุศาสตร์ ระบบร่างกาย</p></button>
-      <button class="subject" style="--c:#7c5cff" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🌏</span><h3>โลกและอวกาศ</h3><p>ธรณี บรรยากาศ ดาราศาสตร์</p></button>
+      <button class="subject" style="--c:#ff6b4a" id="chemCard"><span class="blob"></span><span class="ico"><img class="art" src="img/chem-192.webp" alt="" width="68" height="68"></span><h3>เคมี</h3><p>แบบฝึกหัด ม.4–ม.6 · A-Level · IJSO · NETSAT</p><span class="go">เข้าสู่คลังข้อสอบ →</span></button>
+      <button class="subject" style="--c:#3b82f6" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico"><img class="art" src="img/phys-192.webp" alt="" width="68" height="68"></span><h3>ฟิสิกส์</h3><p>การเคลื่อนที่ แรง ไฟฟ้า</p></button>
+      <button class="subject" style="--c:#16936a" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico"><img class="art" src="img/bio-192.webp" alt="" width="68" height="68"></span><h3>ชีววิทยา</h3><p>เซลล์ พันธุศาสตร์ ระบบร่างกาย</p></button>
+      <button class="subject" style="--c:#7c5cff" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico"><img class="art" src="img/earth-192.webp" alt="" width="68" height="68"></span><h3>โลกและอวกาศ</h3><p>ธรณี บรรยากาศ ดาราศาสตร์</p></button>
     </div>
 
-    <div class="section-title"><h2>🥇 Leaderboard</h2><span id="boardNote"></span></div>
+    <div class="section-title"><h2><img class="art" src="img/medal-72.webp" alt="" width="34" height="34">Leaderboard</h2><span id="boardNote"></span></div>
     <div id="leaderboard"></div>
 
 
@@ -620,7 +642,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <button class="iconbtn" id="backHome" aria-label="กลับหน้าแรก">←</button>
       <nav class="crumbs" aria-label="ตำแหน่ง"><button id="crHome">หน้าแรก</button><span>›</span><span>เคมี</span><span>›</span><b id="crLevel">ม.4</b></nav>
       <div class="spacer"></div>
-      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล">🏆<span class="tbadge" hidden></span></button>
+      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><img class="art" src="img/trophy-72.webp" alt="" width="28" height="28"><span class="tbadge" hidden></span></button>
       <button class="iconbtn themeBtn" aria-label="สลับธีมสว่าง/มืด">◐</button>
     </div>
 
@@ -673,7 +695,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
         <div class="bar"><i id="qBar" style="width:0"></i></div>
       </div>
       <span class="timer" id="timer" aria-label="เวลาที่ใช้">00:00</span>
-      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล">🏆<span class="tbadge" hidden></span></button>
+      <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><img class="art" src="img/trophy-72.webp" alt="" width="28" height="28"><span class="tbadge" hidden></span></button>
     </div>
 
     <div class="qlayout">
@@ -776,7 +798,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 </dialog>
 
 <dialog id="trophyDlg" class="tdlg" aria-labelledby="tdTitle">
-  <div class="tdhead"><div><h3 id="tdTitle">🏆 ห้องถ้วยรางวัล</h3><span id="tdStars"></span></div>
+  <div class="tdhead"><div><h3 id="tdTitle"><img class="art" src="img/trophy-72.webp" alt="" width="34" height="34">ห้องถ้วยรางวัล</h3><span id="tdStars"></span></div>
     <button class="iconbtn" id="tdClose" aria-label="ปิด">✕</button></div>
   <div class="tdclaim" id="tdClaim"></div>
   <div class="tabs" id="tdTabs" role="tablist"></div>
@@ -3753,7 +3775,7 @@ function rewardHTML(rec){
       <div class="xpgain">+${r.xp} XP</div>
       <div class="xpbar"><i style="width:${Math.round(r.lvA.into/r.lvA.need*100)}%"></i></div>
       <div class="xptext">${up?`ตอนนี้เป็นธาตุ${ename} (${sym}) · `:''}${r.lvA.into}/${r.lvA.need} XP ถึงเลเวล ${r.lvA.L+1}</div>
-      ${r.up.length?`<div class="newt">${r.up.map(x=>`<span class="chip">${x.grand?'🏆':MEDAL[x.tier]} ${x.name} · เหรียญ${TIER[x.tier]}</span>`).join('')}<button class="btn primary trophyBtn" style="min-height:34px;padding:4px 12px;font-size:13px">🏆 กดรับรางวัล</button></div>`:''}
+      ${r.up.length?`<div class="newt">${r.up.map(x=>`<span class="chip">${x.grand?'🏆':MEDAL[x.tier]} ${x.name} · เหรียญ${TIER[x.tier]}</span>`).join('')}<button class="btn primary trophyBtn" style="min-height:34px;padding:4px 12px;font-size:13px"><img class="art" src="img/trophy-72.webp" alt="" width="22" height="22"> กดรับรางวัล</button></div>`:''}
     </div></div>`;
 }
 
@@ -3832,7 +3854,7 @@ function renderResult(rec){
   <div class="top">
     <div class="brand"><span class="tile"><small>6</small>C</span><span>ผลวิเคราะห์</span></div>
     <div class="spacer"></div>
-    <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล">🏆<span class="tbadge" hidden></span></button>
+    <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><img class="art" src="img/trophy-72.webp" alt="" width="28" height="28"><span class="tbadge" hidden></span></button>
     <button class="iconbtn" id="homeBtn">⌂ หน้าแรก</button>
   </div>
 
