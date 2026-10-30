@@ -330,6 +330,23 @@ sub,sup{font-size:.72em;line-height:0}
 .rec p{margin:0;font-size:14px;color:var(--soft)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 60px}
 
+/* ---------- REAL EXAM ---------- */
+.qimg{display:block;width:100%;height:auto;max-width:900px;border-radius:10px;background:#fff;border:1px solid var(--line);padding:8px}
+.qtext .qimg{margin:2px 0;cursor:zoom-in}
+.qimgwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;max-width:100%}
+.qimgwrap.zoomed .qimg{width:1100px;max-width:none;cursor:zoom-out}
+.zoomhint{font-size:12px;color:var(--muted);margin-top:4px}
+.ritem .body .qimg{max-width:640px}
+.padq .qimg{max-width:620px;padding:4px}
+.bubbles{display:flex;gap:12px;flex-wrap:wrap}
+.bubble{width:58px;height:58px;border-radius:50%;border:2.5px solid var(--line);background:var(--surface2);font:700 22px "JetBrains Mono";display:grid;place-items:center;transition:transform .1s,border-color .15s,background .15s}
+.bubble:hover:not(:disabled){border-color:var(--c);transform:translateY(-1px)}
+.bubble.sel{background:var(--c);border-color:var(--c);color:#fff}
+.bubble.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.bubble.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.bubble:disabled{cursor:default}
+.tcard.exam .tile small{font-size:9px}
+@media (max-width:575px){.bubbles{gap:8px}.bubble{width:50px;height:50px;font-size:19px}}
 /* ---------- PROGRESS ---------- */
 .prog{margin-top:18px}
 .prog .pp{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0 14px;color:var(--soft)}
@@ -369,7 +386,8 @@ sub,sup{font-size:.72em;line-height:0}
 .padhint{position:absolute;left:16px;bottom:12px;font-size:12px;color:#8a92a6;pointer-events:none}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:80;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-size:14px;transition:all .25s;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%)}
-.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;font-size:14px}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;font-size:14px;min-width:0}
+.field input{width:100%;min-width:0}
 .field input[type=text],.field input[type=url],.field input[type=password]{font:inherit;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface2);color:var(--ink)}
 .field small{color:var(--muted)}
 .chk-row{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-bottom:12px}
@@ -388,7 +406,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .tiles-art .tile{width:64px;height:64px;font-size:24px}
   .subjects,.levels{grid-template-columns:1fr 1fr}
   .ainfo{grid-template-columns:1fr}
-  .qlayout{grid-template-columns:1fr}
+  .qlayout{grid-template-columns:minmax(0,1fr)}
   .side{position:static}
   .grid2,.recs{grid-template-columns:1fr}
   .kpis{grid-template-columns:1fr 1fr}
@@ -612,6 +630,8 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   <div class="row"><button class="btn ghost" id="dlgNo">ทำต่อ</button><button class="btn primary" id="dlgYes">ยืนยัน</button></div>
 </dialog>
 
+<!-- real-exam answer keys and image list; the page still works if this file is missing -->
+<script src="exam/exam-data.js"></script>
 <script>
 /* ============ DATA ============ */
 const TOPICS = {
@@ -640,7 +660,7 @@ const LEVELS = {
   m4:     {name:'ม.4', full:'มัธยมศึกษาปีที่ 4', ico:'🧪', c:'#ff6b4a', topics:['safety','measure','units','atom','econfig','period','nuclear','bond','mol','conc','chemlaw','stoich']},
   m5:     {name:'ม.5', full:'มัธยมศึกษาปีที่ 5', ico:'⚖️', c:'#3b82f6', topics:['gas','rate','eq','acid']},
   m6:     {name:'ม.6', full:'มัธยมศึกษาปีที่ 6', ico:'🔋', c:'#16936a', topics:['redox','organic','polymer']},
-  alevel: {name:'A-Level', full:'แนวข้อสอบ A-Level เคมี', ico:'🎯', c:'#9b5de5', topics:null},
+  alevel: {name:'A-Level', full:'ข้อสอบจริง A-Level / 9 วิชาสามัญ', ico:'🎯', c:'#9b5de5', topics:null},
 };
 const gradeOf = t => ['m4','m5','m6'].find(k=>LEVELS[k].topics.includes(t));
 const ERR = {
@@ -657,6 +677,7 @@ const ERR = {
   trend:    {name:'แนวโน้มตารางธาตุสลับทิศ', ic:'↗', tip:'ขนาดอะตอม: ลงล่างใหญ่ขึ้น ไปทางขวาเล็กลง · IE และ EN: ทิศตรงข้ามกับขนาด · ไอออนที่มี e⁻ เท่ากัน โปรตอนมากยิ่งเล็ก'},
   oxnum:    {name:'เลขออกซิเดชันผิด', ic:'±n', tip:'ผลรวมเลขออกซิเดชัน = ประจุของสาร · O = −2, H = +1, หมู่ 1 = +1 · ธาตุอิสระ = 0 · ตอบค่า “ต่ออะตอม” ไม่ใช่ผลรวม'},
   halflife: {name:'คำนวณครึ่งชีวิตผิด', ic:'½ⁿ', tip:'n = t ÷ T½ แล้ว N = N₀(½)ⁿ · “สลายไป 7/8” = “เหลือ 1/8” · ย้อนหาค่าเริ่มต้นต้อง “คูณ” 2ⁿ'},
+  exam:     {name:'ตอบผิด (ข้อสอบจริง)', ic:'✗', tip:'อ่านแนวคิดในเฉลยของข้อนั้น แล้วลองทำข้อสอบปีอื่นที่ออกเรื่องเดียวกัน'},
   sigfig:   {name:'เลขนัยสำคัญ / การปัดเลขผิด', ic:'s.f', tip:'บวก-ลบดู “ทศนิยม” น้อยสุด · คูณ-หารดู “จำนวนตัว” น้อยสุด · ปัดเลข 5 พอดี: ตัวหน้าคี่ปัดขึ้น คู่ตัดทิ้ง · เลขนับไม่จำกัด'},
   calc:     {name:'คำนวณพลาด (รูปแบบอื่น)',   ic:'±',  tip:'ประมาณคำตอบคร่าวๆ ก่อนคิดละเอียด และทดทีละขั้นบนกระดาษ จะจับเลขผิดได้ง่ายขึ้น'},
   skip:     {name:'ไม่ได้ตอบ',               ic:'—',  tip:'บริหารเวลา: ข้ามข้อที่ติดไปก่อน แล้วกลับมาทำทีหลัง'},
@@ -2676,6 +2697,34 @@ const PAT_LINK = {
   'multistep':[539,540,541,542,543,544,545,546,547],
   'def-amu':[401], 'mol-stmt':[423], 'prep-sol':[475], 'colli-concept':[480,481], 'open-sys':[486,487], 'chem-laws':[496,497],
 };
+/* ---- real A-Level / 9 วิชาสามัญ papers (exam/exam-data.js, built by tools/build-exams.py) ----
+   Each question is the original page image with 5 numbered choices (or a number to fill in);
+   the answer and explanation come from the เคมีพี่สกาย answer key. */
+const EXAM_SETS = typeof EXAMS!=='undefined' ? EXAMS : [];
+// Topic is guessed from keywords in the explanation, only for the "weak topics" panel.
+const EXAM_TOPIC_RULES = [
+  ['nuclear',/ครึ่งชีวิต|กัมมันต|สลายตัวให้|อนุภาคแอลฟา|บีตา|แกมมา/], ['polymer',/พอลิเมอร์|มอนอเมอร์|พลาสติก|ยาง/],
+  ['organic',/ไอโซเมอร์|แอลคีน|แอลเคน|แอลไคน์|เอสเทอร์|เอมีน|เอไมด์|อะโรมาติก|IUPAC|เบนซีน|แอลกอฮอล์|คาร์บอกซิ|-ol\b|-ene\b|ไฮโดรคาร์บอน|กรดอะมิโน|โปรตีน|ไขมัน|คาร์โบไฮเดรต/],
+  ['redox',/E°|แคโทด|แอโนด|รีดอกซ์|เลขออกซิเดชัน|ออกซิไดซ์|รีดิวซ์|เซลล์|ชุบ|กัดกร่อน/],
+  ['acid',/pH|pOH|กรด|เบส|บัฟเฟอร์|ไทเทรต|อินดิเคเตอร์|Ka\b|Kb\b/], ['eq',/สมดุล|K =|Kc|Kp|เลอชาเตอลิเอ/],
+  ['rate',/อัตรา|ตัวเร่ง|พลังงานก่อกัมมันต์/], ['gas',/แก๊ส|PV|ความดัน|แพร่|R = /],
+  ['conc',/mol\/dm|mol\/kg|ppm|ppb|โมแลล|จุดเดือด|จุดเยือกแข็ง|ความเข้มข้น|M\b/],
+  ['stoich',/สารกำหนดปริมาณ|ผลได้ร้อยละ|ตามทฤษฎี|ดุลสมการ/], ['mol',/mol|โมล|มวลต่อโมล|สูตรเอมพิริคัล|ร้อยละโดยมวล/],
+  ['bond',/พันธะ|รูปร่าง|มีขั้ว|ไม่มีขั้ว|แรงยึดเหนี่ยว|โครงผลึก|ไฮโดรเจน/],
+  ['period',/IE|พลังงานไอออไนเซชัน|อิเล็กโทรเนกาติวิตี|ขนาดอะตอม|หมู่|คาบ|แทรนซิชัน|แฮโลเจน/],
+  ['atom',/อิเล็กตรอน|ระดับพลังงาน|ออร์บิทัล|โปรตอน|นิวตรอน|ไอโซโทป|สเปกตรัม/],
+];
+const guessTopic = exp => (EXAM_TOPIC_RULES.find(([,re])=>re.test(exp))||['stoich'])[0];
+const EXQ = EXAM_SETS.flatMap((s,si)=>s.q.map(x=>{
+  const base={id:30000+si*100+x.no, exam:s.id, examName:s.name, no:x.no, fixedOrder:true, src:`${s.name} ข้อ ${x.no}`,
+    topic:guessTopic(x.exp), kind:x.type==='num'||/[=÷×]/.test(x.exp)?'calc':'concept', sim:.5,
+    short:`${s.name} ข้อ ${x.no}`, steps:[x.exp],
+    text:`<img class="qimg" src="${x.img}" width="${x.w}" height="${x.h}" loading="lazy" alt="โจทย์ ${s.name} ข้อ ${x.no}">`};
+  if(x.type==='num') return {...base, type:'num', answer:parseFloat(x.ans), ansText:x.ans, unit:'', tol:.01, numErr:[]};
+  return {...base, type:'mc', choices:[1,2,3,4,5].map(n=>String(n)===x.ans ? {t:String(n), ok:1}
+    : {t:String(n), err:'exam', why:'ดูแนวคิดในเฉลยของข้อนี้'})};
+}));
+Q.push(...EXQ);
 const QBY = Object.fromEntries(Q.map(q=>[q.id,q]));
 Object.entries(PAT_LINK).forEach(([p,ids])=>ids.forEach(id=>{ if(QBY[id] && !QBY[id].alevel) QBY[id].pat=p; }));
 const KEYS = ['ก','ข','ค','ง'];
@@ -2722,17 +2771,32 @@ $('#cntE').textContent=Object.keys(ERR).filter(k=>k!=='calc'&&k!=='skip').length
 const ALEVEL_IDS = Q.filter(q=>q.alevel).map(q=>q.id);
 let LV='m4', SEL=new Set(LEVELS.m4.topics), SIZE='10';
 
-// Grade levels use the regular bank of the chosen topics; A-Level draws from everything.
+const EXAM_IDS = EXQ.map(q=>q.id);
+// Grade levels use the regular bank of the chosen topics; the A-Level level uses the real papers
+// (topics = the selected paper ids, or every paper when none is given).
 function poolFor(lv, topics){
-  if(lv==='alevel') return Q.map(q=>q.id);
-  return Q.filter(q=>!q.alevel && topics.includes(q.topic)).map(q=>q.id);
+  if(lv==='alevel'){ const sets=(topics||[]).filter(t=>EXAM_SETS.some(s=>s.id===t));
+    return EXQ.filter(q=>!sets.length || sets.includes(q.exam)).map(q=>q.id); }
+  return Q.filter(q=>!q.alevel && !q.exam && topics.includes(q.topic)).map(q=>q.id);
 }
 function groupByPattern(pool){ const g={}; pool.forEach(id=>{ const k=patOf(QBY[id]); (g[k]=g[k]||[]).push(id); }); return g; }
 const patCount = pool => Object.keys(groupByPattern(pool)).length;
+const MIX_MC=30, MIX_NUM=5;   // the A-Level paper format since 2566
 function sizeOpts(lv, pool){
   const np=patCount(pool);
-  if(lv==='alevel') return [['aonly',`เฉพาะโจทย์แนว A-Level (${ALEVEL_IDS.length})`],['20','ผสมทุกบท 20 ข้อ'],['all',`ทุกรูปแบบ ${np} ข้อ`]];
+  if(lv==='alevel'){ const s=EXAM_SETS.find(x=>SEL.has(x.id));
+    return [['year', s?`ทำทั้งชุด ${s.name} (${s.q.length} ข้อ)`:'เลือกปีด้านบนก่อน'],
+      ['mix',`คละปีแบบสนามจริง ${MIX_MC+MIX_NUM} ข้อ`],['mix20','คละปี 20 ข้อ'],['aonly',`โจทย์ท้าทายจากชีท (${ALEVEL_IDS.length})`]]; }
   return [['10','สุ่ม 10 ข้อ'],['20','สุ่ม 20 ข้อ']].filter(o=>+o[0]<np).concat([['all',`ครบทุกรูปแบบ ${np} ข้อ`]]);
+}
+// Real-paper sets: a whole year in paper order, or a mix across years that prefers unseen questions.
+function pickExam(size, topics){
+  if(size==='aonly') return shuffle(ALEVEL_IDS);
+  if(size==='year'){ const sid=(topics||[])[0]; return EXQ.filter(q=>q.exam===sid).sort((a,b)=>a.no-b.no).map(q=>q.id); }
+  const seen=seenCounts(), fresh=list=>shuffle(list).sort((a,b)=>(seen[a]||0)-(seen[b]||0));
+  const mc=fresh(EXQ.filter(q=>q.type==='mc').map(q=>q.id)), num=fresh(EXQ.filter(q=>q.type==='num').map(q=>q.id));
+  if(size==='mix20') return shuffle(fresh(EXAM_IDS).slice(0,20)).sort((a,b)=>(QBY[a].type==='num')-(QBY[b].type==='num'));
+  return [...shuffle(mc.slice(0,MIX_MC)), ...shuffle(num.slice(0,MIX_NUM))];   // multiple choice first, then fill-in, like the paper
 }
 function seenCounts(){ const m={}; loadHist().forEach(r=>Object.keys(r.per).forEach(id=>{ m[id]=(m[id]||0)+1; })); return m; }
 // One question per pattern; within a pattern prefer the variant this browser has seen least.
@@ -2741,8 +2805,8 @@ function chooseVariant(ids, seen){
   return c[Math.floor(Math.random()*c.length)];
 }
 // Round-robin over topics so every topic shows up before any topic repeats.
-function pickSet(lv, pool, size){
-  if(size==='aonly') return shuffle(ALEVEL_IDS);
+function pickSet(lv, pool, size, topics){
+  if(lv==='alevel') return pickExam(size, topics);
   const seen=seenCounts(), groups=groupByPattern(pool), pats=Object.keys(groups);
   const one = k => chooseVariant(groups[k], seen);
   if(size==='all'){ const ids=pats.map(one);
@@ -2769,17 +2833,18 @@ function lastOf(lv){ const h=loadHist().filter(r=>r.meta&&r.meta.lv===lv); retur
 
 function renderLevels(){
   $('#levels').innerHTML=Object.entries(LEVELS).map(([k,L])=>{
-    const ids = k==='alevel' ? ALEVEL_IDS : poolFor(k, L.topics);
+    const ids = k==='alevel' ? EXAM_IDS : poolFor(k, L.topics);
     const last=lastOf(k);
     const meta = k==='alevel'
-      ? `<span>${ALEVEL_IDS.length} ข้อแนว A-Level</span><span>+ ผสมทุกบท</span>`
+      ? `<span>ข้อสอบจริง ${EXAM_SETS.length} ปี</span><span>${EXAM_IDS.length} ข้อ · 5 ตัวเลือก</span>`
       : `<span>${L.topics.length} เรื่อง</span><span>${patCount(ids)} รูปแบบ · ${ids.length} ข้อ</span>`;
     return `<button class="lv ${k==='alevel'?'alv':''} ${k===LV?'sel':''}" style="--c:${L.c}" data-lv="${k}" role="tab" aria-selected="${k===LV}">
       <span class="ico">${L.ico}</span><span class="big">${L.name}</span><small>${L.full}</small>
       <div class="meta">${meta}${last?`<span>ล่าสุด ${last.score}/${last.total}</span>`:''}</div></button>`;
   }).join('');
   $('#levels').querySelectorAll('.lv').forEach(b=>b.onclick=()=>{
-    LV=b.dataset.lv; SEL=new Set(LEVELS[LV].topics||[]); SIZE = LV==='alevel'?'aonly':'10';
+    LV=b.dataset.lv; SEL=new Set(LV==='alevel' ? (EXAM_SETS.length?[EXAM_SETS[EXAM_SETS.length-1].id]:[]) : LEVELS[LV].topics);
+    SIZE = LV==='alevel' ? (EXAM_SETS.length?'year':'aonly') : '10';
     renderLevels(); renderLevelBody();
   });
 }
@@ -2787,18 +2852,25 @@ function renderLevelBody(){
   const L=LEVELS[LV], B=$('#levelBody');
   $('#crLevel').textContent=L.name;
   if(LV==='alevel'){
-    B.innerHTML=`<div class="lvbar"><h2>🎯 แนวข้อสอบ A-Level</h2></div>
-      <div class="card ainfo">
-        <div><h3>โจทย์หลายขั้น ข้ามบท</h3>
-          <p>รวมโจทย์ที่ต้องใช้หลายแนวคิดในข้อเดียว เช่น ICE table, pH หลังผสมกรด-เบส, E°cell, PV = nRT, สูตรเอมพิริคัลจากผลการเผาไหม้</p>
-          <ul><li>“เฉพาะโจทย์แนว A-Level” — ฝึกโจทย์ยากล้วน</li><li>“ผสมทุกบท 20 ข้อ” — โจทย์ A-Level ทั้งหมด + สุ่มเติมจาก ม.4–ม.6 แบบจำลองสนามสอบ</li></ul></div>
-        <div class="tps">${[...new Set(ALEVEL_IDS.map(id=>QBY[id].topic))].map(t=>`<span class="tp" style="--c:${TOPICS[t].c}">${tileHTML(t)}${TOPICS[t].name}</span>`).join('')}</div>
-      </div>`;
+    const hist=loadHist();
+    B.innerHTML=`<div class="lvbar"><h2>🎯 ข้อสอบจริง A-Level / 9 วิชาสามัญ</h2></div>
+      <p class="lead" style="margin:-4px 0 12px;color:var(--muted)">9 วิชาสามัญ คือชื่อเดิมของ A-Level · ปรนัย 5 ตัวเลือก ตอบด้วยหมายเลข 1–5 เหมือนกระดาษคำตอบจริง · ปี 2564 ขึ้นไปมีข้อเติมตัวเลข</p>
+      <div class="tgrid">${EXAM_SETS.map(s=>{
+        const nn=s.q.filter(x=>x.type==='num').length, runs=hist.filter(r=>r.meta&&r.meta.lv==='alevel'&&r.meta.size==='year'&&(r.meta.topics||[])[0]===s.id);
+        const last=runs[runs.length-1], best=runs.length?Math.max(...runs.map(r=>pct(r.score,r.total))):null;
+        return `<button class="tcard exam" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'}" data-set="${s.id}" aria-pressed="${SEL.has(s.id)}">
+          <span class="tile" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'};width:58px;height:52px;font-size:17px"><small>${s.id[0]==='a'?'A-L':'9สามัญ'}</small>${String(s.year).slice(2)}</span>
+          <div class="info"><h4>${s.name}</h4><div class="sub">${s.q.length} ข้อ${nn?` (ปรนัย ${s.q.length-nn} · เติมตัวเลข ${nn})`:' ปรนัย'}</div>
+          <div class="sub">${last?`ล่าสุด ${last.score}/${last.total} · ดีที่สุด ${best}%`:'ยังไม่เคยทำ'}</div></div>
+          <span class="chk" aria-hidden="true">✓</span></button>`;
+      }).join('')}</div>
+      <p class="note" style="margin-top:10px">ข้อสอบจากชุด “ข้อสอบจริง จัดหน้าใหม่” และเฉลยพร้อมแนวคิดของเคมีพี่สกาย · ปี 2562, 2567, 2568 ยังไม่มีในคลัง</p>`;
+    B.querySelectorAll('.tcard.exam').forEach(b=>b.onclick=()=>{ SEL=new Set([b.dataset.set]); SIZE='year'; renderLevelBody(); });
   } else {
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
         <span style="display:flex;gap:8px"><button class="btn ghost" id="selAll">เลือกทั้งหมด</button><button class="btn ghost" id="selNone">ล้าง</button></span></div>
       <div class="tgrid">${L.topics.map(t=>{
-        const tq=Q.filter(q=>q.topic===t&&!q.alevel), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
+        const tq=Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
         return `<button class="tcard" style="--c:${T.c}" data-t="${t}" aria-pressed="${SEL.has(t)}" ${n?'':'disabled'}>
           ${tileHTML(t)}<div class="info"><h4>${T.name}</h4>
           <div class="sub">บทที่ ${T.ch} · ${np<n?`${np} รูปแบบ (${n} ข้อ)`:`${n} ข้อ`} ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
@@ -2818,12 +2890,19 @@ function renderStart(){
   $('#sizeSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ SIZE=b.dataset.size; renderStart(); });
   const np=patCount(pool);
   const sc=$('#selCount'); if(sc) sc.textContent=`เลือก ${SEL.size}/${LEVELS[LV].topics.length} เรื่อง · ${np} รูปแบบ (${pool.length} ข้อ)`;
-  const n = SIZE==='aonly'?ALEVEL_IDS.length : SIZE==='all'?np : Math.min(+SIZE,np);
-  const scope = LV==='alevel' ? 'A-Level' : `${LEVELS[LV].name} · ${SEL.size} เรื่อง`;
-  $('#startSummary').innerHTML = pool.length
-    ? `<b>${scope}</b> · ${n} ข้อ · ${MODE==='exam'?'โหมดสอบ':'โหมดฝึก'}<br><span style="font-size:14px">ทุกข้อให้เลือกความมั่นใจด้วย — ระบบแยกข้อที่ “เดาถูก” กับ “มั่นใจแต่เข้าใจผิด”</span>`
-    : 'เลือกอย่างน้อย 1 เรื่องก่อนเริ่ม';
-  $('#startBtn').disabled=!pool.length;
+  const exSet = LV==='alevel' ? EXAM_SETS.find(s=>SEL.has(s.id)) : null;
+  const n = SIZE==='aonly'?ALEVEL_IDS.length : SIZE==='year'?(exSet?exSet.q.length:0) : SIZE==='mix'?Math.min(MIX_MC+MIX_NUM,EXAM_IDS.length)
+    : SIZE==='mix20'?Math.min(20,EXAM_IDS.length) : SIZE==='all'?np : Math.min(+SIZE,np);
+  const scope = LV!=='alevel' ? `${LEVELS[LV].name} · ${SEL.size} เรื่อง`
+    : SIZE==='year' ? `ข้อสอบจริง ${exSet?exSet.name:''}` : SIZE==='aonly' ? 'โจทย์ท้าทายจากชีท' : 'ข้อสอบจริงคละปี';
+  const tip = LV==='alevel' && SIZE!=='aonly'
+    ? (SIZE==='year' ? 'เรียงข้อตามสนามจริง · จับเวลาเหมือนสอบจริง แล้วดูเฉลยพร้อมแนวคิดตอนส่ง' : 'สุ่มข้อจากทุกปี เลือกข้อที่ยังไม่เคยทำก่อน · ปรนัยก่อน แล้วตามด้วยข้อเติมตัวเลข เหมือนข้อสอบจริง')
+    : 'ทุกข้อให้เลือกความมั่นใจด้วย — ระบบแยกข้อที่ “เดาถูก” กับ “มั่นใจแต่เข้าใจผิด”';
+  const ok = n>0 && (LV==='alevel' ? (SIZE!=='year' || exSet) : pool.length);
+  $('#startSummary').innerHTML = ok
+    ? `<b>${scope}</b> · ${n} ข้อ · ${MODE==='exam'?'โหมดสอบ':'โหมดฝึก'}<br><span style="font-size:14px">${tip}</span>`
+    : (LV==='alevel' ? 'เลือกปีของข้อสอบก่อนเริ่ม' : 'เลือกอย่างน้อย 1 เรื่องก่อนเริ่ม');
+  $('#startBtn').disabled=!ok;
   const last=lastOf(LV); $('#lastResultBtn').hidden=!last;
 }
 function openSubject(){ renderLevels(); renderLevelBody(); show('subject'); }
@@ -2832,7 +2911,7 @@ $('#chemCard').onclick=openSubject;
 $('#backHome').onclick=$('#crHome').onclick=()=>{ refreshHome(); show('home'); };
 $('#startBtn').onclick=()=>{
   const topics=[...SEL];
-  startQuiz(MODE, pickSet(LV, poolFor(LV,topics), SIZE), {lv:LV, topics, size:SIZE});
+  startQuiz(MODE, pickSet(LV, poolFor(LV,topics), SIZE, topics), {lv:LV, topics, size:SIZE});
 };
 $('#lastResultBtn').onclick=()=>{ const r=lastOf(LV); if(r) renderResult(r); };
 $('#ptable').innerHTML = PT.map(([s,m])=>`<div class="pt"><b>${s}</b><span>${m}</span></div>`).join('');
@@ -2842,7 +2921,8 @@ refreshHome();
 let S=null, tick=null;
 function startQuiz(mode, ids, meta){
   S={mode, ids, meta, i:0, ans:{}, perm:{}, draw:{}, drawSize:{}, t0:Date.now(), qT:Date.now(), done:false};
-  ids.forEach(id=>{ const q=QBY[id]; if(q.type==='mc') S.perm[id]=shuffle(q.choices.map((_,i)=>i)); S.ans[id]={conf:0,time:0}; });
+  // real-paper questions keep choice order 1–5 because the choices are printed in the image
+  ids.forEach(id=>{ const q=QBY[id]; if(q.type==='mc') S.perm[id]=q.fixedOrder ? q.choices.map((_,i)=>i) : shuffle(q.choices.map((_,i)=>i)); S.ans[id]={conf:0,time:0}; });
   $('#scratch').value='';
   $('#submitTop').hidden = mode==='practice';
   clearInterval(tick); tick=setInterval(()=>{$('#timer').textContent=fmtT((Date.now()-S.t0)/1000)},500);
@@ -2875,7 +2955,14 @@ function renderQ(){
   const card=$('#qcard'); card.style.setProperty('--c',T.c);
   const lock=locked(id);
   let body='';
-  if(q.type==='mc'){
+  if(q.type==='mc' && q.exam){
+    // answer-sheet bubbles 1–5; the choices themselves are in the question image
+    body=`<div class="bubbles" role="radiogroup" aria-label="ระบายคำตอบ">${q.choices.map((c,oi)=>{
+      let cls='bubble'; if(a.choice===oi) cls+=' sel';
+      if(lock){ if(c.ok) cls+=' right'; else if(a.choice===oi) cls+=' wrong'; }
+      return `<button class="${cls}" role="radio" aria-checked="${a.choice===oi}" aria-label="ตัวเลือก ${c.t}" data-oi="${oi}" ${lock?'disabled':''}>${c.t}</button>`;
+    }).join('')}</div>`;
+  } else if(q.type==='mc'){
     body=`<div class="choices" role="radiogroup" aria-label="ตัวเลือก">${S.perm[id].map((oi,k)=>{
       const c=q.choices[oi]; let cls='choice';
       if(a.choice===oi) cls+=' sel';
@@ -2884,9 +2971,9 @@ function renderQ(){
     }).join('')}</div>`;
   } else {
     let cls='numbox'; if(lock) cls+= a.g.correct?' right':' wrong';
-    body=`<div class="numrow"><label class="${cls}"><input id="numIn" inputmode="decimal" autocomplete="off" placeholder="พิมพ์คำตอบ" value="${a.value??''}" ${lock?'disabled':''} aria-label="คำตอบตัวเลข"><span>${q.unit}</span></label>
+    body=`<div class="numrow"><label class="${cls}"><input id="numIn" inputmode="decimal" autocomplete="off" placeholder="${q.exam?'ระบายตัวเลขคำตอบ':'พิมพ์คำตอบ'}" value="${a.value??''}" ${lock?'disabled':''} aria-label="คำตอบตัวเลข"><span>${q.unit}</span></label>
       ${S.mode==='practice' && !lock ? `<button class="btn primary" id="checkBtn">ตรวจคำตอบ</button>`:''}</div>
-      <div class="hint">ตอบเป็นตัวเลข เช่น 0.5 หรือ 2.5e-3 · ยอมให้คลาดเคลื่อน ±${(q.tol||0.03)*100}%</div>`;
+      <div class="hint">${q.exam?'ข้อเติมตัวเลข · ตอบตามที่โจทย์กำหนด (ยอมคลาดเคลื่อน ±1%)':`ตอบเป็นตัวเลข เช่น 0.5 หรือ 2.5e-3 · ยอมให้คลาดเคลื่อน ±${(q.tol||0.03)*100}%`}</div>`;
   }
   const isLast=S.i===n-1;
   const drawn=(S.draw[id]||[]).length>0;
@@ -2894,8 +2981,9 @@ function renderQ(){
     <button class="drawbtn ${drawn?'has':''}" id="drawBtn" aria-label="เปิดกระดาษทดแบบเขียน">✏️ ${drawn?'ทดแล้ว':'ทดเลข'}</button>
     <div class="qhead">${tileHTML(q.topic)}
       <div class="meta"><span class="topic">${T.name}</span>
-        <div class="badges"><span class="badge ${q.kind==='calc'?'calc':''}">${q.kind==='calc'?'🧮 โจทย์คำนวณ':'💡 ความเข้าใจ'}</span><span class="badge">${LEVELS[gradeOf(q.topic)].name}</span>${q.alevel?'<span class="badge calc">🎯 แนว A-Level</span>':''}</div></div></div>
-    <div class="qtext">${q.text}</div>
+        <div class="badges">${q.exam?`<span class="badge calc">🎯 ${q.examName} ข้อ ${q.no}</span>${q.type==='num'?'<span class="badge">✏️ เติมตัวเลข</span>':''}`
+          :`<span class="badge ${q.kind==='calc'?'calc':''}">${q.kind==='calc'?'🧮 โจทย์คำนวณ':'💡 ความเข้าใจ'}</span><span class="badge">${LEVELS[gradeOf(q.topic)].name}</span>${q.alevel?'<span class="badge calc">🎯 แนว A-Level</span>':''}`}</div></div></div>
+    <div class="qtext">${q.exam?`<div class="qimgwrap" id="qimgWrap">${q.text}</div><div class="zoomhint">แตะรูปเพื่อขยาย / ย่อ</div>`:q.text}</div>
     ${body}
     <div class="conf"><span>ความมั่นใจ</span>
       <div class="seg" role="radiogroup" aria-label="ความมั่นใจ">${[['1','🎲 เดา'],['2','🤔 พอได้'],['3','💪 มั่นใจ']].map(([v,l])=>`<button data-conf="${v}" class="${a.conf==v?'on':''}" role="radio" aria-checked="${a.conf==v}" ${lock?'disabled':''}>${l}</button>`).join('')}</div></div>
@@ -2909,7 +2997,8 @@ function renderQ(){
   if(lock) showFeedback(q,a);
 
   $('#drawBtn').onclick=()=>openPad(id);
-  card.querySelectorAll('.choice').forEach(b=>b.onclick=()=>pick(+b.dataset.oi));
+  const zw=$('#qimgWrap'); if(zw) zw.onclick=()=>zw.classList.toggle('zoomed');
+  card.querySelectorAll('.choice,.bubble').forEach(b=>b.onclick=()=>pick(+b.dataset.oi));
   card.querySelectorAll('[data-conf]').forEach(b=>b.onclick=()=>{ a.conf=+b.dataset.conf; card.querySelectorAll('[data-conf]').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-checked',x===b)}); });
   const ni=$('#numIn'); if(ni){ ni.oninput=()=>{ a.value=ni.value; updateChrome(); }; ni.onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); if(S.mode==='practice'&&!lock) check(); else next(); } }; }
   const cb=$('#checkBtn'); if(cb) cb.onclick=check;
@@ -2930,7 +3019,7 @@ function check(){
 }
 function showFeedback(q,a){
   const fb=$('#fb'), g=a.g;
-  const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.answer} ${q.unit}`;
+  const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.ansText??q.answer} ${q.unit}`;
   fb.className='feedback on '+(g.correct?'ok':'bad');
   fb.innerHTML = g.correct
     ? `<h4>✓ ถูกต้อง</h4><ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`
@@ -2973,7 +3062,7 @@ document.addEventListener('keydown',e=>{
   if(!$('#quiz').classList.contains('on') || $('#dlg').open || $('#cfgDlg').open || $('#pad').classList.contains('on')) return;
   if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   const id=S.ids[S.i], q=QBY[id];
-  const k='1234'.indexOf(e.key);
+  const k=(q.exam?'12345':'1234').indexOf(e.key);
   if(k>=0 && q.type==='mc' && S.perm[id][k]!=null){ pick(S.perm[id][k]); }
   else if(e.key==='ArrowRight') { if(S.i<S.ids.length-1) go(S.i+1); }
   else if(e.key==='ArrowLeft') go(S.i-1);
@@ -3263,8 +3352,11 @@ function renderResult(rec){
   show('result');
   // records saved before levels existed have no meta → treat them as the whole bank
   const m = rec.meta || {lv:'alevel', topics:[], size:'all'};
-  const scopeLabel = !rec.meta ? 'ทุกบท' : m.lv==='alevel' ? 'แนว A-Level' : `${LEVELS[m.lv].name} · ${m.topics.map(t=>TOPICS[t].name).join(', ')}`;
-  const scopeIds = new Set(m.size==='aonly' ? ALEVEL_IDS : poolFor(m.lv, m.topics));
+  const examName = m.lv==='alevel' && m.size==='year' ? (EXAM_SETS.find(s=>s.id===(m.topics||[])[0])||{}).name : null;
+  const scopeLabel = !rec.meta ? 'ทุกบท' : m.lv!=='alevel' ? `${LEVELS[m.lv].name} · ${m.topics.map(t=>TOPICS[t]?.name||t).join(', ')}`
+    : m.size==='aonly' ? 'โจทย์ท้าทายจากชีท' : examName ? `ข้อสอบจริง ${examName}` : 'ข้อสอบจริงคละปี';
+  const scopeIds = new Set(m.size==='aonly' ? ALEVEL_IDS : m.lv==='alevel' && m.size==='year' ? poolFor('alevel', m.topics)
+    : m.lv==='alevel' ? EXAM_IDS : poolFor(m.lv, m.topics));
   const scopeQ = Q.filter(q=>scopeIds.has(q.id));
   const ids=Object.keys(rec.per).map(Number);
   const P=rec.per, total=rec.total, score=rec.score;
@@ -3439,7 +3531,7 @@ function renderResult(rec){
   // review
   $('#reviewList').innerHTML=ids.map((id,k)=>{
     const q=QBY[id], x=P[id], cls=x.c?'r':(x.err==='skip'?'s':'w');
-    const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.answer} ${q.unit}`;
+    const right = q.type==='mc' ? q.choices.find(c=>c.ok).t : `${q.ansText??q.answer} ${q.unit}`;
     const mine = q.type==='mc' ? (x.choice!=null?q.choices[x.choice].t:'—') : (x.value?`${x.value} ${q.unit}`:'—');
     const conf=['ไม่ระบุ','เดา','พอได้','มั่นใจ'][x.conf];
     return `<details class="ritem" id="rv${id}" ${!x.c?'':''}>
@@ -3463,7 +3555,7 @@ function renderResult(rec){
   };
   $('#homeBtn').onclick=()=>{ refreshHome(); show('home'); };
   $('#homeBtn2').onclick=()=>{ if(m){ LV=m.lv; SEL=new Set(m.topics); SIZE=m.size; } openSubject(); };
-  $('#retryAll').onclick=()=>startQuiz(rec.mode, pickSet(m.lv, poolFor(m.lv,m.topics), m.size), m);
+  $('#retryAll').onclick=()=>startQuiz(rec.mode, pickSet(m.lv, poolFor(m.lv,m.topics), m.size, m.topics), m);
   // retry the patterns I got wrong with a different question of the same pattern
   const rw=$('#retryWrong'); if(rw) rw.onclick=()=>startQuiz('practice', [...new Set(ids.filter(id=>!P[id].c).map(siblingOf))], m);
 }
