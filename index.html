@@ -329,6 +329,24 @@ sub,sup{font-size:.72em;line-height:0}
 .rec p{margin:0;font-size:14px;color:var(--soft)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0 60px}
 
+/* ---------- PROGRESS ---------- */
+.prog{margin-top:18px}
+.prog .pp{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0 14px;color:var(--soft)}
+.prog .pp b{font:700 32px "JetBrains Mono";color:var(--ink)}
+.delta{font:700 14px "JetBrains Mono";padding:3px 10px;border-radius:99px}
+.delta.up{background:var(--ok-bg);color:var(--ok)} .delta.down{background:var(--bad-bg);color:var(--bad)} .delta.eq{background:var(--bg2);color:var(--soft)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pbox{border-radius:14px;padding:12px;background:var(--surface2);border:1px solid var(--line)}
+.pbox b{display:block;font:700 24px "JetBrains Mono"}
+.pbox span{font-size:13px;color:var(--soft)}
+.pbox.up{background:var(--ok-bg)} .pbox.still{background:var(--warn-bg)} .pbox.down{background:var(--bad-bg)}
+.pbox .ids{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.pbox .ids button{border:1px solid var(--line);background:var(--surface);border-radius:8px;font:600 12px "JetBrains Mono";padding:3px 7px;min-height:28px}
+.trend{display:flex;align-items:flex-end;gap:8px;height:80px;margin-top:22px}
+.trend i{flex:1;max-width:48px;background:var(--bg2);border-radius:8px 8px 0 0;position:relative}
+.trend i.cur{background:var(--accent)}
+.trend i span{position:absolute;top:-18px;left:0;right:0;text-align:center;font:600 11px "JetBrains Mono";color:var(--soft)}
+@media (max-width:575px){.pgrid{grid-template-columns:1fr 1fr}}
 /* ---------- DRAW PAD ---------- */
 .drawbtn{position:absolute;top:18px;right:18px;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 12px;min-height:40px;font-size:14px;display:inline-flex;gap:6px;align-items:center}
 .drawbtn:hover{border-color:var(--c)}
@@ -2312,7 +2330,340 @@ const CH4 = [
   steps:['สมมติ 100 g : C 4.545 : H 9.09 : O 2.273 = 2 : 4 : 1 → C₂H₄O (44)','MW = 352.0 ÷ (89.60 ÷ 22.4) = 88.0 → C₄H₈O₂','4 + 8 + 2 = 14']},
 ].map(mc);
 Q.push(...CH1, ...CH2, ...CH4);
+
+/* =====================================================================
+   PATTERNS — questions that test the same skill share a `pat` key.
+   A quiz uses at most one question per pattern, and a retake prefers a
+   variant the student has not seen, so progress is measured on the skill
+   rather than on a remembered answer.
+   ===================================================================== */
+const patOf = q => q.pat || ('q'+q.id);
+
+/* ---- number-randomizing templates (ch.4): each yields fixed, reproducible variants ---- */
+const AM={H:1,C:12,N:14,O:16,Na:23,Mg:24,Al:27,S:32,Cl:35.5,K:39,Ca:40,Fe:56,Cu:63.5,Zn:65};
+const AZ={H:1,C:6,N:7,O:8,Na:11,Mg:12,Al:13,S:16,Cl:17,K:19,Ca:20,Fe:26,Cu:29,Zn:30};
+const CP={'H₂O':{H:2,O:1},'CO₂':{C:1,O:2},'NH₃':{N:1,H:3},'CH₄':{C:1,H:4},'NaCl':{Na:1,Cl:1},'NaOH':{Na:1,O:1,H:1},
+  'KOH':{K:1,O:1,H:1},'CaCO₃':{Ca:1,C:1,O:3},'CaO':{Ca:1,O:1},'H₂SO₄':{H:2,S:1,O:4},'C₆H₁₂O₆':{C:6,H:12,O:6},
+  'MgO':{Mg:1,O:1},'Al₂O₃':{Al:2,O:3},'Fe₂O₃':{Fe:2,O:3},'KCl':{K:1,Cl:1},'KClO₃':{K:1,Cl:1,O:3},'C₂H₅OH':{C:2,H:6,O:1},
+  'SO₂':{S:1,O:2},'SO₃':{S:1,O:3},'CuSO₄':{Cu:1,S:1,O:4},'Na₂CO₃':{Na:2,C:1,O:3},'C₃H₈':{C:3,H:8},'HCl':{H:1,Cl:1},
+  'MgCl₂':{Mg:1,Cl:2},'CaCl₂':{Ca:1,Cl:2},'ZnCl₂':{Zn:1,Cl:2},'AlCl₃':{Al:1,Cl:3},'FeS':{Fe:1,S:1},'O₂':{O:2},'N₂':{N:2},
+  'H₂':{H:2},'Cl₂':{Cl:2},'CO':{C:1,O:1},'Mg':{Mg:1},'Zn':{Zn:1},'Al':{Al:1},'Fe':{Fe:1},'S':{S:1},'Na':{Na:1},
+  'CO(NH₂)₂':{C:1,O:1,N:2,H:4},'C₁₂H₂₂O₁₁':{C:12,H:22,O:11},'HNO₃':{H:1,N:1,O:3},'MgSO₄':{Mg:1,S:1,O:4},'BaCl₂':{Ba:1,Cl:2}};
+AM.Ba=137;
+const Mr = f => Object.entries(CP[f]).reduce((s,[e,n])=>s+AM[e]*n,0);
+const atomsIn = f => Object.values(CP[f]).reduce((s,n)=>s+n,0);
+const NA=6.02e23;
+const SUPD='⁰¹²³⁴⁵⁶⁷⁸⁹';
+const supN = n => (n<0?'⁻':'')+String(Math.abs(n)).split('').map(d=>SUPD[d]).join('');
+function fnum(x, sig=3){
+  if(!isFinite(x)) return '—'; if(x===0) return '0';
+  let e=Math.floor(Math.log10(Math.abs(x)));
+  if(e>=-3 && e<6){ const v=+x.toPrecision(sig); return Math.abs(v)>=10000 ? v.toLocaleString('en-US') : String(v); }
+  let m=+(x/10**e).toPrecision(sig); if(Math.abs(m)>=10){ m=+(m/10).toPrecision(sig); e++; }
+  return `${m}×10${supN(e)}`;
+}
+const REACT=[ // [coef, formula, 'r'|'p', isGas]
+  {sp:[[2,'H₂','r',1],[1,'O₂','r',1],[2,'H₂O','p',0]]},
+  {sp:[[1,'CH₄','r',1],[2,'O₂','r',1],[1,'CO₂','p',1],[2,'H₂O','p',0]]},
+  {sp:[[1,'CaCO₃','r',0],[1,'CaO','p',0],[1,'CO₂','p',1]]},
+  {sp:[[2,'KClO₃','r',0],[2,'KCl','p',0],[3,'O₂','p',1]]},
+  {sp:[[1,'Zn','r',0],[2,'HCl','r',0],[1,'ZnCl₂','p',0],[1,'H₂','p',1]]},
+  {sp:[[1,'N₂','r',1],[3,'H₂','r',1],[2,'NH₃','p',1]]},
+  {sp:[[2,'Mg','r',0],[1,'O₂','r',1],[2,'MgO','p',0]]},
+  {sp:[[1,'C₃H₈','r',1],[5,'O₂','r',1],[3,'CO₂','p',1],[4,'H₂O','p',0]]},
+  {sp:[[4,'Al','r',0],[3,'O₂','r',1],[2,'Al₂O₃','p',0]]},
+  {sp:[[1,'Fe','r',0],[1,'S','r',0],[1,'FeS','p',0]]},
+  {sp:[[2,'Al','r',0],[3,'Cl₂','r',1],[2,'AlCl₃','p',0]]},
+  {sp:[[1,'Mg','r',0],[2,'HCl','r',0],[1,'MgCl₂','p',0],[1,'H₂','p',1]]},
+];
+const eqText = R => { const side=t=>R.sp.filter(s=>s[2]===t).map(([c,f])=>(c>1?c:'')+f).join(' + '); return `${side('r')} → ${side('p')}`; };
+const NICE=[0.1,0.2,0.25,0.4,0.5,1,1.5,2];
+function hashStr(s){ let h=2166136261; for(const ch of s){ h^=ch.codePointAt(0); h=Math.imul(h,16777619); } return h>>>0; }
+function rngFor(pat,k){ const f=mulberry(hashStr(pat)+k*7919); const r=()=>f();
+  r.pick=a=>a[Math.floor(f()*a.length)]; r.int=(a,b)=>a+Math.floor(f()*(b-a+1)); return r; }
+
+const TPL=[];
+function T(pat, topic, sim, short, gen){ TPL.push({pat, topic, sim, short, gen}); }
+
+T('amu','mol',.30,'มวลของธาตุ n อะตอม (กรัม)', r=>{
+  const e=r.pick(['C','N','O','Na','Mg','Al','S','Ca','Fe','Cu']), n=r.pick([1,2,3,4,5,10]), A=AM[e], ans=n*A*1.66e-24;
+  return {text:`ธาตุ ${e} (มวลอะตอม ${A}) จำนวน <b>${n} อะตอม</b> มีมวลกี่กรัม`, ans, unit:'g',
+    wrong:[{v:A*1.66e-24,err:'calc',why:'คิดแค่ 1 อะตอม ลืมคูณจำนวนอะตอม'},{v:n*A*6.02e23,err:'formula',why:'คูณด้วยเลขอาโวกาโดรแทนการหาร'},{v:n*A*1.66e-23,err:'unit',why:'ยกกำลังของ 1.66×10⁻²⁴ ผิด'}],
+    steps:[`มวล 1 อะตอม = ${A} × 1.66×10⁻²⁴ g`,`${n} อะตอม = ${n} × ${A} × 1.66×10⁻²⁴`,`= ${fnum(ans)} g`]};
+});
+T('iso-avg','mol',.38,'มวลอะตอมเฉลี่ยจาก 2 ไอโซโทป', r=>{
+  const a=r.pick([6,10,24,35,63,69,79]), b=a+r.pick([1,2]), p=r.pick([20,25,40,60,75,80,90]), ans=(a*p+b*(100-p))/100;
+  return {text:`ธาตุ X มี 2 ไอโซโทป มวล <b>${a}</b> (ร้อยละ ${p}) และ <b>${b}</b> (ร้อยละ ${100-p}) มวลอะตอมเฉลี่ยของ X เท่ากับเท่าใด`, ans, sig:4,
+    wrong:[{v:(a+b)/2,err:'formula',why:'หาค่าเฉลี่ยธรรมดา ไม่ถ่วงน้ำหนักตามร้อยละ'},{v:(a*(100-p)+b*p)/100,err:'formula',why:'สลับร้อยละของสองไอโซโทป'},{v:a*p+b*(100-p),err:'unit',why:'ลืมหารด้วย 100'}],
+    steps:['มวลเฉลี่ย = Σ(มวล × ร้อยละ) ÷ 100',`= (${a}×${p} + ${b}×${100-p}) ÷ 100`,`= ${fnum(ans,4)}`]};
+});
+T('fmass','mol',.22,'มวลสูตรของสารประกอบ', r=>{
+  const f=r.pick(['Al₂O₃','Fe₂O₃','CaCO₃','H₂SO₄','Na₂CO₃','C₆H₁₂O₆','KClO₃','MgCl₂','CuSO₄','C₂H₅OH','CO(NH₂)₂']);
+  const ans=Mr(f), noSub=Object.keys(CP[f]).reduce((s,e)=>s+AM[e],0), byZ=Object.entries(CP[f]).reduce((s,[e,n])=>s+AZ[e]*n,0);
+  const [e1,n1]=Object.entries(CP[f]).find(([,n])=>n>1)||Object.entries(CP[f])[0];
+  return {text:`มวลสูตรของ <b>${f}</b> เท่ากับเท่าใด`, ans, sig:4,
+    wrong:[{v:noSub,err:'molar',why:'ไม่ได้คูณมวลอะตอมตามตัวห้อย'},{v:byZ,err:'molar',why:'ใช้เลขอะตอมแทนมวลอะตอม'},{v:ans-AM[e1]*(n1-1),err:'molar',why:`นับ ${e1} แค่ 1 อะตอม`}],
+    steps:[Object.entries(CP[f]).map(([e,n])=>`${e} ${n}×${AM[e]}`).join(' + '),`= ${fnum(ans,4)}`]};
+});
+T('elem-mass','mol',.30,'มวลธาตุในสารประกอบ', r=>{
+  const f=r.pick(['CO₂','C₃H₈','Fe₂O₃','H₂O','CaCO₃','Al₂O₃','SO₃','NH₃','C₆H₁₂O₆']);
+  const els=Object.keys(CP[f]), e=r.pick(els), cnt=CP[f][e], n=r.pick([0.1,0.2,0.25,0.5,2]), M=Mr(f), g=n*M, ans=n*cnt*AM[e];
+  return {text:`${f} <b>${fnum(g)} g</b> มีธาตุ ${e} อยู่กี่กรัม`, ans, unit:'g',
+    wrong:[{v:n*AM[e],err:'ratio',why:`ลืมคูณจำนวนอะตอม ${e} (${cnt}) ในสูตร`},{v:cnt*AM[e],err:'skipmol',why:'ใช้มวลของธาตุใน 1 mol แทนมวลสารที่โจทย์ให้'},{v:g-ans,err:'formula',why:'คำนวณเป็นมวลของธาตุอื่นในสาร'}],
+    steps:[`M(${f}) = ${fnum(M,4)} → n = ${fnum(g)} ÷ ${fnum(M,4)} = ${n} mol`,`มี ${e} ${cnt} อะตอมต่อสูตร → ${e} = ${n} × ${cnt} × ${AM[e]}`,`= ${fnum(ans)} g`]};
+});
+T('hydrate','mol',.36,'หาจำนวนน้ำผลึก x', r=>{
+  const s=r.pick([['CuSO₄',5],['MgSO₄',7],['Na₂CO₃',10],['CaCl₂',6],['BaCl₂',2]]), n=r.pick([0.01,0.02,0.05,0.1]);
+  const M=Mr(s[0]), m2=n*M, m1=m2+n*s[1]*18, x=s[1], wSkip=Math.round(((m1-m2)/18)/(m1/M));
+  return {text:`เผา ${s[0]}·xH₂O หนัก <b>${fnum(m1,4)} g</b> จนน้ำระเหยหมด เหลือ ${s[0]} <b>${fnum(m2,4)} g</b> ค่า x เท่ากับเท่าใด`, ans:String(x),
+    wrong:[{v:String(wSkip),err:'skipmol',why:'ใช้มวลไฮเดรตแทนมวลเกลือที่เหลือในการหาโมล'},{v:String(x+1),err:'calc',why:'คำนวณโมลน้ำหรือโมลเกลือคลาดเคลื่อน'},{v:String(x>2?x-1:x+2),err:'calc',why:'คำนวณโมลน้ำหรือโมลเกลือคลาดเคลื่อน'},{v:String(x+3),err:'calc',why:'คำนวณโมลน้ำหรือโมลเกลือคลาดเคลื่อน'}],
+    steps:[`น้ำ = ${fnum(m1,4)} − ${fnum(m2,4)} = ${fnum(m1-m2,4)} g = ${fnum((m1-m2)/18)} mol`,`${s[0]} = ${fnum(m2,4)} ÷ ${fnum(M,4)} = ${n} mol`,`x = ${fnum((m1-m2)/18)} ÷ ${n} = ${x}`]};
+});
+T('g-to-vol','mol',.24,'มวลแก๊ส → ปริมาตรที่ STP', r=>{
+  const f=r.pick(['O₂','N₂','CO₂','NH₃','CH₄','SO₂','Cl₂','H₂']), n=r.pick([0.1,0.2,0.25,0.5,1.5,2]), M=Mr(f), g=n*M, ans=n*22.4;
+  const noSub=Object.keys(CP[f]).reduce((s,e)=>s+AM[e],0);
+  return {text:`แก๊ส ${f} <b>${fnum(g)} g</b> มีปริมาตรที่ STP กี่ dm³`, ans, unit:'dm³',
+    wrong:[{v:g*22.4,err:'skipmol',why:'นำมวลคูณ 22.4 โดยไม่หาโมลก่อน'},{v:g/22.4,err:'formula',why:'นำมวลหาร 22.4 — ตั้งสูตรผิด'},{v:g/noSub*22.4,err:'molar',why:'มวลโมเลกุลผิด (ไม่คูณตามตัวห้อย)'},{v:n*24.5,err:'concept',why:'ใช้ 24.5 dm³/mol ซึ่งเป็นที่ 25 °C ไม่ใช่ STP'}],
+    steps:[`M(${f}) = ${fnum(M,4)} → n = ${fnum(g)} ÷ ${fnum(M,4)} = ${n} mol`,`V = ${n} × 22.4 = ${fnum(ans)} dm³`]};
+});
+T('vol-to-M','mol',.28,'มวลและปริมาตรแก๊ส → มวลโมเลกุล', r=>{
+  const f=r.pick(['O₂','N₂','CO₂','NH₃','CH₄','SO₂','Cl₂','C₃H₈']), n=r.pick([0.01,0.02,0.025,0.05,0.1]), M=Mr(f), g=n*M, V=n*22.4, cm=r()<.5;
+  return {text:`แก๊สชนิดหนึ่ง <b>${fnum(g)} g</b> มีปริมาตร <b>${cm?fnum(V*1000)+' cm³':fnum(V)+' dm³'}</b> ที่ STP มวลโมเลกุลของแก๊สนี้เท่ากับเท่าใด`, ans:M, sig:3,
+    wrong:[{v:V/g*22.4,err:'formula',why:'กลับสูตร (ปริมาตร ÷ มวล)'},{v:g*V,err:'formula',why:'คูณมวลกับปริมาตรตรงๆ'},cm?{v:g*22.4/(V*1000),err:'unit',why:'ใช้ปริมาตรหน่วย cm³ ไม่แปลงเป็น dm³'}:{v:g/V,err:'concept',why:'ตอบเป็นความหนาแน่น (g/dm³) ยังไม่ได้คูณ 22.4'}],
+    steps:[`n = ${fnum(V)} ÷ 22.4 = ${n} mol`,`M = ${fnum(g)} ÷ ${n} = ${fnum(M)}`]};
+});
+T('particles','mol',.40,'จำนวนอะตอมของธาตุในสาร', r=>{
+  const f=r.pick(['H₂O','CO₂','NH₃','CH₄','C₂H₅OH','H₂SO₄','C₃H₈','C₆H₁₂O₆']), els=Object.keys(CP[f]).filter(e=>CP[f][e]>1);
+  const e=r.pick(els.length?els:Object.keys(CP[f])), cnt=CP[f][e], n=r.pick([0.1,0.2,0.25,0.5]), g=n*Mr(f), ans=n*cnt*NA;
+  return {text:`${f} <b>${fnum(g)} g</b> มีอะตอม ${e} ทั้งหมดกี่อะตอม`, ans, unit:'อะตอม',
+    wrong:[{v:n*NA,err:'concept',why:'นับเป็นจำนวนโมเลกุล ยังไม่ได้คูณจำนวนอะตอม '+e},{v:n*atomsIn(f)*NA,err:'concept',why:'นับอะตอมทุกธาตุรวมกัน'},{v:g*cnt*NA,err:'skipmol',why:'ใช้มวล (g) เป็นโมลโดยตรง'},{v:n*cnt,err:'unit',why:'ตอบเป็นจำนวนโมล ยังไม่ได้คูณ 6.02×10²³'}],
+    steps:[`n(${f}) = ${fnum(g)} ÷ ${fnum(Mr(f),4)} = ${n} mol`,`อะตอม ${e} = ${n} × ${cnt} × 6.02×10²³`,`= ${fnum(ans)} อะตอม`]};
+});
+T('percent','mol',.30,'ร้อยละโดยมวลของธาตุ', r=>{
+  const f=r.pick(['CO₂','H₂O','NH₃','Fe₂O₃','Al₂O₃','CaCO₃','C₆H₁₂O₆','SO₃','CO(NH₂)₂','H₂SO₄']), e=r.pick(Object.keys(CP[f])), cnt=CP[f][e], M=Mr(f), ans=cnt*AM[e]/M*100;
+  return {text:`ร้อยละโดยมวลของ ${e} ใน <b>${f}</b> เท่ากับเท่าใด`, ans, unit:'%', sig:3,
+    wrong:[{v:AM[e]/M*100,err:'ratio',why:`ลืมคูณจำนวนอะตอม ${e} (${cnt})`},{v:cnt/atomsIn(f)*100,err:'molar',why:'นับสัดส่วนจำนวนอะตอมแทนมวล'},{v:(M-cnt*AM[e])/M*100,err:'formula',why:'คิดเป็นร้อยละของธาตุอื่นในสาร'}],
+    steps:[`M(${f}) = ${fnum(M,4)}`,`%${e} = ${cnt} × ${AM[e]} ÷ ${fnum(M,4)} × 100`,`= ${fnum(ans)}%`]};
+});
+T('empirical','mol',.34,'สูตรเอมพิริคัลจากร้อยละ', r=>{
+  const set=r.pick([['N','O',[['N₂O',2,1],['NO',1,1],['N₂O₃',2,3],['NO₂',1,2],['N₂O₅',2,5]]],['C','H',[['CH₄',1,4],['CH₃',1,3],['CH₂',1,2],['CH',1,1],['C₃H₈',3,8]]]]);
+  const [x,y,list]=set, t=r.pick(list), px=t[1]*AM[x]/(t[1]*AM[x]+t[2]*AM[y])*100;
+  const others=shuffle(list.filter(o=>o!==t)).slice(0,3);
+  return {text:`สารประกอบของ ${x} และ ${y} มี ${x} ร้อยละ <b>${fnum(px)}</b> โดยมวล สูตรเอมพิริคัลคือข้อใด`, ans:t[0],
+    wrong:others.map(o=>({v:o[0],err:'ratio',why:'อัตราส่วนโมลไม่ตรง — ต้องหารร้อยละด้วยมวลอะตอมก่อนเทียบ'})),
+    steps:[`สมมติสาร 100 g : ${x} = ${fnum(px)} g, ${y} = ${fnum(100-px)} g`,`${x} : ${y} = ${fnum(px/AM[x])} : ${fnum((100-px)/AM[y])} mol`,`= ${t[1]} : ${t[2]} → ${t[0]}`]};
+});
+T('oxide-ef','mol',.35,'สูตรออกไซด์จากมวลโลหะ', r=>{
+  const o=r.pick([['Al',2,3],['Fe',2,3],['Mg',1,1],['Cu',1,1],['Na',2,1],['Ca',1,1]]), [m,a,b]=o, k=r.pick([0.05,0.1,0.2]);
+  const gM=k*a*AM[m], gO=k*b*16, name={'2,3':'M₂O₃','1,1':'MO','2,1':'M₂O','1,2':'MO₂'}, ans=name[`${a},${b}`];
+  return {text:`ธาตุ M (มวลอะตอม ${AM[m]}) <b>${fnum(gM)} g</b> รวมกับออกซิเจนได้ออกไซด์ <b>${fnum(gM+gO)} g</b> สูตรเอมพิริคัลของออกไซด์คือข้อใด`, ans,
+    wrong:Object.values(name).filter(v=>v!==ans).map(v=>({v,err:'skipmol',why:'เทียบมวลแทนโมล หรือลืมหักมวลโลหะออกจากมวลออกไซด์'})),
+    steps:[`O = ${fnum(gM+gO)} − ${fnum(gM)} = ${fnum(gO)} g`,`M : O = ${fnum(gM)}/${AM[m]} : ${fnum(gO)}/16 = ${fnum(k*a)} : ${fnum(k*b)}`,`= ${a} : ${b} → ${ans}`]};
+});
+T('combust-ef','mol',.48,'สูตรเอมพิริคัลจากการเผาไหม้', r=>{
+  const list=[['CH₄',1,4],['CH₃',1,3],['CH₂',1,2],['C₂H₅',2,5],['C₃H₈',3,8]], t=r.pick(list), k=r.pick([0.05,0.1,0.2]);
+  const gC=k*t[1]*12, gH=k*t[2], gCO2=k*t[1]*44;
+  return {text:`เผาสารที่มีเฉพาะ C และ H หนัก <b>${fnum(gC+gH)} g</b> ได้ CO₂ <b>${fnum(gCO2)} g</b> สูตรเอมพิริคัลคือข้อใด`, ans:t[0],
+    wrong:shuffle(list.filter(o=>o!==t)).slice(0,3).map(o=>({v:o[0],err:'ratio',why:'หา C จาก CO₂ แล้ว H = มวลสาร − มวล C ก่อนเทียบเป็นโมล'})),
+    steps:[`C = ${fnum(gCO2)} × 12/44 = ${fnum(gC)} g = ${fnum(gC/12)} mol`,`H = ${fnum(gC+gH)} − ${fnum(gC)} = ${fnum(gH)} g = ${fnum(gH)} mol`,`C : H = ${t[1]} : ${t[2]} → ${t[0]}`]};
+});
+T('molarity','conc',.35,'ความเข้มข้น mol/dm³ ↔ มวลตัวละลาย', r=>{
+  const f=r.pick(['NaOH','NaCl','KOH','CuSO₄','C₆H₁₂O₆','KCl']), M=Mr(f), V=r.pick([100,200,250,500]), c=r.pick([0.1,0.2,0.25,0.4,0.5,1]);
+  const n=c*V/1000, g=n*M;
+  if(r()<.5) return {text:`สารละลาย ${f} ปริมาตร <b>${V} cm³</b> มี ${f} ละลายอยู่ <b>${fnum(g)} g</b> มีความเข้มข้นกี่ mol/dm³`, ans:c, unit:'mol/dm³',
+    wrong:[{v:n/V,err:'unit',why:'ใช้ปริมาตรหน่วย cm³ ไม่แปลงเป็น dm³'},{v:g/(V/1000),err:'skipmol',why:'นำมวลหารปริมาตร ไม่แปลงเป็นโมลก่อน'},{v:n*V/1000,err:'formula',why:'คูณโมลกับปริมาตรแทนการหาร'},{v:n,err:'formula',why:'หาโมลแล้วลืมหารปริมาตร'}],
+    steps:[`n = ${fnum(g)} ÷ ${fnum(M,4)} = ${fnum(n)} mol`,`V = ${V} cm³ = ${V/1000} dm³`,`c = ${fnum(n)} ÷ ${V/1000} = ${c} mol/dm³`]};
+  return {text:`ต้องใช้ ${f} กี่กรัม เพื่อเตรียมสารละลาย <b>${c} mol/dm³</b> ปริมาตร <b>${V} cm³</b>`, ans:g, unit:'g',
+    wrong:[{v:c*V*M,err:'unit',why:'ใช้ปริมาตรหน่วย cm³ ไม่แปลงเป็น dm³'},{v:c*M,err:'formula',why:'ลืมคูณปริมาตร'},{v:n,err:'unit',why:'ตอบเป็นจำนวนโมล ไม่ได้แปลงเป็นกรัม'}],
+    steps:[`V = ${V/1000} dm³ → n = ${c} × ${V/1000} = ${fnum(n)} mol`,`g = ${fnum(n)} × ${fnum(M,4)} = ${fnum(g)} g`]};
+});
+T('molality','conc',.32,'ความเข้มข้น mol/kg', r=>{
+  const f=r.pick(['CO(NH₂)₂','C₆H₁₂O₆','NaCl','C₁₂H₂₂O₁₁']), M=Mr(f), w=r.pick([100,200,250,500]), m=r.pick([0.1,0.2,0.4,0.5,1]), n=m*w/1000, g=n*M;
+  return {text:`ละลาย ${f} (มวลโมเลกุล ${fnum(M,4)}) <b>${fnum(g)} g</b> ในน้ำ <b>${w} g</b> สารละลายมีความเข้มข้นกี่ mol/kg`, ans:m, unit:'mol/kg',
+    wrong:[{v:n/w,err:'unit',why:'ใช้มวลน้ำหน่วย g ไม่แปลงเป็น kg'},{v:n,err:'formula',why:'หาโมลแล้วลืมหารมวลตัวทำละลาย'},{v:g/(w/1000),err:'skipmol',why:'นำมวลตัวละลายหาร kg ไม่แปลงเป็นโมล'}],
+    steps:[`n = ${fnum(g)} ÷ ${fnum(M,4)} = ${fnum(n)} mol`,`m = ${fnum(n)} ÷ ${w/1000} kg = ${m} mol/kg`]};
+});
+T('ppm','conc',.37,'ความเข้มข้นหน่วย ppm', r=>{
+  const mg=r.pick([0.5,1.2,2.5,3.0,4.0,6.0]), kg=r.pick([0.5,1.0,2.0,2.5,5.0]), ans=mg/kg;
+  const what=r.pick(['F⁻','Pb²⁺','NO₃⁻','Cu²⁺']), where=r.pick(['น้ำบาดาล','น้ำประปา','ดินตัวอย่าง']);
+  return {text:`${where} <b>${kg} kg</b> มี ${what} <b>${mg} mg</b> ปริมาณ ${what} เท่ากับกี่ ppm`, ans, unit:'ppm',
+    wrong:[{v:ans*1000,err:'unit',why:'คิดเป็น ppb (×10⁹) แทน ppm'},{v:ans/1000,err:'unit',why:'แปลง mg หรือ kg ผิด 1000 เท่า'},{v:kg/mg,err:'formula',why:'กลับเศษส่วน (ตัวอย่าง ÷ สาร)'}],
+    steps:[`ppm = (มวลสาร ÷ มวลตัวอย่าง) × 10⁶`,`= (${mg}×10⁻³ g ÷ ${kg}×10³ g) × 10⁶`,`= ${fnum(ans)} ppm`]};
+});
+T('conv-conc','conc',.45,'%w/w และความหนาแน่น → mol/dm³', r=>{
+  const a=r.pick([['HCl',36.5,36.5,1.18],['HNO₃',63,70,1.42],['H₂SO₄',98,98,1.84],['NaOH',40,50,1.52],['HCl',36.5,20,1.10]]);
+  const [f,M,p,d]=a, ans=p*d*10/M;
+  return {text:`สารละลาย ${f} เข้มข้น <b>${p}% w/w</b> ความหนาแน่น <b>${d} g/cm³</b> มีความเข้มข้นกี่ mol/dm³`, ans, unit:'mol/dm³',
+    wrong:[{v:p*10/M,err:'formula',why:'ลืมคูณความหนาแน่น'},{v:p*d/M,err:'unit',why:'ลืมคูณ 10 (แปลงต่อ 100 g เป็นต่อ 1000 cm³)'},{v:p*d*10,err:'skipmol',why:'ได้เป็น g/dm³ ยังไม่หารมวลโมเลกุล'}],
+    steps:['c = (%w/w × d × 10) ÷ M',`= ${p} × ${d} × 10 ÷ ${M}`,`= ${fnum(ans)} mol/dm³`]};
+});
+T('dilution','conc',.36,'การเจือจาง c₁V₁ = c₂V₂', r=>{
+  const c1=r.pick([1,2,5,6,12]), V1=r.pick([10,20,25,50,100]), V2=V1*r.pick([2,4,5,10]), c2=c1*V1/V2;
+  if(r()<.5) return {text:`นำสารละลายเข้มข้น <b>${c1} mol/dm³</b> ปริมาตร <b>${V1} cm³</b> มาเติมน้ำจนปริมาตรรวมเป็น <b>${V2} cm³</b> ความเข้มข้นใหม่เป็นเท่าใด`, ans:c2, unit:'mol/dm³',
+    wrong:[{v:c1*V2/V1,err:'formula',why:'กลับสูตร c₂ = c₁V₂ ÷ V₁'},{v:c1*V1/(V1+V2),err:'formula',why:'บวกปริมาตรซ้ำ ทั้งที่โจทย์บอกปริมาตรรวมแล้ว'},{v:c1*V1,err:'formula',why:'ลืมหารด้วยปริมาตรใหม่'}],
+    steps:['c₁V₁ = c₂V₂',`${c1} × ${V1} = c₂ × ${V2}`,`c₂ = ${fnum(c2)} mol/dm³`]};
+  return {text:`สารละลาย <b>${c1} mol/dm³</b> ปริมาตร <b>${V1} cm³</b> ต้องเติมน้ำอีกกี่ cm³ จึงได้ความเข้มข้น <b>${fnum(c2)} mol/dm³</b>`, ans:V2-V1, unit:'cm³',
+    wrong:[{v:V2,err:'concept',why:'ตอบปริมาตรรวม ไม่ใช่ปริมาตรน้ำที่เติม'},{v:c2*V1/c1,err:'formula',why:'กลับสูตร'},{v:V2+V1,err:'formula',why:'บวกปริมาตรเดิมแทนการลบ'}],
+    steps:[`V₂ = ${c1} × ${V1} ÷ ${fnum(c2)} = ${V2} cm³`,`เติมน้ำ = ${V2} − ${V1} = ${V2-V1} cm³`]};
+});
+T('mixing','conc',.38,'ผสมสารละลาย 2 ความเข้มข้น', r=>{
+  const c1=r.pick([0.1,0.2,0.4,0.5,1]), c2=r.pick([0.3,0.6,0.8,1.5,2]), V1=r.pick([100,200,300]), V2=r.pick([100,200,300,400]);
+  const ans=(c1*V1+c2*V2)/(V1+V2), f=r.pick(['NaOH','NaCl','HCl','KCl']);
+  return {text:`ผสม ${f} <b>${c1} mol/dm³</b> ปริมาตร <b>${V1} cm³</b> กับ ${f} <b>${c2} mol/dm³</b> ปริมาตร <b>${V2} cm³</b> ความเข้มข้นของสารละลายผสมเป็นเท่าใด`, ans, unit:'mol/dm³',
+    wrong:[{v:(c1+c2)/2,err:'formula',why:'หาค่าเฉลี่ยธรรมดาไม่ถ่วงปริมาตร'},{v:c1+c2,err:'formula',why:'นำความเข้มข้นมาบวกกัน'},{v:(c1*V1+c2*V2)/1000,err:'unit',why:'ตอบเป็นจำนวนโมลรวม ยังไม่หารปริมาตร'}],
+    steps:[`โมลรวม = ${c1}×${V1} + ${c2}×${V2} = ${fnum(c1*V1+c2*V2)} mmol`,`ปริมาตรรวม = ${V1+V2} cm³`,`c = ${fnum(ans)} mol/dm³`]};
+});
+T('colligative','conc',.40,'จุดเดือด/จุดเยือกแข็งของสารละลาย', r=>{
+  const s=r.pick([['ยูเรีย',60],['กลูโคส',180],['ซูโครส',342]]), w=r.pick([100,200,250,500]), m=r.pick([0.1,0.2,0.25,0.4,0.5]), g=m*w/1000*s[1];
+  const boil=r()<.5, K=boil?0.51:1.86, dT=K*m, ans=boil?100+dT:-dT, f=v=>`${(+v.toFixed(2)).toFixed(2)} °C`;
+  return {text:`ละลาย${s[0]} (มวลโมเลกุล ${s[1]}) <b>${fnum(g)} g</b> ในน้ำ <b>${w} g</b> สารละลายมี${boil?'จุดเดือด':'จุดเยือกแข็ง'}กี่ °C (${boil?'Kb = 0.51':'Kf = 1.86'} °C/m)`, ans, fmt:f, allowNeg:true,
+    wrong:[{v:boil?100+m:-m,err:'formula',why:'ใช้ความเข้มข้น m เป็น ΔT โดยตรง ลืมคูณค่าคงที่'},{v:boil?100+K:-K,err:'concept',why:'ใช้ค่าคงที่ K เป็น ΔT โดยตรง'},boil?{v:100-dT,err:'concept',why:'จุดเดือดของสารละลายต้องสูงขึ้น ไม่ใช่ต่ำลง'}:{v:dT,err:'concept',why:'จุดเยือกแข็งของสารละลายต้องต่ำกว่า 0 °C'}],
+    steps:[`m = (${fnum(g)} ÷ ${s[1]}) ÷ ${w/1000} kg = ${m} mol/kg`,`ΔT = ${K} × ${m} = ${fnum(dT)} °C`,`${boil?'จุดเดือด = 100 + ':'จุดเยือกแข็ง = 0 − '}${fnum(dT)} = ${f(ans)}`]};
+});
+T('mass-cons','chemlaw',.16,'กฎทรงมวล หามวลผลิตภัณฑ์', r=>{
+  const n=r.pick([0.05,0.1,0.2]), a=n*106, b=n*2*36.5, c=n*2*58.5, d=n*18, e=n*44;
+  return {text:`Na₂CO₃ <b>${fnum(a,4)} g</b> ทำปฏิกิริยาพอดีกับ HCl <b>${fnum(b,4)} g</b> ได้ NaCl <b>${fnum(c,4)} g</b> และน้ำ <b>${fnum(d,4)} g</b> จะเกิดแก๊ส CO₂ กี่กรัม`, ans:e, unit:'g', sig:4,
+    wrong:[{v:a+b-c,err:'concept',why:'ลืมหักมวลน้ำที่เกิดขึ้น'},{v:a+b,err:'concept',why:'ไม่ได้หักมวลผลิตภัณฑ์อื่น'},{v:c+d-a,err:'formula',why:'ตั้งสมการกฎทรงมวลผิดข้าง'}],
+    steps:['กฎทรงมวล: มวลสารตั้งต้น = มวลผลิตภัณฑ์',`${fnum(a,4)} + ${fnum(b,4)} = ${fnum(c,4)} + ${fnum(d,4)} + CO₂`,`CO₂ = ${fnum(e,4)} g`]};
+});
+T('def-prop','chemlaw',.42,'อัตราส่วนโดยมวลคงที่ + สารเหลือ', r=>{
+  const x=r.pick([['Fe','S',7,4,'FeS'],['Mg','O',3,2,'MgO'],['C','H',3,1,'สารประกอบ'],['Fe','O',7,3,'Fe₂O₃'],['Ca','O',5,2,'CaO'],['Cu','S',2,1,'CuS']]);
+  const [X,Y,p,q,P]=x, k=r.pick([1,2,3,4]), extra=r.pick([1,2,3]), xLim=r()<.5;
+  const gX=xLim?p*k:p*k+extra, gY=xLim?q*k+extra:q*k, ans=(p+q)*k, fromExcess=xLim?gY*(p+q)/q:gX*(p+q)/p;
+  return {text:`${X} รวมกับ ${Y} เป็น ${P} ในอัตราส่วนโดยมวล ${p} : ${q} ถ้านำ ${X} <b>${gX} g</b> กับ ${Y} <b>${gY} g</b> มาทำปฏิกิริยา จะได้ ${P} มากที่สุดกี่กรัม`, ans, unit:'g',
+    wrong:[{v:gX+gY,err:'limiting',why:'รวมมวลทั้งหมดโดยไม่หาสารกำหนดปริมาณ'},{v:fromExcess,err:'limiting',why:'คิดจากสารที่มีมากเกินพอ'},{v:extra,err:'concept',why:'ตอบเป็นมวลสารที่เหลือ'}],
+    steps:[`${xLim?X:Y} ${xLim?gX:gY} g ต้องใช้ ${xLim?Y:X} ${xLim?q*k:p*k} g (มี ${xLim?gY:gX} g)`,`${xLim?X:Y} หมดก่อน → ${P} = ${p*k} + ${q*k} = ${ans} g`,`เหลือ ${xLim?Y:X} ${extra} g`]};
+});
+T('gas-vol','chemlaw',.30,'อัตราส่วนปริมาตรแก๊ส (T, P เดียวกัน)', r=>{
+  const R=r.pick([[[1,'N₂'],[3,'H₂'],[2,'NH₃']],[[2,'CO'],[1,'O₂'],[2,'CO₂']],[[2,'SO₂'],[1,'O₂'],[2,'SO₃']],[[1,'CH₄'],[2,'O₂'],[1,'CO₂']],[[1,'C₃H₈'],[5,'O₂'],[3,'CO₂']]]);
+  const [i,j]=shuffle([0,1,2]).slice(0,2), [ci,fi]=R[i], [cj,fj]=R[j], V=ci*r.pick([2,4,5,10]), ans=V*cj/ci;
+  const eq=`${R[0][0]>1?R[0][0]:''}${R[0][1]} + ${R[1][0]>1?R[1][0]:''}${R[1][1]} → ${R[2][0]>1?R[2][0]:''}${R[2][1]}`;
+  // index 0–1 are reactants, 2 is the product
+  const ask = i<2&&j<2 ? `ถ้าใช้ ${fi} <b>${V} dm³</b> ทำปฏิกิริยาพอดี ต้องใช้ ${fj} กี่ dm³`
+    : i<2 ? `ถ้าใช้ ${fi} <b>${V} dm³</b> ทำปฏิกิริยาพอดี จะได้ ${fj} กี่ dm³`
+    : `ถ้าต้องการ ${fi} <b>${V} dm³</b> ต้องใช้ ${fj} กี่ dm³`;
+  return {text:`${eq} (แก๊สทั้งหมด) ${ask} ที่ T, P เดียวกัน`, ans, unit:'dm³',
+    wrong:[{v:V,err:'ratio',why:'ใช้อัตราส่วน 1 : 1'},{v:V*ci/cj,err:'ratio',why:'กลับอัตราส่วนสัมประสิทธิ์'},{v:V*cj,err:'ratio',why:'คูณสัมประสิทธิ์แต่ลืมหาร'}],
+    steps:[`อัตราส่วนปริมาตร = อัตราส่วนสัมประสิทธิ์ ${fi} : ${fj} = ${ci} : ${cj}`,`${V} × ${cj}/${ci} = ${fnum(ans)} dm³`]};
+});
+T('stoich-mass','stoich',.38,'มวล/ปริมาตรผลิตภัณฑ์จากสมการ', r=>{
+  const R=r.pick(REACT), G=r.pick(R.sp.filter(s=>s[2]==='r')), P=r.pick(R.sp.filter(s=>s[2]==='p'));
+  const nG=r.pick(NICE), gG=nG*Mr(G[1]), nP=nG*P[0]/G[0], asV=P[3] && r()<.45;
+  const ans=asV?nP*22.4:nP*Mr(P[1]);
+  const wrong = asV ? [{v:nG*22.4,err:'ratio',why:'ใช้อัตราส่วนโมล 1 : 1'},{v:nP,err:'unit',why:'ตอบเป็นจำนวนโมล ยังไม่คูณ 22.4'},{v:gG*22.4,err:'skipmol',why:'นำมวลคูณ 22.4 โดยไม่หาโมล'},{v:nG*G[0]/P[0]*22.4,err:'ratio',why:'กลับอัตราส่วนสัมประสิทธิ์'}]
+    : [{v:nG*Mr(P[1]),err:'ratio',why:'ใช้อัตราส่วนโมล 1 : 1'},{v:gG*P[0]/G[0],err:'skipmol',why:'ใช้อัตราส่วนสัมประสิทธิ์กับมวลโดยตรง ไม่ผ่านโมล'},{v:nP,err:'unit',why:'ตอบเป็นจำนวนโมล ยังไม่แปลงเป็นกรัม'},{v:nG*G[0]/P[0]*Mr(P[1]),err:'ratio',why:'กลับอัตราส่วนสัมประสิทธิ์'}];
+  return {text:`${eqText(R)} ถ้าใช้ ${G[1]} <b>${fnum(gG)} g</b> ทำปฏิกิริยาสมบูรณ์ (สารอื่นมากเกินพอ) จะได้ ${P[1]} ${asV?'กี่ dm³ ที่ STP':'กี่กรัม'}`, ans, unit:asV?'dm³':'g', wrong,
+    steps:[`n(${G[1]}) = ${fnum(gG)} ÷ ${fnum(Mr(G[1]),4)} = ${nG} mol`,`${G[1]} : ${P[1]} = ${G[0]} : ${P[0]} → ${P[1]} = ${fnum(nP)} mol`,asV?`V = ${fnum(nP)} × 22.4 = ${fnum(ans)} dm³`:`มวล = ${fnum(nP)} × ${fnum(Mr(P[1]),4)} = ${fnum(ans)} g`]};
+});
+T('titration','stoich',.40,'ปริมาตรเบสที่ทำปฏิกิริยาพอดีกับกรด', r=>{
+  const A=r.pick([['HCl',1],['HNO₃',1],['H₂SO₄',2],['H₂C₂O₄',2]]), ca=r.pick([0.05,0.1,0.2]), Va=r.pick([10,20,25]), cb=r.pick([0.1,0.2,0.25,0.5]);
+  const ans=ca*Va*A[1]/cb, eq=A[1]===1?`${A[0]} + NaOH → เกลือ + H₂O`:`${A[0]} + 2NaOH → เกลือ + 2H₂O`;
+  return {text:`${A[0]} เข้มข้น <b>${ca} mol/dm³</b> ปริมาตร <b>${Va} cm³</b> ทำปฏิกิริยาพอดีกับ NaOH เข้มข้น <b>${cb} mol/dm³</b> กี่ cm³ (${eq})`, ans, unit:'cm³',
+    wrong:[{v:A[1]===2?ca*Va/cb:ans*2,err:'ratio',why:A[1]===2?'ลืมว่ากรดนี้ใช้ NaOH 2 mol ต่อกรด 1 mol':'ใช้อัตราส่วน 1 : 2 ทั้งที่สมการเป็น 1 : 1'},{v:cb*Va/(ca*A[1]),err:'formula',why:'กลับสูตร'},{v:Va,err:'concept',why:'คิดว่าทำปฏิกิริยาพอดีเมื่อปริมาตรเท่ากัน'}],
+    steps:[`n(กรด) = ${ca} × ${Va} = ${fnum(ca*Va)} mmol`,`NaOH = ${A[1]} × ${fnum(ca*Va)} = ${fnum(ca*Va*A[1])} mmol`,`V = ${fnum(ca*Va*A[1])} ÷ ${cb} = ${fnum(ans)} cm³`]};
+});
+T('limiting','stoich',.55,'สารกำหนดปริมาณ หามวลผลิตภัณฑ์', r=>{
+  const R=r.pick(REACT.filter(x=>x.sp.filter(s=>s[2]==='r').length===2)), [A,B]=R.sp.filter(s=>s[2]==='r'), P=R.sp.find(s=>s[2]==='p');
+  const aLim=r()<.5, L=aLim?A:B, E=aLim?B:A, nL=L[0]*r.pick([0.05,0.1,0.2,0.25]), nE=nL/L[0]*E[0]*r.pick([1.5,2,3]);
+  const gL=nL*Mr(L[1]), gE=nE*Mr(E[1]), nP=nL/L[0]*P[0], ans=nP*Mr(P[1]);
+  const [g1,g2]=aLim?[gL,gE]:[gE,gL];
+  return {text:`${eqText(R)} ผสม ${A[1]} <b>${fnum(g1)} g</b> กับ ${B[1]} <b>${fnum(g2)} g</b> จะได้ ${P[1]} มากที่สุดกี่กรัม`, ans, unit:'g',
+    wrong:[{v:nE/E[0]*P[0]*Mr(P[1]),err:'limiting',why:`คิดจาก ${E[1]} ซึ่งมีมากเกินพอ — ${L[1]} เป็นสารกำหนดปริมาณ`},{v:g1+g2,err:'limiting',why:'รวมมวลสารตั้งต้นทั้งหมด'},{v:nP,err:'unit',why:'ตอบเป็นจำนวนโมล ยังไม่แปลงเป็นกรัม'}],
+    steps:[`${A[1]} = ${fnum(aLim?nL:nE)} mol (÷${A[0]} = ${fnum((aLim?nL:nE)/A[0])}) · ${B[1]} = ${fnum(aLim?nE:nL)} mol (÷${B[0]} = ${fnum((aLim?nE:nL)/B[0])})`,`ค่าน้อยกว่า → ${L[1]} เป็นสารกำหนดปริมาณ`,`${P[1]} = ${fnum(nP)} mol × ${fnum(Mr(P[1]),4)} = ${fnum(ans)} g`]};
+});
+T('yield','stoich',.38,'ผลได้ร้อยละ', r=>{
+  const R=r.pick([REACT[2],REACT[5],REACT[6],REACT[9]]), G=R.sp.find(s=>s[2]==='r'), P=R.sp.find(s=>s[2]==='p');
+  const nG=G[0]*r.pick([0.1,0.2,0.25,0.5]), gG=nG*Mr(G[1]), th=nG/G[0]*P[0]*Mr(P[1]), y=r.pick([0.5,0.6,0.75,0.8,0.9]), act=th*y;
+  return {text:`${eqText(R)} ใช้ ${G[1]} <b>${fnum(gG)} g</b> (สารอื่นมากเกินพอ) ได้ ${P[1]} จริง <b>${fnum(act)} g</b> ผลได้ร้อยละเท่ากับเท่าใด`, ans:y*100, unit:'%',
+    wrong:[{v:act/gG*100,err:'skipmol',why:'เทียบมวลผลิตภัณฑ์กับมวลสารตั้งต้นตรงๆ'},{v:th/act*100,err:'formula',why:'กลับเศษส่วน — ร้อยละผลได้ต้องไม่เกิน 100'},{v:act/(nG*Mr(P[1]))*100,err:'ratio',why:'ใช้อัตราส่วนโมล 1 : 1 หาผลได้ทางทฤษฎี'}],
+    steps:[`ผลได้ทางทฤษฎี = ${fnum(nG)} mol ÷ ${G[0]} × ${P[0]} × ${fnum(Mr(P[1]),4)} = ${fnum(th)} g`,`ร้อยละผลได้ = ${fnum(act)} ÷ ${fnum(th)} × 100 = ${fnum(y*100)}%`]};
+});
+
+const GEN_PER_TPL=3;
+function buildGen(t, ti, k){
+  const g=t.gen(rngFor(t.pat,k)), sig=g.sig||3;
+  const fmt=g.fmt||(v=>`${fnum(v,sig)}${g.unit?' '+g.unit:''}`);
+  const show=v=>typeof v==='string'?v:fmt(v);
+  const seen=new Set(), choices=[];
+  const add=(v,extra)=>{ const s=show(v); if(seen.has(s)) return; seen.add(s); choices.push({t:s,...extra}); };
+  add(g.ans,{ok:1});
+  for(const w of g.wrong){ if(choices.length>=4) break;
+    if(typeof w.v==='number' && (!isFinite(w.v) || (w.v<=0 && !g.allowNeg))) continue; add(w.v,{err:w.err,why:w.why}); }
+  if(typeof g.ans==='number') for(const [f,why,err] of [[2,'คำนวณพลาด — ได้ 2 เท่าของคำตอบ','calc'],[0.5,'คำนวณพลาด — ได้ครึ่งหนึ่งของคำตอบ','calc'],[10,'ยกกำลังผิด 1 ตำแหน่ง','unit'],[0.1,'ยกกำลังผิด 1 ตำแหน่ง','unit']]){
+    if(choices.length>=4) break; add(g.ans*f,{err,why}); }
+  return {id:20000+ti*10+k, pat:t.pat, gen:true, topic:t.topic, kind:'calc', type:'mc', sim:t.sim, short:t.short, text:g.text, choices, steps:g.steps};
+}
+const GEN = TPL.flatMap((t,ti)=>Array.from({length:GEN_PER_TPL},(_,k)=>buildGen(t,ti,k)));
+
+/* ---- handwritten variants for ch.4 concept questions ---- */
+const CH4V = [
+ {id:601, pat:'def-amu', topic:'mol', kind:'concept', e:'concept', sim:.30, short:'นิยามมวลโมเลกุล',
+  text:'มวลโมเลกุลของสารหมายถึงอะไร',
+  c:[['ผลรวมมวลอะตอมของทุกอะตอมในโมเลกุล ซึ่งเป็นค่าเปรียบเทียบไม่มีหน่วย'],['มวลของสาร 1 โมเลกุลในหน่วยกรัม','มวลโมเลกุลเป็นค่าเปรียบเทียบ ไม่มีหน่วย'],['จำนวนอะตอมทั้งหมดในโมเลกุล','นั่นคือการนับอะตอม ไม่ใช่มวล'],['มวลของสาร 1 ลิตร','นั่นใกล้เคียงความหนาแน่น']], ok:0,
+  steps:['มวลโมเลกุล = ผลรวมมวลอะตอมทุกตัวในโมเลกุล','เป็นค่าเปรียบเทียบกับ 1/12 ของ C-12 จึงไม่มีหน่วย']},
+ {id:602, pat:'def-amu', topic:'mol', kind:'concept', e:'concept', sim:.28, short:'ความหมายของ 1 โมล',
+  text:'สาร 1 โมลหมายถึงข้อใด',
+  c:[['สารที่มีจำนวนอนุภาค 6.02×10²³ อนุภาค'],['สารที่มีมวล 1 กรัม','มวลของ 1 mol เท่ากับมวลโมเลกุลเป็นกรัม ไม่ใช่ 1 g'],['สารที่มีปริมาตร 22.4 dm³ เสมอ','22.4 dm³ ใช้กับแก๊สที่ STP เท่านั้น'],['สารที่มีจำนวนอะตอม 1 อะตอม','1 mol มี 6.02×10²³ อนุภาค']], ok:0,
+  steps:['1 mol = 6.02×10²³ อนุภาค (เลขอาโวกาโดร)','มวลของ 1 mol = มวลโมเลกุลในหน่วยกรัม']},
+ {id:603, pat:'mol-stmt', topic:'mol', kind:'concept', e:'concept', sim:.36, short:'ข้อความ N₂ ที่ไม่ถูกต้อง',
+  text:'ข้อความใดเกี่ยวกับแก๊สไนโตรเจน (N₂) <b>ไม่ถูกต้อง</b>',
+  c:[['N₂ 1 mol มีมวล 28 g','ข้อนี้ถูก — โจทย์ถามข้อที่ไม่ถูก'],['N₂ 1 mol มีปริมาตร 22.4 dm³ ที่ STP','ข้อนี้ถูก'],['N₂ 28 g มี 6.02×10²³ อะตอม'],['N₂ 0.5 mol มี 3.01×10²³ โมเลกุล','ข้อนี้ถูก']], ok:2,
+  steps:['N₂ 28 g = 1 mol = 6.02×10²³ โมเลกุล','แต่มีอะตอม 2 × 6.02×10²³ = 1.20×10²⁴ อะตอม']},
+ {id:604, pat:'mol-stmt', topic:'mol', kind:'concept', e:'concept', sim:.40, short:'ข้อความ H₂O ที่ไม่ถูกต้อง',
+  text:'ข้อความใดเกี่ยวกับน้ำ (H₂O) <b>ไม่ถูกต้อง</b>',
+  c:[['H₂O 18 g มี 6.02×10²³ โมเลกุล','ข้อนี้ถูก — โจทย์ถามข้อที่ไม่ถูก'],['H₂O 1 mol มีอะตอม H 2 mol','ข้อนี้ถูก'],['H₂O 1 mol มีปริมาตร 22.4 dm³ ที่ STP'],['H₂O 0.5 mol มีมวล 9 g','ข้อนี้ถูก']], ok:2,
+  steps:['22.4 dm³/mol ใช้กับแก๊สที่ STP เท่านั้น','ที่ STP (0 °C) น้ำเป็นของแข็ง/ของเหลว จึงไม่ใช่ 22.4 dm³']},
+ {id:605, pat:'prep-sol', topic:'conc', kind:'concept', e:'concept', sim:.27, short:'ขั้นตอนเตรียม NaOH 0.5 M 100 cm³',
+  text:'ข้อใดเป็นขั้นตอนที่ถูกต้องในการเตรียมสารละลาย NaOH 0.50 mol/dm³ ปริมาตร 100 cm³',
+  c:[['ชั่ง NaOH 2.0 g ละลายในน้ำเล็กน้อย ถ่ายลงขวดกำหนดปริมาตร 100 cm³ แล้วเติมน้ำจนถึงขีด'],['ชั่ง NaOH 2.0 g ใส่บีกเกอร์แล้วเติมน้ำ 100 cm³','ปริมาตรสารละลายจะไม่ใช่ 100 cm³ พอดี และบีกเกอร์ไม่แม่นยำ'],['ชั่ง NaOH 20 g ละลายในน้ำ 100 cm³','ใช้มวลผิด (คิดเป็น 1 dm³ แล้วไม่แปลง)','unit'],['ตวงน้ำ 100 cm³ ในขวดกำหนดปริมาตรก่อน แล้วค่อยเติม NaOH 2.0 g','ปริมาตรสุดท้ายต้องเป็นสารละลาย 100 cm³ ไม่ใช่น้ำ 100 cm³']], ok:0,
+  steps:['n = 0.50 × 0.100 = 0.050 mol → 0.050 × 40 = 2.0 g','ละลายก่อน แล้วปรับปริมาตรสารละลายถึงขีดของขวดกำหนดปริมาตร']},
+ {id:606, pat:'prep-sol', topic:'conc', kind:'concept', e:'concept', sim:.30, short:'ขั้นตอนเจือจางด้วยปิเปต',
+  text:'ต้องการเจือจาง HCl 1.0 mol/dm³ ให้เป็น 0.10 mol/dm³ ปริมาตร 250 cm³ ข้อใดเป็นขั้นตอนที่ถูกต้องที่สุด',
+  c:[['ใช้ปิเปตดูด HCl 25.00 cm³ ใส่ขวดกำหนดปริมาตร 250 cm³ แล้วเติมน้ำจนถึงขีด'],['ตวง HCl 25 cm³ ด้วยบีกเกอร์แล้วเติมน้ำ 250 cm³','บีกเกอร์ไม่แม่นยำ และปริมาตรรวมจะเกิน 250 cm³'],['ใช้ปิเปตดูด HCl 2.5 cm³ แล้วเติมน้ำจนครบ 250 cm³','คำนวณปริมาตรผิด (ต้อง 25 cm³)','formula'],['เทน้ำ 250 cm³ ลงในขวดก่อน แล้วเติม HCl 25 cm³','ปริมาตรรวมเกิน 250 cm³']], ok:0,
+  steps:['V₁ = 0.10 × 250 ÷ 1.0 = 25 cm³','ใช้ปิเปตถ่ายสารแม่นยำ แล้วปรับปริมาตรในขวดกำหนดปริมาตร']},
+ {id:607, pat:'colli-concept', topic:'conc', kind:'concept', e:'concept', sim:.34, short:'จุดเยือกแข็งต่ำสุด 0.10 m',
+  text:'สารละลายในน้ำเข้มข้น 0.10 mol/kg เท่ากัน สารละลายของสารใดมี<b>จุดเยือกแข็งต่ำที่สุด</b>',
+  c:[['AlCl₃'],['NaCl','แตกตัวได้ 2 ไอออน น้อยกว่า AlCl₃ (4 ไอออน)'],['กลูโคส','ไม่แตกตัว'],['MgSO₄','แตกตัวได้ 2 ไอออน']], ok:0,
+  steps:['ΔTf ขึ้นกับจำนวนอนุภาค','AlCl₃ แตกตัวให้ 4 ไอออน มากที่สุด → จุดเยือกแข็งต่ำที่สุด']},
+ {id:608, pat:'colli-concept', topic:'conc', kind:'concept', e:'concept', sim:.29, short:'โรยเกลือบนถนนที่มีน้ำแข็ง',
+  text:'ประเทศเมืองหนาวโรยเกลือบนถนนที่มีน้ำแข็ง เพราะเหตุใด',
+  c:[['เกลือทำให้จุดเยือกแข็งของน้ำต่ำลง น้ำแข็งจึงละลายที่อุณหภูมิต่ำกว่า 0 °C'],['เกลือทำปฏิกิริยาคายความร้อนกับน้ำแข็ง','ไม่ได้อาศัยความร้อนจากปฏิกิริยา'],['เกลือทำให้จุดเยือกแข็งของน้ำสูงขึ้น','กลับทิศ — จุดเยือกแข็งต่ำลง'],['เกลือดูดความชื้นออกจากน้ำแข็ง','ไม่ใช่เหตุผลหลัก']], ok:0,
+  steps:['สารละลายมีจุดเยือกแข็งต่ำกว่าตัวทำละลายบริสุทธิ์','น้ำเกลือจึงไม่แข็งตัวที่ 0 °C ทำให้น้ำแข็งละลาย']},
+ {id:609, pat:'open-sys', topic:'chemlaw', kind:'concept', e:'concept', sim:.33, short:'จุดเทียนแล้วมวลลดลง',
+  text:'จุดเทียนในที่โล่ง พบว่ามวลของเทียนลดลง ข้อใดอธิบายได้ถูกต้อง',
+  c:[['ผลิตภัณฑ์ CO₂ และไอน้ำหนีออกจากระบบ กฎทรงมวลยังถูกต้อง'],['มวลหายไปจริง กฎทรงมวลใช้ไม่ได้กับการเผาไหม้','มวลไม่ได้หาย เพียงออกจากระบบไป'],['ขี้ผึ้งเปลี่ยนเป็นพลังงานทั้งหมด','ปฏิกิริยาเคมีไม่ได้เปลี่ยนมวลเป็นพลังงานที่วัดได้'],['ออกซิเจนในอากาศทำให้มวลลดลง','ออกซิเจนที่ใช้ไปทำให้ผลิตภัณฑ์หนักขึ้น ไม่ใช่ลดลง']], ok:0,
+  steps:['เป็นระบบเปิด ผลิตภัณฑ์แก๊สหนีออกไป','ถ้าเก็บผลิตภัณฑ์ทั้งหมด มวลก่อน = มวลหลัง']},
+ {id:610, pat:'open-sys', topic:'chemlaw', kind:'concept', e:'concept', sim:.37, short:'เผา Mg ในอากาศแล้วมวลเพิ่ม',
+  text:'เผาลวด Mg ในเบ้าเปิด พบว่ามวลของแข็งหลังเผามากกว่าก่อนเผา ข้อใดถูกต้อง',
+  c:[['Mg รวมกับ O₂ จากอากาศเป็น MgO มวลที่เพิ่มคือมวลออกซิเจน กฎทรงมวลยังถูกต้อง'],['ขัดกับกฎทรงมวล เพราะมวลเพิ่มขึ้นเอง','ไม่ขัด — มีสารจากภายนอกเข้ามาในระบบ'],['ความร้อนทำให้ Mg มีมวลมากขึ้น','ความร้อนไม่ได้เพิ่มมวล'],['เบ้าเปิดทำให้ชั่งมวลคลาดเคลื่อน','ไม่ใช่ความคลาดเคลื่อนของการชั่ง']], ok:0,
+  steps:['2Mg + O₂ → 2MgO','ออกซิเจนจากอากาศเข้ามาในระบบ มวลของแข็งจึงเพิ่ม']},
+ {id:611, pat:'chem-laws', topic:'chemlaw', kind:'concept', e:'concept', sim:.30, short:'CO₂ จากทุกแหล่ง C : O = 3 : 8',
+  text:'CO₂ ที่ได้จากการเผาถ่าน จากการหายใจ หรือจากการเผาหินปูน ล้วนมี C : O โดยมวล 3 : 8 เท่ากัน ข้อมูลนี้สนับสนุนกฎใด',
+  c:[['กฎสัดส่วนคงที่'],['กฎทรงมวล','กฎทรงมวลพูดถึงมวลรวมก่อนและหลังปฏิกิริยา'],['กฎการรวมปริมาตรของแก๊ส','เกี่ยวกับอัตราส่วนปริมาตร ไม่ใช่มวลธาตุในสารประกอบ'],['กฎของอาโวกาโดร','เกี่ยวกับปริมาตรกับจำนวนโมเลกุล']], ok:0,
+  steps:['สารประกอบชนิดเดียวกันมีอัตราส่วนโดยมวลของธาตุคงที่','ไม่ว่าได้มาจากแหล่งใด']},
+ {id:612, pat:'chem-laws', topic:'chemlaw', kind:'concept', e:'concept', sim:.33, short:'2H₂ : O₂ : 2H₂O = 2 : 1 : 2 โดยปริมาตร',
+  text:'ไอน้ำ 20 cm³ เกิดจาก H₂ 20 cm³ ทำปฏิกิริยาพอดีกับ O₂ 10 cm³ ที่ T, P เดียวกัน ข้อมูลนี้สนับสนุนกฎใดโดยตรง',
+  c:[['กฎการรวมปริมาตรของแก๊ส (เกย์-ลูสแซก)'],['กฎสัดส่วนคงที่','เกี่ยวกับอัตราส่วนโดยมวล'],['กฎทรงมวล','ปริมาตรรวมไม่จำเป็นต้องเท่าเดิม'],['กฎของบอยล์','เกี่ยวกับความดันกับปริมาตรของแก๊สชนิดเดียว']], ok:0,
+  steps:['ปริมาตรแก๊สที่ทำปฏิกิริยาและเกิดขึ้นเป็นอัตราส่วนเลขลงตัวน้อยๆ (2 : 1 : 2)','ตามกฎการรวมปริมาตรของแก๊ส']},
+].map(mc);
+Q.push(...GEN, ...CH4V);
+
+/* ---- link sheet / original questions to their pattern ---- */
+const PAT_LINK = {
+  'amu':[402,403,404], 'iso-avg':[405,406], 'fmass':[407,410,411], 'elem-mass':[408,409,441], 'hydrate':[412,449],
+  'g-to-vol':[414,424,429], 'vol-to-M':[417,419,422,438,504], 'particles':[13,415,418,420,425,426,427,428,430,431,432],
+  'percent':[11,439,440,442,443,444], 'mol-compare':[413,416,421,433,434,435,436,437], 'mol-mass':[1,14],
+  'empirical':[445,446,450,451,452], 'oxide-ef':[447], 'combust-ef':[448], 'molarity':[2,15,453,454], 'molality':[455,467],
+  'ppm':[456,463,464,465,466,469], 'conv-conc':[16,457,458,459,460,461,462,476], 'dilution':[8,468,470,472,474], 'mixing':[471,473,477],
+  'colligative':[478,479,482,483,484], 'mass-cons':[485,488], 'def-prop':[489,490,491,492,493,494,495], 'gas-vol':[498,499,500,510],
+  'avogadro':[501,502,503], 'balance':[505,506,507], 'mole-ratio':[517,518,519],
+  'stoich-mass':[3,17,508,509,511,512,513,514,515,520,521,522,523], 'titration':[22,516],
+  'limiting':[10,524,525,526,527,528,529,530,531], 'yield':[18,532,533,534,535,536,537,538],
+  'multistep':[539,540,541,542,543,544,545,546,547],
+  'def-amu':[401], 'mol-stmt':[423], 'prep-sol':[475], 'colli-concept':[480,481], 'open-sys':[486,487], 'chem-laws':[496,497],
+};
 const QBY = Object.fromEntries(Q.map(q=>[q.id,q]));
+Object.entries(PAT_LINK).forEach(([p,ids])=>ids.forEach(id=>{ if(QBY[id] && !QBY[id].alevel) QBY[id].pat=p; }));
 const KEYS = ['ก','ข','ค','ง'];
 const HKEY = 'chemlab.history.v1';
 
@@ -2360,20 +2711,38 @@ function poolFor(lv, topics){
   if(lv==='alevel') return Q.map(q=>q.id);
   return Q.filter(q=>!q.alevel && topics.includes(q.topic)).map(q=>q.id);
 }
+function groupByPattern(pool){ const g={}; pool.forEach(id=>{ const k=patOf(QBY[id]); (g[k]=g[k]||[]).push(id); }); return g; }
+const patCount = pool => Object.keys(groupByPattern(pool)).length;
 function sizeOpts(lv, pool){
-  if(lv==='alevel') return [['aonly',`เฉพาะโจทย์แนว A-Level (${ALEVEL_IDS.length})`],['20','ผสมทุกบท 20 ข้อ'],['all',`ทั้งคลัง ${pool.length} ข้อ`]];
-  return [['10','สุ่ม 10 ข้อ'],['20','สุ่ม 20 ข้อ']].filter(o=>+o[0]<pool.length).concat([['all',`ทั้งหมด ${pool.length} ข้อ`]]);
+  const np=patCount(pool);
+  if(lv==='alevel') return [['aonly',`เฉพาะโจทย์แนว A-Level (${ALEVEL_IDS.length})`],['20','ผสมทุกบท 20 ข้อ'],['all',`ทุกรูปแบบ ${np} ข้อ`]];
+  return [['10','สุ่ม 10 ข้อ'],['20','สุ่ม 20 ข้อ']].filter(o=>+o[0]<np).concat([['all',`ครบทุกรูปแบบ ${np} ข้อ`]]);
+}
+function seenCounts(){ const m={}; loadHist().forEach(r=>Object.keys(r.per).forEach(id=>{ m[id]=(m[id]||0)+1; })); return m; }
+// One question per pattern; within a pattern prefer the variant this browser has seen least.
+function chooseVariant(ids, seen){
+  const min=Math.min(...ids.map(i=>seen[i]||0)), c=ids.filter(i=>(seen[i]||0)===min);
+  return c[Math.floor(Math.random()*c.length)];
 }
 // Round-robin over topics so every topic shows up before any topic repeats.
 function pickSet(lv, pool, size){
   if(size==='aonly') return shuffle(ALEVEL_IDS);
-  if(size==='all') return lv==='alevel' ? shuffle(pool) : pool.slice().sort((a,b)=>TOPICS[QBY[a].topic].n-TOPICS[QBY[b].topic].n || a-b);
-  const n=Math.min(+size, pool.length);
+  const seen=seenCounts(), groups=groupByPattern(pool), pats=Object.keys(groups);
+  const one = k => chooseVariant(groups[k], seen);
+  if(size==='all'){ const ids=pats.map(one);
+    return lv==='alevel' ? shuffle(ids) : ids.sort((a,b)=>TOPICS[QBY[a].topic].n-TOPICS[QBY[b].topic].n || a-b); }
+  const n=Math.min(+size, pats.length);
   const out = lv==='alevel' ? shuffle(ALEVEL_IDS).slice(0,n) : [];
-  const rest = pool.filter(id=>!out.includes(id));
-  const pools = shuffle([...new Set(rest.map(id=>QBY[id].topic))]).map(t=>shuffle(rest.filter(id=>QBY[id].topic===t)));
-  while(out.length<n){ for(const p of pools){ if(p.length && out.length<n) out.push(p.shift()); } }
+  const used=new Set(out.map(id=>patOf(QBY[id])));
+  const rest=pats.filter(k=>!used.has(k));
+  const pools = shuffle([...new Set(rest.map(k=>QBY[groups[k][0]].topic))]).map(t=>shuffle(rest.filter(k=>QBY[groups[k][0]].topic===t)));
+  while(out.length<n){ for(const p of pools){ if(p.length && out.length<n) out.push(one(p.shift())); } }
   return shuffle(out);
+}
+// A different question of the same pattern (for "retry what I got wrong").
+function siblingOf(id){
+  const k=patOf(QBY[id]), sib=Q.filter(q=>patOf(q)===k && q.id!==id && !q.alevel).map(q=>q.id);
+  return sib.length ? chooseVariant(sib, seenCounts()) : id;
 }
 function topicAcc(t){
   let n=0,ok=0;
@@ -2388,7 +2757,7 @@ function renderLevels(){
     const last=lastOf(k);
     const meta = k==='alevel'
       ? `<span>${ALEVEL_IDS.length} ข้อแนว A-Level</span><span>+ ผสมทุกบท</span>`
-      : `<span>${L.topics.length} เรื่อง</span><span>${ids.length} ข้อ</span>`;
+      : `<span>${L.topics.length} เรื่อง</span><span>${patCount(ids)} รูปแบบ · ${ids.length} ข้อ</span>`;
     return `<button class="lv ${k==='alevel'?'alv':''} ${k===LV?'sel':''}" style="--c:${L.c}" data-lv="${k}" role="tab" aria-selected="${k===LV}">
       <span class="ico">${L.ico}</span><span class="big">${L.name}</span><small>${L.full}</small>
       <div class="meta">${meta}${last?`<span>ล่าสุด ${last.score}/${last.total}</span>`:''}</div></button>`;
@@ -2413,10 +2782,10 @@ function renderLevelBody(){
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
         <span style="display:flex;gap:8px"><button class="btn ghost" id="selAll">เลือกทั้งหมด</button><button class="btn ghost" id="selNone">ล้าง</button></span></div>
       <div class="tgrid">${L.topics.map(t=>{
-        const n=Q.filter(q=>q.topic===t&&!q.alevel).length, a=topicAcc(t), T=TOPICS[t];
+        const tq=Q.filter(q=>q.topic===t&&!q.alevel), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
         return `<button class="tcard" style="--c:${T.c}" data-t="${t}" aria-pressed="${SEL.has(t)}" ${n?'':'disabled'}>
           ${tileHTML(t)}<div class="info"><h4>${T.name}</h4>
-          <div class="sub">บทที่ ${T.ch} · ${n} ข้อ ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
+          <div class="sub">บทที่ ${T.ch} · ${np<n?`${np} รูปแบบ (${n} ข้อ)`:`${n} ข้อ`} ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
           <div class="acc"><i style="width:${a?a.p:0}%;background:${!a?'transparent':a.p>=67?'var(--ok)':a.p>=34?'var(--warn)':'var(--bad)'}"></i></div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
       }).join('')}</div>`;
@@ -2431,8 +2800,9 @@ function renderStart(){
   if(!opts.some(o=>o[0]===SIZE)) SIZE=opts[0][0];
   $('#sizeSeg').innerHTML=opts.map(([k,l])=>`<button data-size="${k}" class="${k===SIZE?'on':''}" role="radio" aria-checked="${k===SIZE}">${l}</button>`).join('');
   $('#sizeSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ SIZE=b.dataset.size; renderStart(); });
-  const sc=$('#selCount'); if(sc) sc.textContent=`เลือก ${SEL.size}/${LEVELS[LV].topics.length} เรื่อง · ${pool.length} ข้อ`;
-  const n = SIZE==='aonly'?ALEVEL_IDS.length : SIZE==='all'?pool.length : Math.min(+SIZE,pool.length);
+  const np=patCount(pool);
+  const sc=$('#selCount'); if(sc) sc.textContent=`เลือก ${SEL.size}/${LEVELS[LV].topics.length} เรื่อง · ${np} รูปแบบ (${pool.length} ข้อ)`;
+  const n = SIZE==='aonly'?ALEVEL_IDS.length : SIZE==='all'?np : Math.min(+SIZE,np);
   const scope = LV==='alevel' ? 'A-Level' : `${LEVELS[LV].name} · ${SEL.size} เรื่อง`;
   $('#startSummary').innerHTML = pool.length
     ? `<b>${scope}</b> · ${n} ข้อ · ${MODE==='exam'?'โหมดสอบ':'โหมดฝึก'}<br><span style="font-size:14px">ทุกข้อให้เลือกความมั่นใจด้วย — ระบบแยกข้อที่ “เดาถูก” กับ “มั่นใจแต่เข้าใจผิด”</span>`
@@ -2810,6 +3180,44 @@ function myHistStats(){
 }
 
 /* ============ RESULT ============ */
+/* ---- progress: compare each pattern in this attempt with the last time that pattern was answered ---- */
+function progressData(rec){
+  const prev=loadHist().filter(r=>r.date<rec.date), last={};
+  prev.forEach(r=>Object.entries(r.per).forEach(([id,p])=>{ const q=QBY[id]; if(q) last[patOf(q)]={c:p.c, id:+id}; }));
+  const cats={up:[],still:[],down:[],keep:[]};
+  let fresh=0, newVariant=0;
+  Object.entries(rec.per).forEach(([id,p])=>{
+    const q=QBY[id]; if(!q) return; const l=last[patOf(q)];
+    if(!l){ fresh++; return; }
+    if(l.id!==+id) newVariant++;
+    cats[!l.c&&p.c?'up':!l.c&&!p.c?'still':l.c&&!p.c?'down':'keep'].push(+id);
+  });
+  const seen=cats.up.length+cats.still.length+cats.down.length+cats.keep.length;
+  const before=seen?Math.round((cats.keep.length+cats.down.length)/seen*100):null;
+  const now=seen?Math.round((cats.up.length+cats.keep.length)/seen*100):null;
+  const trend=prev.filter(r=>r.meta&&rec.meta&&r.meta.lv===rec.meta.lv).slice(-4).map(r=>pct(r.score,r.total)).concat([pct(rec.score,rec.total)]);
+  return {cats, fresh, newVariant, seen, before, now, trend};
+}
+function progressHTML(rec, ids){
+  const d=progressData(rec), no=id=>ids.indexOf(id)+1;
+  const chips=list=>list.length?`<div class="ids">${list.map(id=>`<button data-goto="${id}">ข้อ ${no(id)}</button>`).join('')}</div>`:'';
+  const trend=d.trend.length>1?`<div class="trend" aria-label="คะแนนย้อนหลัง">${d.trend.map((v,i)=>`<i class="${i===d.trend.length-1?'cur':''}" style="height:${Math.max(6,v)}%"><span>${v}%</span></i>`).join('')}</div>
+    <div class="note">คะแนนรอบล่าสุด ${d.trend.length} ครั้งในระดับเดียวกัน (แท่งสีส้ม = รอบนี้)</div>`:'';
+  if(!d.seen) return `<div class="card panel prog"><h3>📈 พัฒนาการ</h3>
+    <p class="lead">รอบนี้เป็นครั้งแรกของรูปแบบโจทย์เหล่านี้ — ทำอีกรอบ ระบบจะสุ่ม<b>ข้อใหม่ในรูปแบบเดิม</b> แล้วบอกว่าพัฒนาขึ้นไหม</p>${trend}</div>`;
+  const diff=d.now-d.before, cls=diff>0?'up':diff<0?'down':'eq';
+  return `<div class="card panel prog"><h3>📈 พัฒนาการเทียบครั้งก่อน</h3>
+    <p class="lead">เทียบ ${d.seen} รูปแบบที่เคยทำมาแล้ว${d.newVariant?` · ${d.newVariant} ข้อเป็นโจทย์ใหม่ในรูปแบบเดิม`:''}${d.fresh?` · อีก ${d.fresh} รูปแบบเพิ่งทำครั้งแรก`:''}</p>
+    <div class="pp"><span>ครั้งก่อน</span><b>${d.before}%</b><span>→ รอบนี้</span><b>${d.now}%</b>
+      <span class="delta ${cls}">${diff>0?'▲ +':diff<0?'▼ ':'= '}${diff} จุด</span></div>
+    <div class="pgrid">
+      <div class="pbox up"><b>${d.cats.up.length}</b><span>พัฒนาขึ้น (เคยผิด → ถูก)</span>${chips(d.cats.up)}</div>
+      <div class="pbox still"><b>${d.cats.still.length}</b><span>ยังพลาดซ้ำ</span>${chips(d.cats.still)}</div>
+      <div class="pbox down"><b>${d.cats.down.length}</b><span>พลาดใหม่ (เคยถูก → ผิด)</span>${chips(d.cats.down)}</div>
+      <div class="pbox"><b>${d.cats.keep.length}</b><span>ถูกต่อเนื่อง</span></div>
+    </div>${trend}</div>`;
+}
+
 function renderResult(rec){
   show('result');
   // records saved before levels existed have no meta → treat them as the whole bank
@@ -2864,6 +3272,8 @@ function renderResult(rec){
       </div>
     </div>
   </div>
+
+  ${progressHTML(rec, ids)}
 
   <div class="grid2">
     <div class="card panel">
@@ -2926,7 +3336,7 @@ function renderResult(rec){
   </div>
 
   <div class="actions">
-    ${ids.some(id=>!P[id].c)?`<button class="btn primary" id="retryWrong">ทำเฉพาะข้อที่ผิด (${ids.filter(id=>!P[id].c).length})</button>`:''}
+    ${ids.some(id=>!P[id].c)?`<button class="btn primary" id="retryWrong">ฝึกรูปแบบที่ผิดด้วยข้อใหม่ (${ids.filter(id=>!P[id].c).length})</button>`:''}
     ${rec._draws&&rec._draws.length?`<button class="btn ghost" id="sendDraws">☁️ ส่งกระดาษทด ${rec._draws.length} รูปเข้า Drive</button>`:''}
     <button class="btn ghost" id="retryAll">ทำใหม่ทั้งชุด</button>
     <button class="btn ghost" id="homeBtn2">เลือกเรื่องอื่น</button>
@@ -2944,7 +3354,15 @@ function renderResult(rec){
     missSrc=src;
     const st = src==='class' ? cls : myHistStats();
     const nAttempts=loadHist().length;
-    let rows=scopeQ.map(q=>({q, ...st[q.id]}));
+    // one row per pattern: variants of the same skill are counted together
+    const byPat={}; scopeQ.forEach(q=>{ (byPat[patOf(q)]=byPat[patOf(q)]||[]).push(q); });
+    let rows=Object.values(byPat).map(qs=>{
+      const rep=qs.find(q=>!q.gen)||qs[0], s=qs.map(q=>st[q.id]);
+      const n=s.reduce((a,x)=>a+(x.n??1),0), wrong=s.reduce((a,x)=>a+(x.n!=null?x.wrong:x.rate),0);
+      const ec={}; s.forEach(x=>{ if(x.top) ec[x.top]=(ec[x.top]||0)+1; });
+      const mine=qs.find(q=>P[q.id]);
+      return {q:rep, n, rate:n?wrong/n:0, top:Object.entries(ec).sort((a,b)=>b[1]-a[1])[0]?.[0], mineWrong:mine&&!P[mine.id].c, vars:qs.length};
+    });
     if(src==='me') rows=rows.filter(r=>r.n>0);
     rows.sort((a,b)=>b.rate-a.rate);
     $('#missMore').hidden = rows.length<=10;
@@ -2953,8 +3371,8 @@ function renderResult(rec){
     $('#missList').innerHTML=rows.map((r,k)=>`
       <div class="missrow ${k<3&&r.rate>0?'top':''}">
         <div class="rank">${k+1}</div>
-        <div class="q"><div>${r.q.short}</div><small>${TOPICS[r.q.topic].name}${r.top?` · พลาดบ่อย: ${ERR[r.top].name}`:''}</small></div>
-        <div class="track"><i style="width:${Math.round(r.rate*100)}%"></i>${P[r.q.id]&&!P[r.q.id].c&&src==='class'?`<span class="me" style="left:calc(${Math.round(r.rate*100)}% - 2px)" title="รอบนี้คุณผิดข้อนี้"></span>`:''}</div>
+        <div class="q"><div>${r.q.short}</div><small>${TOPICS[r.q.topic].name}${r.vars>1?` · ${r.vars} ข้อในรูปแบบนี้`:''}${r.top?` · พลาดบ่อย: ${ERR[r.top].name}`:''}</small></div>
+        <div class="track"><i style="width:${Math.round(r.rate*100)}%"></i>${r.mineWrong&&src==='class'?`<span class="me" style="left:calc(${Math.round(r.rate*100)}% - 2px)" title="รอบนี้คุณผิดข้อนี้"></span>`:''}</div>
         <div class="val">${Math.round(r.rate*100)}%</div>
       </div>`).join('');
     $('#meLegend').style.display = src==='class'?'':'none';
@@ -3005,7 +3423,8 @@ function renderResult(rec){
   $('#homeBtn').onclick=()=>{ refreshHome(); show('home'); };
   $('#homeBtn2').onclick=()=>{ if(m){ LV=m.lv; SEL=new Set(m.topics); SIZE=m.size; } openSubject(); };
   $('#retryAll').onclick=()=>startQuiz(rec.mode, pickSet(m.lv, poolFor(m.lv,m.topics), m.size), m);
-  const rw=$('#retryWrong'); if(rw) rw.onclick=()=>startQuiz('practice', ids.filter(id=>!P[id].c), m);
+  // retry the patterns I got wrong with a different question of the same pattern
+  const rw=$('#retryWrong'); if(rw) rw.onclick=()=>startQuiz('practice', [...new Set(ids.filter(id=>!P[id].c).map(siblingOf))], m);
 }
 </script>
 </body>
