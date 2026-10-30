@@ -614,10 +614,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   <p>ใส่ชื่อก่อนเริ่มทำข้อสอบ ชื่อจะแสดงบนผลสอบและรูปกระดาษทด (เก็บไว้ในเครื่องนี้เท่านั้น)</p>
   <form id="nameForm" method="dialog">
     <label class="field">ชื่อ-นามสกุล หรือชื่อเล่น *<input type="text" id="stuName" required maxlength="60" autocomplete="name" placeholder="เช่น สมชาย ใจดี"></label>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <label class="field">ชั้น/ห้อง<input type="text" id="stuRoom" maxlength="12" placeholder="เช่น 4/2"></label>
-      <label class="field">เลขที่<input type="text" id="stuNo" maxlength="4" inputmode="numeric" placeholder="เช่น 15"></label>
-    </div>
+    <label class="field">โรงเรียน *<input type="text" id="stuSchool" required maxlength="80" autocomplete="organization" placeholder="เช่น โรงเรียนขอนแก่นวิทยายน"></label>
     <div class="row"><button type="button" class="btn ghost" id="nameCancel" hidden>ยกเลิก</button><button type="submit" class="btn primary">เริ่มใช้งาน</button></div>
   </form>
 </dialog>
@@ -3264,18 +3261,19 @@ $('#cfgTest').onclick=async()=>{ const c=readCfgForm(); if(!c.url) return toast(
 const STU_KEY='chemlab.student.v1';
 function getStudent(){ try{ return JSON.parse(localStorage.getItem(STU_KEY))||null; }catch(e){ return null; } }
 function studentLabel(){ const s=getStudent(); if(!s||!s.name) return '';
-  return `${s.name}${s.room?` ม.${s.room}`:''}${s.no?` เลขที่ ${s.no}`:''}`; }
+  return `${s.name}${s.school?` · ${s.school}`:''}`; }
 function renderWho(){ const s=getStudent(); $('#whoName').textContent = s&&s.name ? s.name.split(' ')[0].slice(0,14) : 'ใส่ชื่อ'; }
 function openName(first){
   const s=getStudent()||{}, d=$('#nameDlg');
-  $('#stuName').value=s.name||''; $('#stuRoom').value=s.room||''; $('#stuNo').value=s.no||'';
+  $('#stuName').value=s.name||''; $('#stuSchool').value=s.school||'';
   $('#nameCancel').hidden=!!first; d.dataset.first=first?'1':'';
   d.showModal(); setTimeout(()=>$('#stuName').focus(),50);
 }
 $('#nameForm').onsubmit=e=>{
-  const name=$('#stuName').value.trim().replace(/\s+/g,' ');
+  const name=$('#stuName').value.trim().replace(/\s+/g,' '), school=$('#stuSchool').value.trim().replace(/\s+/g,' ');
   if(!name){ e.preventDefault(); $('#stuName').focus(); return; }
-  try{ localStorage.setItem(STU_KEY, JSON.stringify({name, room:$('#stuRoom').value.trim(), no:$('#stuNo').value.trim()})); }catch(err){}
+  if(!school){ e.preventDefault(); $('#stuSchool').focus(); return; }
+  try{ localStorage.setItem(STU_KEY, JSON.stringify({name, school})); }catch(err){}
   renderWho(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
 };
 // the first-visit prompt cannot be dismissed with Esc
@@ -3283,7 +3281,8 @@ $('#nameDlg').addEventListener('cancel',e=>{ if($('#nameDlg').dataset.first) e.p
 $('#nameCancel').onclick=()=>$('#nameDlg').close();
 $('#whoBtn').onclick=()=>openName(false);
 renderWho();
-if(!getStudent()) openName(true);
+// ask again if nothing is saved yet, or the saved profile predates the school field
+if(!getStudent() || !getStudent().school) openName(true);
 
 let toastT=null;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),3200); }
