@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>ChemLab ทดสอบเคมี</title>
+<title>ChemLab by Sky</title>
+<meta name="description" content="ข้อสอบวิทยาศาสตร์และแบบฝึกหัด — ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -347,6 +348,47 @@ sub,sup{font-size:.72em;line-height:0}
 .bubble:disabled{cursor:default}
 .tcard.exam .tile small{font-size:9px}
 @media (max-width:575px){.bubbles{gap:8px}.bubble{width:50px;height:50px;font-size:19px}}
+/* ---------- REWARDS ---------- */
+.kicker{display:inline-block;font:600 14px Mitr;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:4px 12px;border-radius:999px;margin-bottom:10px}
+.player{display:flex;gap:18px;align-items:center;padding:18px;margin:6px 0 4px;flex-wrap:wrap}
+.lvtile{width:82px;height:82px;font-size:30px;flex:none}
+.lvtile small{font-size:12px}
+.lvtile i{position:absolute;bottom:4px;left:0;right:0;text-align:center;font:500 10px "IBM Plex Sans Thai";font-style:normal;color:var(--soft);white-space:nowrap;overflow:hidden}
+.pinfo{flex:1;min-width:200px}
+.pname{font:600 17px Mitr}
+.plv{color:var(--soft);font-size:14px;margin-bottom:6px}
+.xpbar{height:12px;border-radius:99px;background:var(--bg2);overflow:hidden}
+.xpbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#ffb347);transition:width 1s}
+.xptext{font-size:12px;color:var(--muted);margin-top:4px}
+.pstats{display:flex;gap:10px}
+.pstats>div{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center;min-width:76px}
+.pstats b{display:block;font:700 20px "JetBrains Mono"}
+.pstats span{font-size:12px;color:var(--muted)}
+.tgroup{font-size:16px;margin:14px 0 8px;color:var(--soft)}
+.trophies{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.trophy{--c:#888;display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface)}
+.trophy .medal{font-size:30px;width:42px;text-align:center;flex:none}
+.trophy.t0{opacity:.62}
+.trophy.t0 .medal{filter:grayscale(1)}
+.trophy.t3{border-color:#e0b100;background:linear-gradient(135deg,color-mix(in srgb,#ffd84d 22%,var(--surface)),var(--surface) 70%)}
+.trophy.grand{border-width:2px;border-color:var(--c)}
+.tinfo{flex:1;min-width:0;display:flex;flex-direction:column}
+.tinfo b{font-size:14px}
+.tinfo span{font-size:12px;color:var(--soft)}
+.tinfo small{font-size:11px;color:var(--muted)}
+.stars{color:#e0a800;font-size:14px;letter-spacing:1px;flex:none}
+.reward{display:flex;gap:18px;align-items:center;margin-top:18px;position:relative;overflow:hidden;flex-wrap:wrap}
+.reward .rinfo{flex:1;min-width:220px}
+.reward h3{font-size:19px}
+.xpgain{font:700 28px "JetBrains Mono";color:var(--accent);margin:2px 0 6px}
+.newt{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.reward.levelup{border:2px solid var(--accent)}
+.reward.levelup .lvtile{animation:pop .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{0%{transform:scale(.4) rotate(-20deg)}100%{transform:none}}
+.confetti{position:absolute;inset:0;pointer-events:none}
+.confetti i{position:absolute;top:-24px;left:calc(var(--i) * 5%);font-style:normal;animation:fall 2.4s ease-in forwards;animation-delay:calc(var(--i) * 60ms)}
+@keyframes fall{to{transform:translateY(260px) rotate(300deg);opacity:0}}
+@media (max-width:575px){.pstats{width:100%}.pstats>div{flex:1;min-width:0}}
 /* ---------- PROGRESS ---------- */
 .prog{margin-top:18px}
 .prog .pp{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:6px 0 14px;color:var(--soft)}
@@ -444,7 +486,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 <section id="home" class="screen on">
   <div class="wrap">
     <div class="top">
-      <div class="brand"><span class="tile" style="--c:var(--accent)"><small>6</small>C</span><span>ChemLab<span class="long"> · ห้องแล็บข้อสอบ</span></span></div>
+      <div class="brand"><span class="tile" style="--c:var(--accent)"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></div>
       <div class="spacer"></div>
       <button class="iconbtn" id="whoBtn" aria-label="เปลี่ยนชื่อผู้ใช้">👤 <span id="whoName">ใส่ชื่อ</span></button>
       <button class="iconbtn" id="homeCfg" aria-label="ตั้งค่า Google Drive">⚙️</button>
@@ -453,8 +495,9 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
     <div class="hero">
       <div>
-        <h1>ทำข้อสอบแล้ว<br>รู้เลยว่า<em>พลาดตรงไหน</em></h1>
-        <p>ทุกตัวเลือกผิดถูกออกแบบให้บอก “วิธีคิดที่พลาด” — แปลงหน่วยผิด กลับสูตร ลืมอัตราส่วนโมล หรือเข้าใจหลักการคลาดเคลื่อน ทำเสร็จได้รายงานวิเคราะห์ทันที</p>
+        <div class="kicker">ChemLab by Sky</div>
+        <h1>ข้อสอบ<em>วิทยาศาสตร์</em><br>และแบบฝึกหัด</h1>
+        <p>ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น</p>
         <div class="steps-row">
           <span class="chip">คลัง <b id="cntQ"></b> ข้อ</span>
           <span class="chip"><b id="cntT"></b> หัวข้อ</span>
@@ -472,6 +515,8 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       </div>
     </div>
 
+    <div id="playerCard"></div>
+
     <div class="section-title"><h2>เลือกวิชา</h2><span>เริ่มจากเคมี วิชาอื่นตามมา</span></div>
     <div class="subjects">
       <button class="subject" style="--c:#ff6b4a" id="chemCard"><span class="blob"></span><span class="ico">⚗️</span><h3>เคมี</h3><p>ม.4 · ม.5 · ม.6 · แนว A-Level</p><span class="go">เข้าสู่คลังข้อสอบ →</span></button>
@@ -479,6 +524,9 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <button class="subject" style="--c:#16936a" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🧬</span><h3>ชีววิทยา</h3><p>เซลล์ พันธุศาสตร์ ระบบร่างกาย</p></button>
       <button class="subject" style="--c:#7c5cff" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🌏</span><h3>โลกและอวกาศ</h3><p>ธรณี บรรยากาศ ดาราศาสตร์</p></button>
     </div>
+
+    <div class="section-title"><h2>🏆 ห้องถ้วยรางวัล</h2><span id="trophyCount"></span></div>
+    <div id="trophyRoom"></div>
 
     <div style="height:50px"></div>
   </div>
@@ -2754,6 +2802,82 @@ function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.t
   });
 })();
 
+/* ============ REWARDS: XP → level (one element per level), medals per topic / paper ============ */
+// Kept in its own store so XP never drops when old history entries are trimmed.
+const PKEY='chemlab.progress.v1';
+const ELEMENTS=[['H','ไฮโดรเจน'],['He','ฮีเลียม'],['Li','ลิเทียม'],['Be','เบริลเลียม'],['B','โบรอน'],['C','คาร์บอน'],['N','ไนโตรเจน'],
+  ['O','ออกซิเจน'],['F','ฟลูออรีน'],['Ne','นีออน'],['Na','โซเดียม'],['Mg','แมกนีเซียม'],['Al','อะลูมิเนียม'],['Si','ซิลิคอน'],['P','ฟอสฟอรัส'],
+  ['S','กำมะถัน'],['Cl','คลอรีน'],['Ar','อาร์กอน'],['K','โพแทสเซียม'],['Ca','แคลเซียม'],['Sc','สแกนเดียม'],['Ti','ไทเทเนียม'],['V','วาเนเดียม'],
+  ['Cr','โครเมียม'],['Mn','แมงกานีส'],['Fe','เหล็ก'],['Co','โคบอลต์'],['Ni','นิกเกิล'],['Cu','ทองแดง'],['Zn','สังกะสี'],['Ga','แกลเลียม'],
+  ['Ge','เจอร์เมเนียม'],['As','สารหนู'],['Se','ซีลีเนียม'],['Br','โบรมีน'],['Kr','คริปทอน'],['Rb','รูบิเดียม'],['Sr','สตรอนเชียม'],['Y','อิตเทรียม'],
+  ['Zr','เซอร์โคเนียม'],['Nb','ไนโอเบียม'],['Mo','โมลิบดีนัม'],['Tc','เทคนีเชียม'],['Ru','รูทีเนียม'],['Rh','โรเดียม'],['Pd','แพลเลเดียม'],
+  ['Ag','เงิน'],['Cd','แคดเมียม'],['In','อินเดียม'],['Sn','ดีบุก'],['Sb','พลวง'],['Te','เทลลูเรียม'],['I','ไอโอดีน'],['Xe','ซีนอน']];
+const elementFor = L => ELEMENTS[L-1] || ['★', `เลเวล ${L}`];
+const levelColor = L => ['#7c5cff','#0ea5b7','#16936a','#d99413','#ff6b4a','#e0438f','#9b5de5'][Math.floor((L-1)/8)%7];
+// XP: correct answer 10, wrong-but-attempted 2, finishing a set of 5+ questions 20
+function xpOfRecord(r){ let x=0, n=0; for(const p of Object.values(r.per)){ n++; x += p.c?10:(p.err==='skip'?0:2); } return x + (n>=5?20:0); }
+const xpNeed = L => 60+40*L;                       // XP to go from level L to L+1
+function levelOf(xp){ let L=1, rest=xp; while(rest>=xpNeed(L)){ rest-=xpNeed(L); L++; } return {L, into:rest, need:xpNeed(L)}; }
+const emptyProg = () => ({v:1, xp:0, runs:0, pats:{}, exams:{}});
+function applyRecord(p, r){
+  p.xp+=xpOfRecord(r); p.runs++;
+  for(const [id,x] of Object.entries(r.per)){ const q=QBY[id]; if(!q) continue;
+    const s=p.pats[patOf(q)]||(p.pats[patOf(q)]={a:0,c:0}); s.a++; if(x.c) s.c++; }
+  const m=r.meta, sid=m&&m.lv==='alevel'&&m.size==='year'&&(m.topics||[])[0];
+  if(sid) p.exams[sid]=Math.max(p.exams[sid]||0, pct(r.score,r.total));
+  return p;
+}
+function saveProg(p){ try{ localStorage.setItem(PKEY, JSON.stringify(p)); }catch(e){} }
+function loadProg(){
+  try{ const p=JSON.parse(localStorage.getItem(PKEY)); if(p&&p.v===1) return p; }catch(e){}
+  const p=emptyProg(); loadHist().forEach(r=>applyRecord(p,r)); saveProg(p); return p;   // first run: rebuild from history
+}
+const TIER=['ยังไม่ได้','ทองแดง','เงิน','ทอง'], MEDAL=['🔒','🥉','🥈','🥇'];
+const topicPats = t => [...new Set(Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam).map(patOf))];
+// Topic medals: bronze = half the patterns tried, silver = every pattern tried, gold = every pattern answered correctly once.
+// Paper medals: bronze = finished the whole paper, silver = best ≥ 60%, gold = best ≥ 80%.
+// Grade cups: the lowest medal among that grade's topics.
+function trophyList(p){
+  const list=[];
+  for(const lv of ['m4','m5','m6']) for(const t of LEVELS[lv].topics){
+    const pats=topicPats(t), P=pats.length; if(!P) continue;
+    const done=pats.filter(k=>p.pats[k]&&p.pats[k].a).length, mast=pats.filter(k=>p.pats[k]&&p.pats[k].c).length;
+    const tier = mast===P?3 : done===P?2 : done>=Math.ceil(P/2)?1 : 0;
+    list.push({id:'t:'+t, group:lv, name:TOPICS[t].name, sym:TOPICS[t].sym, c:TOPICS[t].c, tier,
+      prog:`ทำแล้ว ${done}/${P} · ถูกแล้ว ${mast}/${P} รูปแบบ`,
+      next:['ทำให้ได้ '+Math.ceil(P/2)+' รูปแบบ','ทำให้ครบ '+P+' รูปแบบ','ตอบถูกให้ครบทุกรูปแบบ','ครบแล้ว!'][tier]});
+  }
+  for(const s of EXAM_SETS){ const b=p.exams[s.id], tier=b==null?0:b>=80?3:b>=60?2:1;
+    list.push({id:'e:'+s.id, group:'exam', name:s.name, sym:String(s.year).slice(2), c:s.id[0]==='a'?'#9b5de5':'#2563eb', tier,
+      prog:b==null?'ยังไม่เคยทำทั้งชุด':`คะแนนดีที่สุด ${b}%`, next:['ทำให้ครบทั้งชุด','ทำให้ได้ 60% ขึ้นไป','ทำให้ได้ 80% ขึ้นไป','ครบแล้ว!'][tier]}); }
+  for(const lv of ['m4','m5','m6']){ const ts=list.filter(x=>x.group===lv); if(!ts.length) continue;
+    const tier=Math.min(...ts.map(x=>x.tier));
+    list.push({id:'g:'+lv, group:'grand', grand:true, name:`ถ้วยรวม ${LEVELS[lv].name}`, sym:LEVELS[lv].name, c:LEVELS[lv].c, tier,
+      prog:`มีเหรียญแล้ว ${ts.filter(x=>x.tier).length}/${ts.length} เรื่อง`, next:tier===3?'ครบแล้ว!':`ทุกเรื่องต้องได้อย่างน้อยเหรียญ${TIER[tier+1]}`}); }
+  return list;
+}
+const medalsOf = list => list.reduce((a,x)=>a+x.tier,0);
+
+function renderPlayer(){
+  const p=loadProg(), lv=levelOf(p.xp), [sym,ename]=elementFor(lv.L), list=trophyList(p);
+  let who=''; try{ who=studentLabel(); }catch(e){}
+  $('#playerCard').innerHTML=`<div class="card player">
+    <span class="tile lvtile" style="--c:${levelColor(lv.L)}"><small>${lv.L}</small>${sym}<i>${ename}</i></span>
+    <div class="pinfo"><div class="pname">${who?esc(who):'ยังไม่ได้ใส่ชื่อ'}</div>
+      <div class="plv">เลเวล <b>${lv.L}</b> · ธาตุ${ename}</div>
+      <div class="xpbar" role="progressbar" aria-valuenow="${lv.into}" aria-valuemax="${lv.need}"><i style="width:${Math.round(lv.into/lv.need*100)}%"></i></div>
+      <div class="xptext">${lv.into}/${lv.need} XP ถึงเลเวล ${lv.L+1} · รวม ${p.xp} XP</div></div>
+    <div class="pstats"><div><b>${list.filter(x=>x.tier===3).length}</b><span>🥇 ทอง</span></div><div><b>${list.filter(x=>x.tier).length}/${list.length}</b><span>🏅 มีเหรียญ</span></div><div><b>${p.runs}</b><span>📝 ชุดที่ทำ</span></div></div>
+  </div>`;
+  const groups=[['m4','ม.4'],['m5','ม.5'],['m6','ม.6'],['exam','ข้อสอบจริง'],['grand','ถ้วยรวม']];
+  $('#trophyCount').textContent=`ได้แล้ว ${medalsOf(list)}/${list.length*3} ดาว`;
+  $('#trophyRoom').innerHTML=groups.map(([g,label])=>{ const ts=list.filter(x=>x.group===g); if(!ts.length) return '';
+    return `<h3 class="tgroup">${label}</h3><div class="trophies">${ts.map(x=>`<div class="trophy t${x.tier}${x.grand?' grand':''}" style="--c:${x.c}" title="${x.next}">
+      <div class="medal">${x.grand?(x.tier?['','🏆','🏆','🏆'][x.tier]:'🔒'):MEDAL[x.tier]}</div>
+      <div class="tinfo"><b>${x.name}</b><span>${x.tier?`เหรียญ${TIER[x.tier]}`:'ยังไม่ได้เหรียญ'} · ${x.prog}</span><small>ต่อไป: ${x.next}</small></div>
+      <div class="stars" aria-label="${x.tier} จาก 3">${'★'.repeat(x.tier)}${'☆'.repeat(3-x.tier)}</div></div>`).join('')}</div>`; }).join('');
+}
+
 /* ============ HOME ============ */
 let MODE='exam';
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
@@ -2762,6 +2886,7 @@ document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
 function refreshHome(){
   const h=loadHist();
   $('#histChip').innerHTML = h.length ? `ทำไปแล้ว <b>${h.length}</b> ครั้ง · ล่าสุด <b>${h[h.length-1].score}/${h[h.length-1].total}</b>` : 'ยังไม่มีประวัติ';
+  renderPlayer();
 }
 $('#cntQ').textContent=Q.length; $('#cntT').textContent=Object.keys(TOPICS).length;
 $('#cntE').textContent=Object.keys(ERR).filter(k=>k!=='calc'&&k!=='skip').length;
@@ -2857,9 +2982,10 @@ function renderLevelBody(){
       <div class="tgrid">${EXAM_SETS.map(s=>{
         const nn=s.q.filter(x=>x.type==='num').length, runs=hist.filter(r=>r.meta&&r.meta.lv==='alevel'&&r.meta.size==='year'&&(r.meta.topics||[])[0]===s.id);
         const last=runs[runs.length-1], best=runs.length?Math.max(...runs.map(r=>pct(r.score,r.total))):null;
-        return `<button class="tcard exam" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'}" data-set="${s.id}" aria-pressed="${SEL.has(s.id)}">
+        const medal=trophyList(loadProg()).find(x=>x.id==='e:'+s.id)?.tier||0;
+        return `<button class="tcard exam" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'}" data-set="${s.id}" aria-pressed="${SEL.has(s.id)}" title="${medal?'เหรียญ'+TIER[medal]:''}">
           <span class="tile" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'};width:58px;height:52px;font-size:17px"><small>${s.id[0]==='a'?'A-L':'9สามัญ'}</small>${String(s.year).slice(2)}</span>
-          <div class="info"><h4>${s.name}</h4><div class="sub">${s.q.length} ข้อ${nn?` (ปรนัย ${s.q.length-nn} · เติมตัวเลข ${nn})`:' ปรนัย'}</div>
+          <div class="info"><h4>${s.name} ${medal?MEDAL[medal]:''}</h4><div class="sub">${s.q.length} ข้อ${nn?` (ปรนัย ${s.q.length-nn} · เติมตัวเลข ${nn})`:' ปรนัย'}</div>
           <div class="sub">${last?`ล่าสุด ${last.score}/${last.total} · ดีที่สุด ${best}%`:'ยังไม่เคยทำ'}</div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
       }).join('')}</div>
@@ -2868,14 +2994,14 @@ function renderLevelBody(){
   } else {
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
         <span style="display:flex;gap:8px"><button class="btn ghost" id="selAll">เลือกทั้งหมด</button><button class="btn ghost" id="selNone">ล้าง</button></span></div>
-      <div class="tgrid">${L.topics.map(t=>{
+      <div class="tgrid">${(()=>{ var tro=Object.fromEntries(trophyList(loadProg()).filter(x=>x.id.startsWith('t:')).map(x=>[x.id.slice(2),x.tier])); return L.topics.map(t=>{
         const tq=Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
         return `<button class="tcard" style="--c:${T.c}" data-t="${t}" aria-pressed="${SEL.has(t)}" ${n?'':'disabled'}>
-          ${tileHTML(t)}<div class="info"><h4>${T.name}</h4>
+          ${tileHTML(t)}<div class="info"><h4>${T.name} ${(tro[t]||0)?MEDAL[tro[t]]:''}</h4>
           <div class="sub">บทที่ ${T.ch} · ${np<n?`${np} รูปแบบ (${n} ข้อ)`:`${n} ข้อ`} ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
           <div class="acc"><i style="width:${a?a.p:0}%;background:${!a?'transparent':a.p>=67?'var(--ok)':a.p>=34?'var(--warn)':'var(--bad)'}"></i></div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
-      }).join('')}</div>`;
+      }).join(''); })()}</div>`;
     B.querySelectorAll('.tcard').forEach(b=>b.onclick=()=>{ const t=b.dataset.t; SEL.has(t)?SEL.delete(t):SEL.add(t); b.setAttribute('aria-pressed',SEL.has(t)); renderStart(); });
     $('#selAll').onclick=()=>{ SEL=new Set(L.topics); renderLevelBody(); };
     $('#selNone').onclick=()=>{ SEL.clear(); renderLevelBody(); };
@@ -3078,6 +3204,12 @@ function submit(){
       choice:a.choice??null, value:a.value??null};
   });
   const rec={date:Date.now(), mode:S.mode, meta:S.meta, who:studentLabel(), score, total:S.ids.length, dur:Math.round((Date.now()-S.t0)/1000), per};
+  // rewards: compare progress before and after this attempt
+  const before=loadProg(), after=applyRecord(JSON.parse(JSON.stringify(before)), rec);
+  const tB=Object.fromEntries(trophyList(before).map(x=>[x.id,x.tier]));
+  rec._reward={xp:after.xp-before.xp, lvB:levelOf(before.xp), lvA:levelOf(after.xp),
+    up:trophyList(after).filter(x=>x.tier>(tB[x.id]||0))};
+  saveProg(after);
   const h=loadHist(); h.push(rec); saveHist(h);
   // drawings are kept in memory only (too large for localStorage); they can be sent to Drive from the result page
   LAST_DRAWS = collectDraws(S);
@@ -3274,7 +3406,7 @@ $('#nameForm').onsubmit=e=>{
   if(!name){ e.preventDefault(); $('#stuName').focus(); return; }
   if(!school){ e.preventDefault(); $('#stuSchool').focus(); return; }
   try{ localStorage.setItem(STU_KEY, JSON.stringify({name, school})); }catch(err){}
-  renderWho(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
+  renderWho(); renderPlayer(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
 };
 // the first-visit prompt cannot be dismissed with Esc
 $('#nameDlg').addEventListener('cancel',e=>{ if($('#nameDlg').dataset.first) e.preventDefault(); });
@@ -3295,7 +3427,7 @@ function simClass(){
   Q.forEach(q=>{
     const errs = q.type==='mc' ? q.choices.filter(c=>!c.ok).map(c=>c.err) : q.numErr.map(e=>e.err);
     let wrong=0; const ec={};
-    for(let s=0;s<CLASS_N;s++){ if(rnd()<q.sim){ wrong++; const e=errs[Math.floor(rnd()*errs.length)]; ec[e]=(ec[e]||0)+1; } }
+    for(let s=0;s<CLASS_N;s++){ if(rnd()<q.sim){ wrong++; const e=errs.length?errs[Math.floor(rnd()*errs.length)]:'calc'; ec[e]=(ec[e]||0)+1; } }
     out[q.id]={rate:wrong/CLASS_N, wrong, top:Object.entries(ec).sort((a,b)=>b[1]-a[1])[0]?.[0]};
   });
   return out;
@@ -3311,6 +3443,22 @@ function myHistStats(){
 }
 
 /* ============ RESULT ============ */
+/* ---- rewards earned by this attempt (only right after submitting; not stored with history) ---- */
+function rewardHTML(rec){
+  const r=rec._reward; if(!r) return '';
+  const up=r.lvA.L>r.lvB.L, [sym,ename]=elementFor(r.lvA.L);
+  return `<div class="card panel reward ${up?'levelup':''}">
+    ${up?'<div class="confetti" aria-hidden="true">'+Array.from({length:20},(_,i)=>['🎉','✨','⭐','🧪','🏅'][i%5]).map((c,i)=>`<i style="--i:${i}">${c}</i>`).join('')+'</div>':''}
+    <span class="tile lvtile" style="--c:${levelColor(r.lvA.L)}"><small>${r.lvA.L}</small>${sym}<i>${ename}</i></span>
+    <div class="rinfo">
+      <h3>${up?`🎉 เลเวลอัพ! เลเวล ${r.lvB.L} → ${r.lvA.L}`:'⭐ รางวัลรอบนี้'}</h3>
+      <div class="xpgain">+${r.xp} XP</div>
+      <div class="xpbar"><i style="width:${Math.round(r.lvA.into/r.lvA.need*100)}%"></i></div>
+      <div class="xptext">${up?`ตอนนี้เป็นธาตุ${ename} (${sym}) · `:''}${r.lvA.into}/${r.lvA.need} XP ถึงเลเวล ${r.lvA.L+1}</div>
+      ${r.up.length?`<div class="newt">${r.up.map(x=>`<span class="chip">${x.grand?'🏆':MEDAL[x.tier]} ${x.name} · เหรียญ${TIER[x.tier]}</span>`).join('')}</div>`:''}
+    </div></div>`;
+}
+
 /* ---- progress: compare each pattern in this attempt with the last time that pattern was answered ---- */
 function progressData(rec){
   const prev=loadHist().filter(r=>r.date<rec.date), last={};
@@ -3407,6 +3555,7 @@ function renderResult(rec){
     </div>
   </div>
 
+  ${rewardHTML(rec)}
   ${progressHTML(rec, ids)}
 
   <div class="grid2">
@@ -3505,7 +3654,7 @@ function renderResult(rec){
     $('#missList').innerHTML=rows.map((r,k)=>`
       <div class="missrow ${k<3&&r.rate>0?'top':''}">
         <div class="rank">${k+1}</div>
-        <div class="q"><div>${r.q.short}</div><small>${TOPICS[r.q.topic].name}${r.vars>1?` · ${r.vars} ข้อในรูปแบบนี้`:''}${r.top?` · พลาดบ่อย: ${ERR[r.top].name}`:''}</small></div>
+        <div class="q"><div>${r.q.short}</div><small>${TOPICS[r.q.topic].name}${r.vars>1?` · ${r.vars} ข้อในรูปแบบนี้`:''}${r.top&&ERR[r.top]?` · พลาดบ่อย: ${ERR[r.top].name}`:''}</small></div>
         <div class="track"><i style="width:${Math.round(r.rate*100)}%"></i>${r.mineWrong&&src==='class'?`<span class="me" style="left:calc(${Math.round(r.rate*100)}% - 2px)" title="รอบนี้คุณผิดข้อนี้"></span>`:''}</div>
         <div class="val">${Math.round(r.rate*100)}%</div>
       </div>`).join('');
