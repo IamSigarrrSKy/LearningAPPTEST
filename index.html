@@ -85,6 +85,20 @@ sub,sup{font-size:.72em;line-height:0}
 .hero h1 em{font-style:normal;color:var(--accent);position:relative}
 .hero h1 em::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:8px;background:color-mix(in srgb,var(--accent) 25%,transparent);border-radius:4px;z-index:-1}
 .hero p{color:var(--soft);font-size:17px;max-width:540px}
+.incl{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px;max-width:560px}
+.incl li{display:flex;flex-direction:column;padding:8px 12px;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--surface) 75%,transparent);border-radius:0 10px 10px 0}
+.incl b{font-weight:600;font-size:15px}
+.incl span{color:var(--muted);font-size:14px}
+.hubcard.sel{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent)}
+#subject .hubcard{min-height:118px}
+@media (max-width:575px){
+  #subject .hub{gap:10px}
+  #subject .hubcard{min-height:0;padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;align-items:center}
+  #subject .hubcard .ico{grid-row:span 3;font-size:26px!important}
+  #subject .hubcard h3{font-size:17px}
+  #subject .hubcard p{font-size:13px}
+  #subject .hubcard .tag{margin-top:2px}
+}
 .tiles-art{position:relative;height:300px}
 .tiles-art .tile{position:absolute;width:86px;height:86px;font-size:32px;box-shadow:var(--shadow);animation:float 6s ease-in-out infinite}
 .tiles-art .tile small{font-size:12px}
@@ -523,7 +537,13 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <div>
         <div class="kicker">ChemLab by Sky</div>
         <h1>ข้อสอบ<em>วิทยาศาสตร์</em><br>และแบบฝึกหัด</h1>
-        <p>ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น</p>
+        <p>ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น ทุกข้อมีเฉลยพร้อมแนวคิด และบอกได้ว่าพลาดตรงไหน</p>
+        <ul class="incl">
+          <li><b>📖 แบบฝึกหัดรายบท</b><span>ม.4–ม.6 จากชีทเคมีพี่สกาย สุ่มโจทย์แนวเดียวกันไม่ซ้ำ ดูพัฒนาการได้</span></li>
+          <li><b>🎯 ข้อสอบจริง A-Level / 9 วิชาสามัญ</b><span>ย้อนหลังตั้งแต่ปี 2560 ทำรายปี หรือคละปีแบบสนามจริง</span></li>
+          <li><b>🌏 IJSO · 🧭 NETSAT</b><span>ข้อสอบแข่งขันและสอบตรง กำลังทยอยเพิ่ม</span></li>
+          <li><b>🏆 เก็บ XP และเหรียญ</b><span>เลเวลอัปทุกครั้งที่ทำ ชิงอันดับกับเพื่อนใน Leaderboard</span></li>
+        </ul>
       </div>
       <div class="tiles-art" aria-hidden="true">
         <span class="tile" style="--c:#7c5cff;left:6%;top:12%;--rot:-6deg"><small>1</small>H<i>1.008</i></span>
@@ -539,14 +559,11 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
     <div class="section-title"><h2>เลือกวิชา</h2><span>เริ่มจากเคมี วิชาอื่นตามมา</span></div>
     <div class="subjects">
-      <button class="subject" style="--c:#ff6b4a" id="chemCard"><span class="blob"></span><span class="ico">⚗️</span><h3>เคมี</h3><p>ม.4 · ม.5 · ม.6 · แนว A-Level</p><span class="go">เข้าสู่คลังข้อสอบ →</span></button>
+      <button class="subject" style="--c:#ff6b4a" id="chemCard"><span class="blob"></span><span class="ico">⚗️</span><h3>เคมี</h3><p>แบบฝึกหัด ม.4–ม.6 · A-Level · IJSO · NETSAT</p><span class="go">เข้าสู่คลังข้อสอบ →</span></button>
       <button class="subject" style="--c:#3b82f6" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🧲</span><h3>ฟิสิกส์</h3><p>การเคลื่อนที่ แรง ไฟฟ้า</p></button>
       <button class="subject" style="--c:#16936a" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🧬</span><h3>ชีววิทยา</h3><p>เซลล์ พันธุศาสตร์ ระบบร่างกาย</p></button>
       <button class="subject" style="--c:#7c5cff" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico">🌏</span><h3>โลกและอวกาศ</h3><p>ธรณี บรรยากาศ ดาราศาสตร์</p></button>
     </div>
-
-    <div class="section-title"><h2>📚 รวมข้อสอบ</h2><span>ข้อสอบจริงและแนวข้อสอบแข่งขัน · เพิ่มเรื่อยๆ</span></div>
-    <div class="hub" id="examHub"></div>
 
     <div class="section-title"><h2>🥇 Leaderboard</h2><span id="boardNote"></span></div>
     <div id="leaderboard"></div>
@@ -570,9 +587,13 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
     <div class="subj-head">
       <span class="tile" style="--c:#ff6b4a;width:72px;height:72px;font-size:30px"><small>6</small>C</span>
-      <div><h1>คลังข้อสอบเคมี</h1><p>เลือกระดับชั้น แล้วเลือกเรื่องที่อยากทำ — เลือกได้หลายเรื่องพร้อมกัน</p></div>
+      <div><h1>คลังข้อสอบเคมี</h1><p>เลือกชุดข้อสอบจริง หรือเลือกระดับชั้นแล้วเลือกเรื่องที่อยากฝึก</p></div>
     </div>
 
+    <div class="section-title"><h2>📚 ข้อสอบจริง / สนามแข่งขัน</h2><span>เพิ่มชุดใหม่เรื่อยๆ</span></div>
+    <div class="hub" id="examHub"></div>
+
+    <div class="section-title"><h2>📖 แบบฝึกหัดรายบท</h2></div>
     <div class="levels" id="levels" role="tablist" aria-label="ระดับชั้น"></div>
 
     <div id="levelBody"></div>
@@ -2913,7 +2934,7 @@ document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
 });
 // Bank statistics (question count, topics, error types, history) moved off the home page;
 // they will live in the teacher section.
-function refreshHome(){ renderPlayer(); renderHub(); renderBoard(); }
+function refreshHome(){ renderPlayer(); renderBoard(); }
 
 /* ---- subject screen: level → topics ---- */
 const ALEVEL_IDS = Q.filter(q=>q.alevel).map(q=>q.id);
@@ -2992,7 +3013,7 @@ function topicAcc(t){
 function lastOf(lv){ const h=loadHist().filter(r=>r.meta&&r.meta.lv===lv); return h[h.length-1]; }
 
 function renderLevels(){
-  $('#levels').innerHTML=Object.entries(LEVELS).map(([k,L])=>{
+  $('#levels').innerHTML=Object.entries(LEVELS).filter(([k])=>k!=='alevel').map(([k,L])=>{
     const ids = k==='alevel' ? EXAM_IDS : poolFor(k, L.topics);
     const last=lastOf(k);
     const meta = k==='alevel'
@@ -3003,23 +3024,22 @@ function renderLevels(){
       <div class="meta">${meta}${last?`<span>ล่าสุด ${last.score}/${last.total}</span>`:''}</div></button>`;
   }).join('');
   $('#levels').querySelectorAll('.lv').forEach(b=>b.onclick=()=>{
-    if(b.dataset.lv==='alevel') return openSeries('A-Level');
     LV=b.dataset.lv; SEL=new Set(LEVELS[LV].topics); SIZE='10';
-    renderLevels(); renderLevelBody();
+    renderLevels(); renderHub(); renderLevelBody();
   });
 }
 function openSeries(id){
   const sets=seriesSets(id); EXSERIES=id; LV='alevel';
   SEL=new Set(sets.length?[sets[sets.length-1].id]:[]); SIZE=sets.length?'year':(id==='A-Level'?'aonly':'year');
   openSubject();
+  $('#levelBody').scrollIntoView({behavior:'smooth', block:'start'});
 }
 function renderLevelBody(){
   const L=LEVELS[LV], B=$('#levelBody');
-  $('#crLevel').textContent=L.name;
+  $('#crLevel').textContent= LV==='alevel' ? EXSERIES : L.name;
   if(LV==='alevel'){
     const hist=loadHist(), SR=SERIES.find(x=>x.id===EXSERIES)||SERIES[0], al=EXSERIES==='A-Level';
-    B.innerHTML=`<div class="lvbar"><h2>${SR.ico} ${al?'ข้อสอบจริง ':''}${SR.name}</h2><span class="spacer"></span>
-        <span class="tabs" role="tablist">${SERIES.map(x=>`<button data-series="${x.id}" class="${x.id===EXSERIES?'on':''}" role="tab">${x.id}</button>`).join('')}</span></div>
+    B.innerHTML=`<div class="lvbar"><h2>${SR.ico} ${al?'ข้อสอบจริง ':''}${SR.name}</h2></div>
       <p class="lead" style="margin:-4px 0 12px;color:var(--muted)">${al?'9 วิชาสามัญ คือชื่อเดิมของ A-Level · ปรนัย 5 ตัวเลือก ตอบด้วยหมายเลข 1–5 เหมือนกระดาษคำตอบจริง · ปี 2564 ขึ้นไปมีข้อเติมตัวเลข':SR.desc}</p>
       ${seriesSets(EXSERIES).length?'':`<div class="empty">ยังไม่มีข้อสอบ ${SR.name} ในคลัง — จะทยอยเพิ่มเร็วๆ นี้</div>`}
       <div class="tgrid">${seriesSets(EXSERIES).map(s=>{
@@ -3034,7 +3054,6 @@ function renderLevelBody(){
       }).join('')}</div>
       ${al?`<p class="note" style="margin-top:10px">ข้อสอบจากชุด “ข้อสอบจริง จัดหน้าใหม่” และเฉลยพร้อมแนวคิดของเคมีพี่สกาย · ยังไม่มีในคลัง: ${[['2562','9 วิชาสามัญ'],['2567','A-Level']].filter(([y])=>!EXAM_SETS.some(s=>String(s.year)===y)).map(([y,k])=>`${k} ${y}`).join(', ')||'—'}</p>`:''}`;
     B.querySelectorAll('.tcard.exam').forEach(b=>b.onclick=()=>{ SEL=new Set([b.dataset.set]); SIZE='year'; renderLevelBody(); });
-    B.querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>openSeries(b.dataset.series));
   } else {
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
         <span style="display:flex;gap:8px"><button class="btn ghost" id="selAll">เลือกทั้งหมด</button><button class="btn ghost" id="selNone">ล้าง</button></span></div>
@@ -3074,7 +3093,7 @@ function renderStart(){
   $('#startBtn').disabled=!ok;
   const last=lastOf(LV); $('#lastResultBtn').hidden=!last;
 }
-function openSubject(){ renderLevels(); renderLevelBody(); show('subject'); }
+function openSubject(){ renderLevels(); renderHub(); renderLevelBody(); show('subject'); }
 document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click',renderStart));
 $('#chemCard').onclick=openSubject;
 $('#backHome').onclick=$('#crHome').onclick=()=>{ refreshHome(); show('home'); };
@@ -3458,7 +3477,8 @@ if(!getStudent() || !getStudent().school) openName(true);
 /* ============ EXAM HUB ============ */
 function renderHub(){
   $('#examHub').innerHTML=SERIES.map(x=>{ const sets=seriesSets(x.id), n=sets.reduce((a,s)=>a+s.q.length,0);
-    return `<button class="hubcard" style="--c:${x.c}" data-series="${x.id}" ${sets.length?'':'disabled'}><span class="blob"></span>
+    const on=LV==='alevel'&&EXSERIES===x.id;
+    return `<button class="hubcard ${on?'sel':''}" style="--c:${x.c}" data-series="${x.id}" aria-pressed="${on}" ${sets.length?'':'disabled'}><span class="blob"></span>
       <span class="ico" style="font-size:30px">${x.ico}</span><h3>${x.name}</h3><p>${x.desc}</p>
       <span class="tag">${sets.length?`${sets.length} ชุด · ${n} ข้อ →`:'เร็วๆ นี้'}</span></button>`; }).join('');
   $('#examHub').querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>openSeries(b.dataset.series));
