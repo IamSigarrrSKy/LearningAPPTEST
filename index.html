@@ -35,6 +35,7 @@
   --hex:rgba(255,255,255,.035);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0}
 body{
   background:var(--bg);
@@ -427,6 +428,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
     <div class="top">
       <div class="brand"><span class="tile" style="--c:var(--accent)"><small>6</small>C</span><span>ChemLab<span class="long"> · ห้องแล็บข้อสอบ</span></span></div>
       <div class="spacer"></div>
+      <button class="iconbtn" id="whoBtn" aria-label="เปลี่ยนชื่อผู้ใช้">👤 <span id="whoName">ใส่ชื่อ</span></button>
       <button class="iconbtn" id="homeCfg" aria-label="ตั้งค่า Google Drive">⚙️</button>
       <button class="iconbtn themeBtn" aria-label="สลับธีมสว่าง/มืด">◐</button>
     </div>
@@ -585,9 +587,21 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <li>คัดลอก Web app URL มาวางด้านล่าง พร้อมรหัส SECRET</li></ol></details></div>
   <label class="field">Web app URL<input type="url" id="cfgUrl" placeholder="https://script.google.com/macros/s/…/exec"></label>
   <label class="field">รหัส (SECRET)<input type="password" id="cfgKey" placeholder="รหัสเดียวกับในสคริปต์"></label>
-  <label class="field">ชื่อนักเรียน (ใช้ตั้งชื่อไฟล์)<input type="text" id="cfgName" placeholder="เช่น ม.4/2 เลขที่ 15"></label>
   <label class="chk-row"><input type="checkbox" id="cfgAuto"> ส่งกระดาษทดทุกข้อเข้า Drive อัตโนมัติเมื่อส่งข้อสอบ</label>
   <div class="row"><button class="btn ghost" id="cfgTest">ทดสอบ</button><button class="btn ghost" id="cfgCancel">ยกเลิก</button><button class="btn primary" id="cfgSave">บันทึก</button></div>
+</dialog>
+
+<dialog id="nameDlg" aria-labelledby="nameTitle">
+  <h3 id="nameTitle">👋 ยินดีต้อนรับสู่ ChemLab</h3>
+  <p>ใส่ชื่อก่อนเริ่มทำข้อสอบ ชื่อจะแสดงบนผลสอบและรูปกระดาษทด (เก็บไว้ในเครื่องนี้เท่านั้น)</p>
+  <form id="nameForm" method="dialog">
+    <label class="field">ชื่อ-นามสกุล หรือชื่อเล่น *<input type="text" id="stuName" required maxlength="60" autocomplete="name" placeholder="เช่น สมชาย ใจดี"></label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <label class="field">ชั้น/ห้อง<input type="text" id="stuRoom" maxlength="12" placeholder="เช่น 4/2"></label>
+      <label class="field">เลขที่<input type="text" id="stuNo" maxlength="4" inputmode="numeric" placeholder="เช่น 15"></label>
+    </div>
+    <div class="row"><button type="button" class="btn ghost" id="nameCancel" hidden>ยกเลิก</button><button type="submit" class="btn primary">เริ่มใช้งาน</button></div>
+  </form>
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2669,6 +2683,8 @@ const HKEY = 'chemlab.history.v1';
 
 /* ============ UTIL ============ */
 const $ = s => document.querySelector(s);
+// user-typed text (the student's name) is escaped before it goes into innerHTML
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e; };
 const fmtT = s => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const pct = (a,b) => b ? Math.round(a/b*100) : 0;
@@ -2973,7 +2989,7 @@ function submit(){
     per[id]={c:!!g.correct, err:g.err||null, why:g.why||null, conf:a.conf||0, time:Math.round(a.time),
       choice:a.choice??null, value:a.value??null};
   });
-  const rec={date:Date.now(), mode:S.mode, meta:S.meta, score, total:S.ids.length, dur:Math.round((Date.now()-S.t0)/1000), per};
+  const rec={date:Date.now(), mode:S.mode, meta:S.meta, who:studentLabel(), score, total:S.ids.length, dur:Math.round((Date.now()-S.t0)/1000), per};
   const h=loadHist(); h.push(rec); saveHist(h);
   // drawings are kept in memory only (too large for localStorage); they can be sent to Drive from the result page
   LAST_DRAWS = collectDraws(S);
@@ -3073,7 +3089,7 @@ function exportCanvas(d){
   c.fillStyle='#1d2433'; c.font='600 18px Mitr, sans-serif';
   c.fillText(`ChemLab · ข้อ ${d.no} · ${q.short}`.slice(0,90), 16, 28);
   c.fillStyle='#7a8296'; c.font='14px "IBM Plex Sans Thai", sans-serif';
-  c.fillText(`${cfg.name?cfg.name+' · ':''}${TOPICS[q.topic].name} · ${new Date().toLocaleString('th-TH')}`, 16, 50);
+  c.fillText(`${studentLabel()?studentLabel()+' · ':''}${TOPICS[q.topic].name} · ${new Date().toLocaleString('th-TH')}`, 16, 50);
   // ink goes on its own layer so the eraser only removes ink, not the paper
   const layer=document.createElement('canvas'); layer.width=out.width; layer.height=Math.round(d.h*scale);
   const lc=layer.getContext('2d'); lc.scale(scale,scale); d.strokes.forEach(s=>drawStroke(lc,s));
@@ -3083,7 +3099,7 @@ function exportCanvas(d){
 function fileNameFor(d){
   const t=new Date(), pad2=n=>String(n).padStart(2,'0'), cfg=getCfg();
   const stamp=`${t.getFullYear()}-${pad2(t.getMonth()+1)}-${pad2(t.getDate())}_${pad2(t.getHours())}${pad2(t.getMinutes())}`;
-  const who=(cfg.name||'นักเรียน').replace(/[\\/:*?"<>|]/g,'-').slice(0,40);
+  const who=(studentLabel()||'นักเรียน').replace(/[\\/:*?"<>|]/g,'-').slice(0,40);
   return `ChemLab_${who}_ข้อ${d.no}_${stamp}.png`;
 }
 function currentDraw(){ return S && PAD.qid!=null ? collectDraws(S).find(d=>d.qid===PAD.qid) : null; }
@@ -3115,7 +3131,7 @@ function setCfg(c){ try{ localStorage.setItem(CFG_KEY, JSON.stringify(c)); }catc
 async function uploadOne(d){
   const cfg=getCfg(); if(!cfg.url) throw new Error('ยังไม่ได้ตั้งค่า Drive');
   const body=JSON.stringify({key:cfg.key||'', name:fileNameFor(d), image:exportCanvas(d).toDataURL('image/png'),
-    note:`${QBY[d.qid].short} · ${cfg.name||''}`});
+    note:`${QBY[d.qid].short} · ${studentLabel()}`});
   // text/plain keeps this a "simple" request, so Apps Script needs no CORS preflight
   const res=await fetch(cfg.url,{method:'POST', body, headers:{'Content-Type':'text/plain;charset=utf-8'}});
   const j=await res.json().catch(()=>({}));
@@ -3139,10 +3155,10 @@ $('#padDrive').onclick=async()=>{
 
 function openCfg(){
   const c=getCfg();
-  $('#cfgUrl').value=c.url||''; $('#cfgKey').value=c.key||''; $('#cfgName').value=c.name||''; $('#cfgAuto').checked=!!c.auto;
+  $('#cfgUrl').value=c.url||''; $('#cfgKey').value=c.key||''; $('#cfgAuto').checked=!!c.auto;
   $('#cfgDlg').showModal();
 }
-function readCfgForm(){ return {url:$('#cfgUrl').value.trim(), key:$('#cfgKey').value, name:$('#cfgName').value.trim(), auto:$('#cfgAuto').checked}; }
+function readCfgForm(){ return {url:$('#cfgUrl').value.trim(), key:$('#cfgKey').value, auto:$('#cfgAuto').checked}; }
 $('#padCfg').onclick=openCfg;
 $('#homeCfg').onclick=openCfg;
 $('#cfgCancel').onclick=()=>$('#cfgDlg').close();
@@ -3152,6 +3168,31 @@ $('#cfgSave').onclick=()=>{ const c=readCfgForm();
 $('#cfgTest').onclick=async()=>{ const c=readCfgForm(); if(!c.url) return toast('ใส่ Web app URL ก่อน');
   try{ const r=await fetch(c.url,{method:'POST', body:JSON.stringify({ping:true, key:c.key}), headers:{'Content-Type':'text/plain;charset=utf-8'}}); const j=await r.json(); toast(j.ok?'✅ เชื่อมต่อได้ · โฟลเดอร์: '+j.folder:'❌ '+(j.error||'เชื่อมต่อไม่ได้')); }
   catch(e){ toast('❌ เชื่อมต่อไม่ได้ ตรวจ URL และการ Deploy (Who has access: Anyone)'); } };
+
+/* ---- student name: asked once per browser, kept in this browser only ---- */
+const STU_KEY='chemlab.student.v1';
+function getStudent(){ try{ return JSON.parse(localStorage.getItem(STU_KEY))||null; }catch(e){ return null; } }
+function studentLabel(){ const s=getStudent(); if(!s||!s.name) return '';
+  return `${s.name}${s.room?` ม.${s.room}`:''}${s.no?` เลขที่ ${s.no}`:''}`; }
+function renderWho(){ const s=getStudent(); $('#whoName').textContent = s&&s.name ? s.name.split(' ')[0].slice(0,14) : 'ใส่ชื่อ'; }
+function openName(first){
+  const s=getStudent()||{}, d=$('#nameDlg');
+  $('#stuName').value=s.name||''; $('#stuRoom').value=s.room||''; $('#stuNo').value=s.no||'';
+  $('#nameCancel').hidden=!!first; d.dataset.first=first?'1':'';
+  d.showModal(); setTimeout(()=>$('#stuName').focus(),50);
+}
+$('#nameForm').onsubmit=e=>{
+  const name=$('#stuName').value.trim().replace(/\s+/g,' ');
+  if(!name){ e.preventDefault(); $('#stuName').focus(); return; }
+  try{ localStorage.setItem(STU_KEY, JSON.stringify({name, room:$('#stuRoom').value.trim(), no:$('#stuNo').value.trim()})); }catch(err){}
+  renderWho(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
+};
+// the first-visit prompt cannot be dismissed with Esc
+$('#nameDlg').addEventListener('cancel',e=>{ if($('#nameDlg').dataset.first) e.preventDefault(); });
+$('#nameCancel').onclick=()=>$('#nameDlg').close();
+$('#whoBtn').onclick=()=>openName(false);
+renderWho();
+if(!getStudent()) openName(true);
 
 let toastT=null;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),3200); }
@@ -3263,7 +3304,7 @@ function renderResult(rec){
     </div>
     <div>
       <h2>${grade[0]} · ${grade[1]}</h2>
-      <div class="sub">เคมี ${scopeLabel} · ${rec.mode==='practice'?'โหมดฝึก':'โหมดสอบ'} ·${new Date(rec.date).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</div>
+      <div class="sub">${rec.who?`👤 ${esc(rec.who)} · `:''}เคมี ${scopeLabel} ·${rec.mode==='practice'?'โหมดฝึก':'โหมดสอบ'} ·${new Date(rec.date).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'})}</div>
       <div class="kpis">
         <div class="kpi"><span>โจทย์คำนวณ</span><b>${calcOk}/${calcIds.length}</b></div>
         <div class="kpi"><span>ความเข้าใจ</span><b>${conOk}/${conIds.length}</b></div>
