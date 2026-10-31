@@ -51,6 +51,9 @@ h1,h2,h3,h4{font-family:Mitr,"IBM Plex Sans Thai",sans-serif;font-weight:500;lin
 button{font:inherit;color:inherit;cursor:pointer}
 .num,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
 sub,sup{font-size:.72em;line-height:0}
+/* nuclide notation: mass number stacked over atomic number, both right-aligned before the symbol (²³²₉₀Th) */
+.nuc{display:inline-flex;flex-direction:column;align-items:flex-end;vertical-align:middle;font-size:.66em;line-height:1.08;margin-right:.06em}
+.nuc sup,.nuc sub{font-size:1em;line-height:inherit;vertical-align:baseline;position:static}
 .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
 .screen{display:none;animation:in .35s ease}
 .screen.on{display:block}
@@ -5646,6 +5649,31 @@ const EXQ = EXAM_SETS.flatMap((s,si)=>s.q.map(x=>{
     : {t:String(n), err:'exam', why:'ดูแนวคิดในเฉลยของข้อนี้'})};
 }));
 Q.push(...EXQ);
+/* The bank writes super/subscripts as Unicode (H₂, 10²³, ²³²₉₀Th). Most of those characters are missing from the
+   web fonts, so the browser borrows them from another font at another size and the subscripts sit on the baseline.
+   Rewrite them once as real <sup>/<sub> (and stacked nuclide symbols), outside any HTML tags. */
+const SUP_CH='⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿ', SUP_TO='0123456789+−=()n', SUB_CH='₀₁₂₃₄₅₆₇₈₉₊₋₌₍₎', SUB_TO='0123456789+−=()';
+const unsup = r => [...r].map(ch=>SUP_TO[SUP_CH.indexOf(ch)]).join(''), unsub = r => [...r].map(ch=>SUB_TO[SUB_CH.indexOf(ch)]).join('');
+const SUPR=`[${SUP_CH}]+`, SUBR=`[${SUB_CH}]+`, NUCSYM='([A-Z][a-z]?|[a-zαβγ])';
+const RE_NUC1=new RegExp(`(${SUPR})(${SUBR})${NUCSYM}`,'g'), RE_NUC2=new RegExp(`(${SUBR})(${SUPR})${NUCSYM}`,'g');
+const RE_SUP=new RegExp(SUPR,'g'), RE_SUB=new RegExp(SUBR,'g');
+function richScripts(html){
+  if(typeof html!=='string' || !/[⁰-ⁿ₀-₎¹²³]/.test(html)) return html;
+  return html.split(/(<[^>]*>)/).map((part,i)=> i%2 ? part : part
+    .replace(RE_NUC1,(m,a,z,el)=>`<span class="nuc"><sup>${unsup(a)}</sup><sub>${unsub(z)}</sub></span>${el}`)
+    .replace(RE_NUC2,(m,z,a,el)=>`<span class="nuc"><sup>${unsup(a)}</sup><sub>${unsub(z)}</sub></span>${el}`)
+    .replace(RE_SUP,r=>`<sup>${unsup(r)}</sup>`)
+    .replace(RE_SUB,r=>`<sub>${unsub(r)}</sub>`)).join('');
+}
+Q.forEach(q=>{
+  if(q.exam) return;
+  q.text=richScripts(q.text);
+  if(q.steps) q.steps=q.steps.map(richScripts);
+  if(q.choices) q.choices.forEach(c=>{ c.t=richScripts(c.t); if(c.why) c.why=richScripts(c.why); });
+  if(q.numErr) q.numErr.forEach(e=>{ if(e.why) e.why=richScripts(e.why); });
+  if(q.ansText) q.ansText=richScripts(q.ansText);
+  if(q.unit) q.unit=richScripts(q.unit);
+});
 const QBY = Object.fromEntries(Q.map(q=>[q.id,q]));
 Object.entries(PAT_LINK).forEach(([p,ids])=>ids.forEach(id=>{ if(QBY[id] && !QBY[id].alevel) QBY[id].pat=p; }));
 const KEYS = ['ก','ข','ค','ง'];
