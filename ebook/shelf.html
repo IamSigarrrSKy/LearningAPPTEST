@@ -80,6 +80,7 @@ button{cursor:pointer}
 .tog input:checked+.sw::after{transform:translateX(16px)}
 .tog input:focus-visible+.sw{outline:3px solid var(--accent);outline-offset:2px}
 .subj{margin-top:26px}
+#lib{touch-action:pan-y}
 .sh{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 24px}
 .sh img{width:42px;height:42px}
 .chip img,.sh img{border-radius:8px;mix-blend-mode:multiply}
@@ -111,7 +112,7 @@ button{cursor:pointer}
 
 .row{position:relative;padding-top:30px}
 .row.np{padding-top:10px}
-.ghost{width:calc(var(--bh)*.15);height:var(--bh);flex:none;border:2px dashed color-mix(in srgb,var(--ink) 22%,transparent);border-radius:3px 6px 6px 3px;opacity:.7}
+.ghostbk{width:calc(var(--bh)*.15);height:var(--bh);flex:none;border:2px dashed color-mix(in srgb,var(--ink) 22%,transparent);border-radius:3px 6px 6px 3px;opacity:.7}
 .plaque{position:absolute;top:2px;left:50%;transform:translateX(-50%);z-index:1;
   font:500 13px/1 Mitr;letter-spacing:.04em;color:var(--plaque-ink);padding:5px 14px;border-radius:6px;
   background:linear-gradient(180deg,color-mix(in srgb,var(--plaque) 70%,#fff),var(--plaque) 55%,color-mix(in srgb,var(--plaque) 75%,#000));
@@ -216,6 +217,8 @@ body.notint .tint{opacity:0}
 .info{position:relative;margin:-22px 6px 36px;padding:26px 22px 20px;border-radius:0 0 18px 18px;background:var(--surface);
   border:1px solid var(--line);border-top:0;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;animation:drop .45s ease}
 @keyframes drop{from{opacity:0;transform:translateY(-10px)}}
+.case .info{margin:14px 4px 20px;border-radius:16px;border:1px solid var(--line);z-index:3;animation:drawer .45s cubic-bezier(.22,1,.36,1)}
+@keyframes drawer{from{opacity:0;transform:translateY(-14px) scaleY(.92);transform-origin:top}}
 .info .ik{color:var(--muted);font-size:14px}
 .info h3{font-size:22px}
 .info ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
@@ -269,8 +272,7 @@ body.notint .tint{opacity:0}
     <p>ชีทสรุปพี่สกาย · ชี้ที่สันเพื่อดึงออกมาดู คลิกเพื่อหยิบออกมาดูปก · E-book ทยอยเปิดเร็วๆ นี้</p>
     <div class="bar">
       <div class="chips" role="group" aria-label="เลือกวิชา">
-        <button class="chip" data-s="all" aria-pressed="true">ทั้งหมด</button>
-        <button class="chip" data-s="chem" aria-pressed="false"><img src="../img/chem-72.webp" alt="">เคมี</button>
+        <button class="chip" data-s="chem" aria-pressed="true"><img src="../img/chem-72.webp" alt="">เคมี</button>
         <button class="chip" data-s="phys" aria-pressed="false"><img src="../img/phys-72.webp" alt="">ฟิสิกส์</button>
         <button class="chip" data-s="bio" aria-pressed="false"><img src="../img/bio-72.webp" alt="">ชีววิทยา</button>
       </div>
@@ -307,7 +309,7 @@ const SUBJ = {chem:'เคมี', phys:'ฟิสิกส์', bio:'ชีว�
 const subjOf = b => b.subj || 'chem';
 const cover = b => `covers/${String(b.n).padStart(2,'0')}-${b.slug}.webp`;
 const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-let subjF = 'all', split = false, lastPer = 0;
+let subjF = 'chem', split = false, lastPer = 0;
 
 function bookEl(b){
   return `<span class="b3d">
@@ -336,7 +338,7 @@ function shelfRow(books, label){
   row.className = 'row' + (label ? '' : ' np');
   row.innerHTML = `${label ? `<div class="plaque">${label}</div>` : ''}<div class="books"></div><div class="plank"></div>`;
   const box = row.querySelector('.books');
-  if (!books.length) box.innerHTML = '<span class="ghost"></span>'.repeat(5);
+  if (!books.length) box.innerHTML = '<span class="ghostbk"></span>'.repeat(5);
   books.forEach(b => {
     const el = document.createElement('button');
     el.className = 'slot'; el.style.setProperty('--c', b.c);
@@ -351,7 +353,7 @@ function render(){
   const per = lastPer = perShelf(), lib = document.getElementById('lib');
   lib.innerHTML = '';
   for (const [sk, sname] of Object.entries(SUBJ)) {
-    if (subjF !== 'all' && subjF !== sk) continue;
+    if (subjF !== sk) continue;
     const list = BOOKS.filter(b => subjOf(b) === sk);
     const sec = document.createElement('section');
     sec.className = 'subj';
@@ -393,6 +395,7 @@ function openBook(b, slot){
   read.disabled = !b.pages;
   read.textContent = b.pages ? '📖 อ่าน E-book' : 'E-book กำลังจะมา';
   read.onclick = b.pages ? () => openReader(b) : null;
+  slot.closest('.row').after(info);
   info.hidden = false;
 }
 addEventListener('keydown', e => { if (e.key === 'Escape' && !RD.b) closeAll(); });
@@ -438,10 +441,32 @@ addEventListener('resize', () => { if (RD.b) rdDraw(0); });
 
 render();
 addEventListener('resize', () => { if (perShelf() !== lastPer) render(); });
-document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
-  document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === ch));
-  subjF = ch.dataset.s; render();
-}));
+/* changing subject slides the shelf out to the side and the next one in; swipe left/right on touch screens does the same */
+const SUBJ_KEYS = Object.keys(SUBJ);
+const calm = matchMedia('(prefers-reduced-motion:reduce)');
+let sliding = false, pending = null;
+async function switchSubj(next){
+  if (sliding) { pending = next; document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.dataset.s === next)); return; }
+  if (next === subjF) return;
+  const dir = SUBJ_KEYS.indexOf(next) > SUBJ_KEYS.indexOf(subjF) ? 1 : -1, lib = document.getElementById('lib');
+  document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x.dataset.s === next));
+  if (calm.matches) { subjF = next; render(); return; }
+  sliding = true;
+  await lib.animate([{transform:'none', opacity:1}, {transform:`translateX(${-dir * 80}px)`, opacity:0}], {duration:220, easing:'ease-in'}).finished;
+  subjF = next; render();
+  await lib.animate([{transform:`translateX(${dir * 80}px)`, opacity:0}, {transform:'none', opacity:1}], {duration:320, easing:'cubic-bezier(.22,1,.36,1)'}).finished;
+  sliding = false;
+  if (pending) { const p = pending; pending = null; switchSubj(p); }
+}
+document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => switchSubj(ch.dataset.s)));
+{ let p0 = null; const lib = document.getElementById('lib');
+  lib.addEventListener('pointerdown', e => { p0 = e.pointerType === 'touch' ? [e.clientX, e.clientY] : null; });
+  lib.addEventListener('pointerup', e => {
+    if (!p0) return; const dx = e.clientX - p0[0], dy = e.clientY - p0[1]; p0 = null;
+    if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * .6) return;
+    const k = SUBJ_KEYS.indexOf(subjF) + (dx < 0 ? 1 : -1);
+    if (k >= 0 && k < SUBJ_KEYS.length) switchSubj(SUBJ_KEYS[k]);
+  }); }
 document.getElementById('splitLv').addEventListener('change', e => { split = e.target.checked; render(); });
 document.getElementById('tintOn').addEventListener('change', e => document.body.classList.toggle('notint', !e.target.checked));
 
