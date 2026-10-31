@@ -89,6 +89,9 @@ sub,sup{font-size:.72em;line-height:0}
 h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;vertical-align:-9px;margin-right:4px;border-width:1px}
 .btn .art{display:inline-block;width:22px;height:22px;border-radius:6px;border-width:1px;box-shadow:none;vertical-align:-5px}
 .tile small{position:absolute;top:3px;left:6px;font:600 10px "JetBrains Mono";color:var(--c)}
+/* on dark surfaces the raw tile colour is too dim for the tiny number, so lift it towards white */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tile small{color:color-mix(in srgb,var(--c) 45%,#fff)}}
+:root[data-theme="dark"] .tile small{color:color-mix(in srgb,var(--c) 45%,#fff)}
 
 /* buttons */
 .btn{border:0;border-radius:14px;padding:12px 20px;min-height:46px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,box-shadow .12s}
