@@ -226,9 +226,36 @@ body.notint .tint{opacity:0}
 .btn.pri{background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 22px -10px var(--accent)}
 .btn.pri[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
 .btn.ghost{background:var(--surface2);border:1px solid var(--line)}
+/* ---------- e-book reader: two-page spread on wide screens, one page on phones ---------- */
+.rd{width:100vw;height:100vh;max-width:none;max-height:none;margin:0;border-radius:0;background:color-mix(in srgb,var(--bg) 92%,#000);
+  display:none;flex-direction:column;padding:0}
+.rd[open]{display:flex}
+.rd::backdrop{background:rgba(0,0,0,.6)}
+.rdbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.rdbar h3{font-size:16px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rdbar .pgn{font-size:14px;color:var(--muted);white-space:nowrap}
+.rdstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;gap:0;padding:16px 56px;position:relative;touch-action:pan-y}
+.rdstage .sheet{height:100%;max-height:calc(100vh - 140px);display:flex;box-shadow:0 20px 50px -20px rgba(0,0,0,.6);animation:turn .35s ease}
+@keyframes turn{from{opacity:.2;transform:translateX(var(--dx,0))}}
+.rdstage img{height:100%;width:auto;max-width:44vw;object-fit:contain;background:#fff;display:block}
+.rdstage img+img{border-left:1px solid rgba(0,0,0,.12);box-shadow:inset 12px 0 18px -14px rgba(0,0,0,.4)}
+.rdnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);font-size:22px;cursor:pointer}
+.rdnav[disabled]{opacity:.3;cursor:default}
+.rdnav.prev{left:6px}.rdnav.next{right:6px}
+.rdfoot{display:flex;justify-content:center;gap:8px;padding:10px 16px 14px;flex-wrap:wrap}
+@media (max-width:760px){ .rdstage{padding:10px 8px} .rdstage img{max-width:calc(100vw - 16px);height:auto;max-height:calc(100vh - 150px)}
+  .rdstage .sheet{height:auto} .rdnav{display:none} }
 </style>
 </head>
 <body>
+<dialog class="rd" id="reader" aria-labelledby="rdTitle">
+  <div class="rdbar"><h3 id="rdTitle"></h3><span class="pgn" id="rdPg"></span><button class="iconbtn" id="rdClose" aria-label="ปิด">✕</button></div>
+  <div class="rdstage" id="rdStage"><button class="rdnav prev" id="rdPrev" aria-label="หน้าก่อน">‹</button><div class="sheet" id="rdSheet"></div>
+    <button class="rdnav next" id="rdNext" aria-label="หน้าถัดไป">›</button></div>
+  <div class="rdfoot"><button class="btn ghost" id="rdBack">‹ ก่อนหน้า</button><button class="btn ghost" id="rdFwd">ถัดไป ›</button>
+    <a class="btn pri" id="rdQuiz" href="../index.html">ทำข้อสอบบทนี้ →</a></div>
+</dialog>
 <div class="wrap">
   <header class="top">
     <a class="brand" href="../index.html"><span class="tile">Sky</span>ChemLab</a>
@@ -258,9 +285,9 @@ body.notint .tint{opacity:0}
 
 
 <script>
-/* Set `pdf` to the e-book file (e.g. 'books/04-stoich.pdf') when a chapter is ready to publish. */
+/* A chapter becomes readable once its pages are in books/NN-slug/p01.webp… — set `pages` to the page count. */
 const BOOKS = [
-  {n:1,  slug:'safety',  lv:'m4', c:'#5fae86', title:'ความปลอดภัยและทักษะในปฏิบัติการเคมี', topics:['สัญลักษณ์อันตราย GHS','การใช้อุปกรณ์','การวัดและเลขนัยสำคัญ','หน่วย SI']},
+  {n:1,  slug:'safety',  lv:'m4', pages:34, c:'#5fae86', title:'ความปลอดภัยและทักษะในปฏิบัติการเคมี', topics:['สัญลักษณ์อันตราย GHS','การใช้อุปกรณ์','การวัดและเลขนัยสำคัญ','หน่วย SI']},
   {n:2,  slug:'atom',    lv:'m4', c:'#e9876e', title:'อะตอมและตารางธาตุ', topics:['แบบจำลองอะตอม','การจัดเรียงอิเล็กตรอน','สมบัติตามตารางธาตุ','ธาตุกัมมันตรังสี']},
   {n:3,  slug:'bond',    lv:'m4', c:'#6fa6dc', title:'พันธะเคมี', topics:['พันธะไอออนิก','พันธะโคเวเลนต์','รูปร่างโมเลกุล','แรงระหว่างโมเลกุล','พันธะโลหะ']},
   {n:4,  slug:'stoich',  lv:'m4', c:'#c99a3e', title:'ปริมาณสารสัมพันธ์', topics:['โมล','สูตรเคมี','สารละลาย','สมการเคมีและสารกำหนดปริมาณ']},
@@ -330,7 +357,7 @@ function render(){
     sec.innerHTML = `<h2 class="sh"><img src="../img/${sk}-72.webp" alt="">${sname}<small>${list.length ? list.length + ' เล่ม' : 'เร็วๆ นี้'}</small></h2>
       <div class="case"><div class="crown"></div></div>
       <div class="info" hidden aria-live="polite"><div class="ik"></div><h3></h3><ul></ul><p class="note"></p>
-        <div class="acts"><button class="btn pri read"></button><a class="btn ghost" href="../index.html">ทำข้อสอบบทนี้</a>
+        <div class="acts"><button class="btn pri read"></button><a class="btn ghost quiz" href="../index.html">ทำข้อสอบบทนี้</a>
         <button class="btn ghost shut">↩ เก็บเข้าชั้น</button></div></div>`;
     const cs = sec.querySelector('.case');
     if (!list.length) cs.appendChild(shelfRow([], 'กำลังจัดทำ'));
@@ -359,14 +386,54 @@ function openBook(b, slot){
   info.querySelector('.ik').textContent = `บทที่ ${b.n} · ${LV[b.lv]}`;
   info.querySelector('h3').textContent = b.title;
   info.querySelector('ul').innerHTML = b.topics.map(t => `<li>${esc(t)}</li>`).join('');
-  info.querySelector('.note').textContent = b.pdf ? 'เปิดอ่านได้ทุกอุปกรณ์' : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
+  info.querySelector('.quiz').href = `../index.html#ch=${b.n}`;
+  info.querySelector('.note').textContent = b.pages ? `${b.pages} หน้า · อ่านจบแล้วกด "ทำข้อสอบบทนี้" ฝึกต่อได้ทันที` : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
   const read = info.querySelector('.read');
-  read.disabled = !b.pdf;
-  read.textContent = b.pdf ? 'อ่าน E-book' : 'E-book กำลังจะมา';
-  read.onclick = b.pdf ? () => window.open(b.pdf, '_blank', 'noopener') : null;
+  read.disabled = !b.pages;
+  read.textContent = b.pages ? '📖 อ่าน E-book' : 'E-book กำลังจะมา';
+  read.onclick = b.pages ? () => openReader(b) : null;
   info.hidden = false;
 }
-addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !RD.b) closeAll(); });
+
+/* reader: page 1 (the cover) stands alone, then spreads 2–3, 4–5 … on wide screens */
+const RD = {b:null, p:1};
+const rdEl = document.getElementById('reader');
+const pageSrc = (b, k) => `books/${String(b.n).padStart(2,'0')}-${b.slug}/p${String(k).padStart(2,'0')}.webp`;
+const twoUp = () => innerWidth > 760;
+function rdPages(){ const {b, p} = RD; if (!twoUp() || p === 1) return [p]; const L = p % 2 ? p - 1 : p; return L + 1 <= b.pages ? [L, L + 1] : [L]; }
+function rdDraw(dir){
+  const {b} = RD, ps = rdPages(), sh = document.getElementById('rdSheet');
+  sh.style.setProperty('--dx', dir ? (dir > 0 ? '40px' : '-40px') : '0');
+  sh.innerHTML = ps.map(k => `<img src="${pageSrc(b, k)}" alt="หน้า ${k}" width="1240" height="1755">`).join('');
+  sh.style.animation = 'none'; sh.offsetWidth; sh.style.animation = '';
+  document.getElementById('rdPg').textContent = `หน้า ${ps.join('–')} / ${b.pages}`;
+  const first = ps[0] === 1, last = ps[ps.length - 1] >= b.pages;
+  ['rdPrev','rdBack'].forEach(id => document.getElementById(id).disabled = first);
+  ['rdNext','rdFwd'].forEach(id => document.getElementById(id).disabled = last);
+  [ps[ps.length - 1] + 1, ps[ps.length - 1] + 2].filter(k => k <= b.pages).forEach(k => { new Image().src = pageSrc(b, k); });
+}
+function rdGo(d){
+  const ps = rdPages();
+  const p = d > 0 ? ps[ps.length - 1] + 1 : ps[0] - 1;
+  if (p < 1 || p > RD.b.pages) return;
+  RD.p = p; rdDraw(d);
+}
+function openReader(b){
+  RD.b = b; RD.p = 1;
+  document.getElementById('rdTitle').textContent = `บทที่ ${b.n} · ${b.title}`;
+  document.getElementById('rdQuiz').href = `../index.html#ch=${b.n}`;
+  rdDraw(0); rdEl.showModal();
+}
+document.getElementById('rdClose').onclick = () => rdEl.close();
+rdEl.addEventListener('close', () => { RD.b = null; });
+['rdNext','rdFwd'].forEach(id => document.getElementById(id).onclick = () => rdGo(1));
+['rdPrev','rdBack'].forEach(id => document.getElementById(id).onclick = () => rdGo(-1));
+rdEl.addEventListener('keydown', e => { if (e.key === 'ArrowRight') rdGo(1); if (e.key === 'ArrowLeft') rdGo(-1); });
+{ let x0 = null; const st = document.getElementById('rdStage');
+  st.addEventListener('pointerdown', e => { x0 = e.clientX; });
+  st.addEventListener('pointerup', e => { if (x0 != null && Math.abs(e.clientX - x0) > 50) rdGo(e.clientX < x0 ? 1 : -1); x0 = null; }); }
+addEventListener('resize', () => { if (RD.b) rdDraw(0); });
 
 render();
 addEventListener('resize', () => { if (perShelf() !== lastPer) render(); });

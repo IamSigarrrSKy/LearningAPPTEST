@@ -714,6 +714,24 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 :root[data-theme="dark"] .minishelf::after{background:linear-gradient(180deg,#6e4a2f,#573823 55%,#432a19)}
 @media (max-width:640px){ .libcard{grid-template-columns:1fr} .minishelf{justify-self:center} }
 @media (prefers-reduced-motion:reduce){ .minishelf i{transition:none} }
+/* guided steps (practice mode, calculation questions): reveal the worked solution one step at a time */
+.guide{margin:-8px 0 18px}
+.gbtn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:12px 16px;border-radius:14px;cursor:pointer;
+  border:2px dashed color-mix(in srgb,var(--c) 45%,var(--line));background:color-mix(in srgb,var(--c) 6%,var(--surface));font:500 16px/1.3 Mitr}
+.gbtn small{font:400 13.5px "IBM Plex Sans Thai",sans-serif;color:var(--muted)}
+.gbtn:hover{border-style:solid}
+.ghead{display:flex;align-items:center;gap:10px;margin-bottom:10px;font:500 17px/1.3 Mitr}
+.ghead .gtag{font:500 12px/1 Mitr;padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:var(--c)}
+.gstep{display:grid;grid-template-columns:34px 1fr;gap:4px 12px;align-items:start;padding:12px 14px;margin-bottom:8px;border-radius:14px;
+  background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);animation:in .35s ease}
+.gstep .gn{grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 Mitr;color:#fff;background:var(--c)}
+.gstep b{font:500 14px/1.3 Mitr;color:var(--muted)}
+.gstep .gx{font-size:17px;line-height:1.6;overflow-wrap:anywhere}
+.gstep.last{border:2px solid color-mix(in srgb,var(--c) 50%,var(--line));background:color-mix(in srgb,var(--c) 5%,var(--surface))}
+.gstep.last .gx em{font-style:normal;font-weight:600;color:var(--c);padding:0 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 12%,transparent)}
+.gmore{display:flex;gap:8px;margin-top:2px}
+.gused{display:inline-block;font:500 12.5px/1 Mitr;padding:5px 10px;border-radius:999px;margin-bottom:8px;
+  background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
 </style>
 </head>
 <body>
@@ -6077,6 +6095,7 @@ function renderQ(){
         <div class="badges">${q.exam?`<span class="badge calc">🎯 ${q.examName} ข้อ ${q.no}</span>${q.type==='num'?'<span class="badge">✏️ เติมตัวเลข</span>':''}`
           :`<span class="badge ${q.kind==='calc'?'calc':''}">${q.kind==='calc'?'🧮 โจทย์คำนวณ':'💡 ความเข้าใจ'}</span><span class="badge">${LEVELS[gradeOf(q.topic)].name}</span>${q.alevel?'<span class="badge calc">🎯 แนว A-Level</span>':''}`}</div></div></div>
     <div class="qtext">${q.exam?`<div class="qimgwrap" id="qimgWrap">${q.text}</div><div class="zoomhint">แตะรูปเพื่อขยาย / ย่อ</div>`:q.text}</div>
+    ${guideHTML(q,a,lock)}
     ${body}
     <div class="conf"><span>ความมั่นใจ</span>
       <div class="seg" role="radiogroup" aria-label="ความมั่นใจ">${[['1','🎲 เดา'],['2','🤔 พอได้'],['3','💪 มั่นใจ']].map(([v,l])=>`<button data-conf="${v}" class="${a.conf==v?'on':''}" role="radio" aria-checked="${a.conf==v}" ${lock?'disabled':''}>${l}</button>`).join('')}</div></div>
@@ -6090,6 +6109,7 @@ function renderQ(){
   if(lock) showFeedback(q,a);
 
   $('#drawBtn').onclick=()=>openPad(id);
+  card.querySelectorAll('[data-guide]').forEach(b=>b.onclick=()=>{ a.guide=Math.min((a.guide||0)+1, guideSteps(q).length); renderQ(); });
   const zw=$('#qimgWrap'); if(zw) zw.onclick=()=>zw.classList.toggle('zoomed');
   card.querySelectorAll('.choice,.bubble').forEach(b=>b.onclick=()=>pick(+b.dataset.oi));
   card.querySelectorAll('[data-conf]').forEach(b=>b.onclick=()=>{ a.conf=+b.dataset.conf; card.querySelectorAll('[data-conf]').forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-checked',x===b)}); });
@@ -6099,6 +6119,26 @@ function renderQ(){
   const sk=$('#skipBtn'); if(sk) sk.onclick=()=>go(S.i+1);
   $('#nextBtn').onclick=next;
   updateChrome();
+}
+/* Guided steps: every worked step but the last is shown as is; the last one keeps its working
+   but hides the result after its final "=", so the student still does the final step themselves. */
+function guideSteps(q){
+  const st=(q.steps||[]).filter(Boolean);
+  if(st.length<2) return [];
+  const last=st[st.length-1], k=last.lastIndexOf('=');
+  const tail = k>0 && last.slice(k+1).trim() ? `${last.slice(0,k+1)} <em>?</em>` : 'ใช้ผลจากขั้นข้างบน แล้วเลือกคำตอบ';
+  return [...st.slice(0,-1), tail];
+}
+function guideHTML(q,a,lock){
+  if(S.mode!=='practice' || q.exam || q.kind!=='calc') return '';
+  const st=guideSteps(q); if(!st.length) return '';
+  if(lock) return '';
+  const k=a.guide||0;
+  if(!k) return `<div class="guide"><button class="gbtn" data-guide>🧭 ขั้นตอนช่วยคิด <small>ไม่แน่ใจ? ดูวิธีคิดทีละขั้น แล้วคิดขั้นสุดท้ายเอง</small></button></div>`;
+  return `<div class="guide"><div class="ghead">🧭 ขั้นตอนช่วยคิด <span class="gtag">ขั้นที่ ${k}/${st.length}</span></div>
+    ${st.slice(0,k).map((x,j)=>`<div class="gstep${j===st.length-1?' last':''}"><span class="gn">${j+1}</span>
+      <b>${j===st.length-1?'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ':'ขั้นที่ '+(j+1)}</b><div class="gx">${x}</div></div>`).join('')}
+    ${k<st.length?`<div class="gmore"><button class="btn ghost" data-guide>ขั้นต่อไป ↓</button></div>`:''}</div>`;
 }
 function pick(oi){
   const id=S.ids[S.i]; if(locked(id)) return;
@@ -6114,11 +6154,11 @@ function showFeedback(q,a){
   const fb=$('#fb'), g=a.g;
   const right = q.type==='mc' ? q.choices.filter(c=>c.ok).map(c=>c.t).join(' หรือ ') : `${q.ansText??q.answer} ${q.unit}`;
   fb.className='feedback on '+(g.correct?'ok':'bad');
-  fb.innerHTML = g.correct
+  fb.innerHTML = (a.guide?`<span class="gused">🧭 ใช้ขั้นตอนช่วยคิด ${a.guide} ขั้น</span>`:'') + (g.correct
     ? `<h4>✓ ถูกต้อง</h4><ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`
     : `<h4>✗ ยังไม่ถูก — คำตอบคือ ${right}</h4>
        <div><b>วินิจฉัย:</b> ${ERR[g.err].name}${g.why?` · ${g.why}`:''}</div>
-       <ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+       <ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`);
   // offered once per topic per session, on the first question that needed it (and again when revisiting that question)
   const sk=S.sky||(S.sky={});
   if((!g.correct || a.conf===1) && (sk[q.topic]??=q.id)===q.id) fb.insertAdjacentHTML('beforeend', skyHelp(q.topic, new Set()));
@@ -6849,6 +6889,16 @@ function renderResult(rec){
 }
 // first paint of the home page, once every helper above is defined
 refreshHome();
+// deep link from the e-book shelf: index.html#ch=4 opens chapter 4's topics in practice mode, ready to start
+function openChapter(ch){
+  const lv=Object.keys(LEVELS).find(k=>k!=='alevel' && LEVELS[k].topics.some(t=>TOPICS[t].ch===ch));
+  if(!lv) return;
+  LV=lv; SEL=new Set(LEVELS[lv].topics.filter(t=>TOPICS[t].ch===ch)); SIZE='10';
+  MODE='practice'; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel', x.dataset.mode==='practice'));
+  openSubject();
+  $('#levelBody').scrollIntoView({block:'start'});
+}
+{ const m=location.hash.match(/^#ch=(\d+)$/); if(m) openChapter(+m[1]); }
 </script>
 </body>
 </html>
