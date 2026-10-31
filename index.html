@@ -5682,7 +5682,8 @@ const ELEMENTS=[['H','ไฮโดรเจน'],['He','ฮีเลียม'],
 const elementFor = L => ELEMENTS[L-1] || ['★', `เลเวล ${L}`];
 const levelColor = L => ['#7c5cff','#0ea5b7','#16936a','#d99413','#ff6b4a','#e0438f','#9b5de5'][Math.floor((L-1)/8)%7];
 // XP: correct answer 10, wrong-but-attempted 2, finishing a set of 5+ questions 20
-function xpOfRecord(r){ let x=0, n=0; for(const p of Object.values(r.per)){ n++; x += p.c?10:(p.err==='skip'?0:2); } return x + (n>=5?20:0); }
+// a correct answer reached with the guided steps earns half (5 instead of 10)
+function xpOfRecord(r){ let x=0, n=0; for(const p of Object.values(r.per)){ n++; x += p.c?(p.guide?5:10):(p.err==='skip'?0:2); } return x + (n>=5?20:0); }
 const xpNeed = L => 60+40*L;                       // XP to go from level L to L+1
 function levelOf(xp){ let L=1, rest=xp; while(rest>=xpNeed(L)){ rest-=xpNeed(L); L++; } return {L, into:rest, need:xpNeed(L)}; }
 const emptyProg = () => ({v:1, xp:0, runs:0, pats:{}, exams:{}});
@@ -6134,7 +6135,7 @@ function guideHTML(q,a,lock){
   const st=guideSteps(q); if(!st.length) return '';
   if(lock) return '';
   const k=a.guide||0;
-  if(!k) return `<div class="guide"><button class="gbtn" data-guide>🧭 ขั้นตอนช่วยคิด <small>ไม่แน่ใจ? ดูวิธีคิดทีละขั้น แล้วคิดขั้นสุดท้ายเอง</small></button></div>`;
+  if(!k) return `<div class="guide"><button class="gbtn" data-guide>🧭 ขั้นตอนช่วยคิด <small>ไม่แน่ใจ? ดูวิธีคิดทีละขั้น แล้วคิดขั้นสุดท้ายเอง · ข้อนี้จะได้ XP ครึ่งหนึ่ง</small></button></div>`;
   return `<div class="guide"><div class="ghead">🧭 ขั้นตอนช่วยคิด <span class="gtag">ขั้นที่ ${k}/${st.length}</span></div>
     ${st.slice(0,k).map((x,j)=>`<div class="gstep${j===st.length-1?' last':''}"><span class="gn">${j+1}</span>
       <b>${j===st.length-1?'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ':'ขั้นที่ '+(j+1)}</b><div class="gx">${x}</div></div>`).join('')}
@@ -6154,7 +6155,7 @@ function showFeedback(q,a){
   const fb=$('#fb'), g=a.g;
   const right = q.type==='mc' ? q.choices.filter(c=>c.ok).map(c=>c.t).join(' หรือ ') : `${q.ansText??q.answer} ${q.unit}`;
   fb.className='feedback on '+(g.correct?'ok':'bad');
-  fb.innerHTML = (a.guide?`<span class="gused">🧭 ใช้ขั้นตอนช่วยคิด ${a.guide} ขั้น</span>`:'') + (g.correct
+  fb.innerHTML = (a.guide?`<span class="gused">🧭 ใช้ขั้นตอนช่วยคิด ${a.guide} ขั้น${g.correct?' · ได้ XP ครึ่งหนึ่ง (5)':''}</span>`:'') + (g.correct
     ? `<h4>✓ ถูกต้อง</h4><ol class="steps">${q.steps.map(s=>`<li>${s}</li>`).join('')}</ol>`
     : `<h4>✗ ยังไม่ถูก — คำตอบคือ ${right}</h4>
        <div><b>วินิจฉัย:</b> ${ERR[g.err].name}${g.why?` · ${g.why}`:''}</div>
@@ -6212,7 +6213,7 @@ function submit(){
     const q=QBY[id], a=S.ans[id], g=a.g||grade(q,a);
     if(g.correct) score++;
     per[id]={c:!!g.correct, err:g.err||null, why:g.why||null, conf:a.conf||0, time:Math.round(a.time),
-      choice:a.choice??null, value:a.value??null};
+      choice:a.choice??null, value:a.value??null, ...(a.guide?{guide:a.guide}:{})};
   });
   const rec={date:Date.now(), mode:S.mode, meta:S.meta, who:studentLabel(), score, total:S.ids.length, dur:Math.round((Date.now()-S.t0)/1000), per};
   // rewards: compare progress before and after this attempt
