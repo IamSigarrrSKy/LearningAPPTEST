@@ -8,7 +8,7 @@
 <meta name="description" content="ข้อสอบวิทยาศาสตร์และแบบฝึกหัด — ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Itim&family=Mali:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f4f1ea; --bg2:#ebe5d8; --surface:#fffdf8; --surface2:#f8f4ec;
@@ -732,6 +732,10 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .gmore{display:flex;gap:8px;margin-top:2px}
 .gused{display:inline-block;font:500 12.5px/1 Mitr;padding:5px 10px;border-radius:999px;margin-bottom:8px;
   background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
+/* playful handwriting accents: Itim for praise and "coming soon" tags, Mali for the leaderboard */
+.feedback h4,.subject .soon{font-family:Itim,Mitr,sans-serif;font-weight:400}
+.feedback h4{font-size:19px}
+.hand,.brow .who b{font-family:Mali,Mitr,sans-serif;font-weight:600}
 </style>
 </head>
 <body>
@@ -787,7 +791,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <div class="minishelf" aria-hidden="true"><i style="--c:#FF6F61"></i><i style="--c:#FFBE98"></i><i style="--c:#A47864"></i><i style="--c:#955251"></i><i style="--c:#92A8D1"></i><i style="--c:#0F4C81"></i><i style="--c:#6667AB"></i><i style="--c:#45B5AA"></i><i style="--c:#009473"></i><i style="--c:#88B04B"></i><i style="--c:#BB2649"></i></div>
     </a>
 
-    <div class="section-title"><h2><img class="art" src="img/medal-72.webp" alt="" width="34" height="34">Leaderboard</h2><span id="boardNote"></span></div>
+    <div class="section-title"><h2 class="hand"><img class="art" src="img/medal-72.webp" alt="" width="34" height="34">Leaderboard</h2><span id="boardNote"></span></div>
     <div id="leaderboard"></div>
 
 

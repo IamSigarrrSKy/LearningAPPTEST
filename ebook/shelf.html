@@ -8,7 +8,7 @@
 <meta name="description" content="ชีทสรุปเคมีพี่สกาย 11 บท ในรูปแบบ E-book">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Itim&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f4f1ea; --surface:#fffdf8; --surface2:#f8f4ec;
@@ -87,6 +87,7 @@ button{cursor:pointer}
 .sh img{border-radius:12px}
 @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) :is(.chip,.sh) img{mix-blend-mode:normal} }
 :root[data-theme="dark"] :is(.chip,.sh) img{mix-blend-mode:normal}
+.sh small.soon{font-family:Itim,Mitr,sans-serif;font-size:15px;color:var(--accent)}
 .sh small{font:400 14px "IBM Plex Sans Thai",sans-serif;color:var(--muted)}
 .chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px;font-size:14px}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
@@ -357,7 +358,7 @@ function render(){
     const list = BOOKS.filter(b => subjOf(b) === sk);
     const sec = document.createElement('section');
     sec.className = 'subj';
-    sec.innerHTML = `<h2 class="sh"><img src="../img/${sk}-72.webp" alt="">${sname}<small>${list.length ? list.length + ' เล่ม' : 'เร็วๆ นี้'}</small></h2>
+    sec.innerHTML = `<h2 class="sh"><img src="../img/${sk}-72.webp" alt="">${sname}${list.length ? `<small>${list.length} เล่ม</small>` : '<small class="soon">เร็วๆ นี้</small>'}</h2>
       <div class="case"><div class="crown"></div></div>
       <div class="info" hidden aria-live="polite"><div class="ik"></div><h3></h3><ul></ul><p class="note"></p>
         <div class="acts"><button class="btn pri read"></button><a class="btn ghost quiz" href="../index.html">ทำข้อสอบบทนี้</a>
