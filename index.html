@@ -449,10 +449,37 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 @keyframes sparkBurst{
   0%{opacity:1;box-shadow:0 0 0 0 rgba(255,190,92,.9),0 0 0 0 rgba(244,114,82,.9),0 0 0 0 rgba(255,190,92,.9),0 0 0 0 rgba(244,114,82,.9)}
   100%{opacity:0;box-shadow:-14px -10px 0 -2px rgba(255,190,92,0),14px -12px 0 -2px rgba(244,114,82,0),-10px 14px 0 -2px rgba(255,190,92,0),12px 12px 0 -2px rgba(244,114,82,0)}}
+/* Two-layer 3D icons (img/<icon>-<layer>.webp): a base and a moving part on a 56×56 stage, animated on hover/focus.
+   ม.4 cork pops off the tube · ม.5 beam tips · ม.6 sparks pulse around the battery · โหมดสอบ pencil writes on the clipboard */
+.stage{position:relative;display:block;width:56px;height:56px;flex:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.stage img{position:absolute;mix-blend-mode:multiply;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s,filter .3s}
+:is(.lv,.mode):is(:hover,:focus-visible) .stage{transform:translateY(-6px) scale(1.08)}
+.st-m4 .base{left:6px;top:2px;width:38px;height:54px;transform-origin:50% 60%}
+.st-m4 .part{left:24px;top:-7px;width:18px;height:18.5px}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m4 .base{transform:rotate(-12deg)}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m4 .part{transform:translate(13px,2px) rotate(40deg) scale(1.1)}
+.st-m5 .base{left:16.5px;top:10px;width:23px;height:46px}
+.st-m5 .part{left:1px;top:6px;width:54px;height:37.5px;transform-origin:50% 10%}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m5 .part{animation:scaleTip .7s ease-in-out}
+@keyframes scaleTip{30%{transform:rotate(-14deg)} 70%{transform:rotate(10deg)}}
+.st-m6 .part{left:0;top:2.5px;width:56px;height:51px;opacity:.4;transform:scale(.85)}
+.st-m6 .base{left:7px;top:5px;width:42.5px;height:45.3px;mix-blend-mode:normal}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m6 .base{filter:brightness(1.12)}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m6 .part{opacity:1;animation:sparkPulse .45s ease-in-out infinite alternate}
+@keyframes sparkPulse{from{transform:scale(.9) rotate(-5deg)} to{transform:scale(1.04) rotate(5deg)}}
+.st-exam .base{left:2px;top:2px;width:43.5px;height:52px}
+.st-exam .part{left:26px;top:24px;width:30px;height:31px}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-exam .part{animation:pencilWrite .55s ease-in-out infinite alternate}
+@keyframes pencilWrite{50%{transform:translate(-10px,2px) rotate(-8deg)} to{transform:translate(-4px,6px) rotate(4deg)}}
+.lv .ico.stage{right:12px;top:16px;opacity:1}
+.mode .stage{position:absolute;right:14px;top:50%;margin-top:-28px}
+.mode:has(.stage){padding-right:84px}
+@media (prefers-reduced-motion:reduce){ .stage,.stage img{transition:none} .stage img{animation:none!important} }
 /* multiply darkens the art on a dark page: the cut-out images need no blending there */
-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .dartico img{mix-blend-mode:normal} }
-:root[data-theme="dark"] .dartico img{mix-blend-mode:normal}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) :is(.dartico,.stage) img{mix-blend-mode:normal} }
+:root[data-theme="dark"] :is(.dartico,.stage) img{mix-blend-mode:normal}
 @media (prefers-reduced-motion:reduce){ .dartico,.dartico .dart{transition:none} .dartico .tgt,.dartico .spark{animation:none!important} }
+
 .board{padding:14px}
 .board .tabs{margin-bottom:8px}
 .brow{display:grid;grid-template-columns:34px 44px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 6px;border-bottom:1px solid var(--line)}
@@ -745,7 +772,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
     <div class="section-title"><h2>เลือกโหมด</h2></div>
     <div class="modes">
-      <button class="mode sel" data-mode="exam"><h3>📝 โหมดสอบ</h3><p>ทำครบทุกข้อก่อน แก้คำตอบได้ ดูผลวิเคราะห์ตอนส่ง</p></button>
+      <button class="mode sel" data-mode="exam"><span class="stage st-exam" aria-hidden="true"><img class="base" src="img/ex-board.webp" alt=""><img class="part" src="img/ex-pencil.webp" alt=""></span><h3>โหมดสอบ</h3><p>ทำครบทุกข้อก่อน แก้คำตอบได้ ดูผลวิเคราะห์ตอนส่ง</p></button>
       <button class="mode" data-mode="practice"><h3>🧪 โหมดฝึก</h3><p>เฉลยและวินิจฉัยทันทีหลังตอบแต่ละข้อ</p></button>
     </div>
 
@@ -3254,6 +3281,10 @@ function topicAcc(t){
 }
 function lastOf(lv){ const h=loadHist().filter(r=>r.meta&&r.meta.lv===lv); return h[h.length-1]; }
 
+// layered 3D icons for each level card: [base, moving part]; the part is drawn behind the base for ม.6 (sparks around the battery)
+const STAGE=Object.fromEntries(Object.entries({m4:['m4-tube','m4-cork'], m5:['m5-stand','m5-beam'], m6:['m6-batt','m6-zap']})
+  .map(([k,[b,pt]])=>[k, k==='m6' ? `<img class="part" src="img/${pt}.webp" alt=""><img class="base" src="img/${b}.webp" alt="">`
+    : `<img class="base" src="img/${b}.webp" alt=""><img class="part" src="img/${pt}.webp" alt="">`]));
 function renderLevels(){
   $('#levels').innerHTML=Object.entries(LEVELS).filter(([k])=>k!=='alevel').map(([k,L])=>{
     const ids = k==='alevel' ? EXAM_IDS : poolFor(k, L.topics);
@@ -3262,7 +3293,7 @@ function renderLevels(){
       ? `<span>ข้อสอบจริง ${EXAM_SETS.length} ปี</span><span>${EXAM_IDS.length} ข้อ · 5 ตัวเลือก</span>`
       : `<span>${L.topics.length} เรื่อง</span><span>${patCount(ids)} รูปแบบ · ${ids.length} ข้อ</span>`;
     return `<button class="lv ${k==='alevel'?'alv':''} ${k===LV?'sel':''}" style="--c:${L.c}" data-lv="${k}" role="tab" aria-selected="${k===LV}">
-      <span class="ico">${L.ico}</span><span class="big">${L.name}</span><small>${L.full}</small>
+      ${STAGE[k] ? `<span class="ico stage st-${k}" aria-hidden="true">${STAGE[k]}</span>` : `<span class="ico">${L.ico}</span>`}<span class="big">${L.name}</span><small>${L.full}</small>
       <div class="meta">${meta}${last?`<span>ล่าสุด ${last.score}/${last.total}</span>`:''}</div></button>`;
   }).join('');
   $('#levels').querySelectorAll('.lv').forEach(b=>b.onclick=()=>{
