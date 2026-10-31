@@ -455,9 +455,10 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .stage img{position:absolute;mix-blend-mode:multiply;transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s,filter .3s}
 :is(.lv,.mode):is(:hover,:focus-visible) .stage{transform:translateY(-6px) scale(1.08)}
 .st-m4 .base{left:6px;top:2px;width:38px;height:54px;transform-origin:50% 60%}
-.st-m4 .part{left:24px;top:-7px;width:18px;height:18.5px}
+/* tube leans 21° with its mouth (a tilted ellipse) centred at (33.4, 7): the cork is tilted the same way and its bottom sits 3px inside */
+.st-m4 .part{left:23.1px;top:-8.7px;width:20px;height:20.5px;transform-origin:46% 90%;transform:rotate(21deg)}
 :is(.lv,.mode):is(:hover,:focus-visible) .st-m4 .base{transform:rotate(-12deg)}
-:is(.lv,.mode):is(:hover,:focus-visible) .st-m4 .part{transform:translate(13px,2px) rotate(40deg) scale(1.1)}
+:is(.lv,.mode):is(:hover,:focus-visible) .st-m4 .part{transform:translate(14px,4px) rotate(62deg) scale(1.05)}
 .st-m5 .base{left:16.5px;top:10px;width:23px;height:46px}
 .st-m5 .part{left:1px;top:6px;width:54px;height:37.5px;transform-origin:50% 10%}
 :is(.lv,.mode):is(:hover,:focus-visible) .st-m5 .part{animation:scaleTip .7s ease-in-out}
@@ -468,9 +469,10 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 :is(.lv,.mode):is(:hover,:focus-visible) .st-m6 .part{opacity:1;animation:sparkPulse .45s ease-in-out infinite alternate}
 @keyframes sparkPulse{from{transform:scale(.9) rotate(-5deg)} to{transform:scale(1.04) rotate(5deg)}}
 .st-exam .base{left:2px;top:2px;width:43.5px;height:52px}
-.st-exam .part{left:26px;top:24px;width:30px;height:31px}
+/* the pencil's tip (its bottom-left corner) rests on the paper at (24, 34); it turns around the tip while writing */
+.st-exam .part{left:24px;top:4.2px;width:30px;height:31px;transform-origin:0 96%}
 :is(.lv,.mode):is(:hover,:focus-visible) .st-exam .part{animation:pencilWrite .55s ease-in-out infinite alternate}
-@keyframes pencilWrite{50%{transform:translate(-10px,2px) rotate(-8deg)} to{transform:translate(-4px,6px) rotate(4deg)}}
+@keyframes pencilWrite{50%{transform:translate(-8px,2px) rotate(-8deg)} to{transform:translate(-4px,6px) rotate(4deg)}}
 .lv .ico.stage{right:12px;top:16px;opacity:1}
 .mode .stage{position:absolute;right:14px;top:50%;margin-top:-28px}
 .mode:has(.stage){padding-right:84px}
