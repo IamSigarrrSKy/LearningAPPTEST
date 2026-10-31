@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>คลังหนังสือ · ChemLab by Sky</title>
+<meta name="description" content="ชีทสรุปเคมีพี่สกาย 11 บท ในรูปแบบ E-book">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ea; --surface:#fffdf8; --surface2:#f8f4ec;
+  --ink:#1d2433; --soft:#46506a; --muted:#7a8296; --line:#e3dccd;
+  --accent:#ff6b4a; --accent-ink:#ffffff;
+  --shadow:0 1px 2px rgba(29,36,51,.06),0 10px 28px -14px rgba(29,36,51,.25);
+  --glass-hi:rgba(255,255,255,.85); --glass-lo:rgba(255,255,255,.55); --glass-in:rgba(255,255,255,.9);
+  /* honey oak */
+  --wood-1:#d9ab72; --wood-2:#c08a51; --wood-3:#9c6a3a; --wood-edge:#7d5129;
+  --wood-grain:.30; --back:#efe6d6; --back-2:#e4d7c1; --plaque:#c9a35c; --plaque-ink:#3d2a10;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12151d; --surface:#1c212d; --surface2:#232937;
+  --ink:#eef0f6; --soft:#bfc5d4; --muted:#8a92a6; --line:#2e3545;
+  --accent:#ff7d5e; --accent-ink:#1a0d08;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+  --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
+  /* dark walnut */
+  --wood-1:#6e4a2f; --wood-2:#573823; --wood-3:#432a19; --wood-edge:#2c1b10;
+  --wood-grain:.42; --back:#1f1a17; --back-2:#181411; --plaque:#b48a45; --plaque-ink:#2a1c08;
+}}
+:root[data-theme="dark"]{
+  --bg:#12151d; --surface:#1c212d; --surface2:#232937;
+  --ink:#eef0f6; --soft:#bfc5d4; --muted:#8a92a6; --line:#2e3545;
+  --accent:#ff7d5e; --accent-ink:#1a0d08;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
+  --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
+  --wood-1:#6e4a2f; --wood-2:#573823; --wood-3:#432a19; --wood-edge:#2c1b10;
+  --wood-grain:.42; --back:#1f1a17; --back-2:#181411; --plaque:#b48a45; --plaque-ink:#2a1c08;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{
+  background:var(--bg);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='97' viewBox='0 0 84 97'%3E%3Cpath d='M42 2 80 24v48L42 94 4 72V24z' fill='none' stroke='%23888' stroke-opacity='.13' stroke-width='1.4'/%3E%3C/svg%3E");
+  color:var(--ink); font:16px/1.65 "IBM Plex Sans Thai",system-ui,sans-serif; min-height:100vh; overflow-x:hidden;
+}
+h1,h2,h3{font-family:Mitr,"IBM Plex Sans Thai",sans-serif;font-weight:500;line-height:1.3;margin:0}
+button,a{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+
+/* top bar (same as the quiz app) */
+.top{display:flex;align-items:center;gap:12px;padding:16px 0}
+.brand{display:flex;align-items:center;gap:10px;font-family:Mitr;font-size:20px;font-weight:500;text-decoration:none}
+.tile{--c:var(--accent);display:inline-grid;place-items:center;width:38px;height:38px;border-radius:11px;flex:none;
+  background:linear-gradient(135deg,var(--glass-hi) 0%,color-mix(in srgb,var(--c) 14%,var(--glass-lo)) 100%);
+  border:2px solid color-mix(in srgb,var(--c) 55%,transparent);font-family:Mitr;font-weight:600;font-size:15px;
+  box-shadow:0 10px 20px -5px color-mix(in srgb,var(--c) 18%,transparent),inset 0 2px 4px var(--glass-in)}
+.spacer{flex:1}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:12px;height:40px;min-width:40px;padding:0 12px;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;font-size:14px}
+.iconbtn:hover{border-color:var(--soft)}
+
+.hero{padding:8px 0 20px}
+.hero h1{font-size:clamp(26px,5vw,38px)}
+.hero p{margin:4px 0 0;color:var(--soft)}
+.bar{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;margin-top:16px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip img{width:22px;height:22px;margin:-4px 5px -6px -6px;vertical-align:baseline}
+.tog{position:relative;display:inline-flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;user-select:none}
+.tog input{position:absolute;opacity:0;width:1px;height:1px}
+.tog .sw{width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;transition:background .2s;flex:none}
+.tog .sw::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.tog input:checked+.sw{background:var(--accent)}
+.tog input:checked+.sw::after{transform:translateX(16px)}
+.tog input:focus-visible+.sw{outline:3px solid var(--accent);outline-offset:2px}
+.subj{margin-top:26px}
+.sh{display:flex;align-items:center;gap:10px;font-size:22px;margin:0 0 24px}
+.sh img{width:42px;height:42px}
+.chip img,.sh img{border-radius:8px;mix-blend-mode:multiply}
+.sh img{border-radius:12px}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]) :is(.chip,.sh) img{mix-blend-mode:normal} }
+:root[data-theme="dark"] :is(.chip,.sh) img{mix-blend-mode:normal}
+.sh small{font:400 14px "IBM Plex Sans Thai",sans-serif;color:var(--muted)}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* ---------- bookcase ---------- */
+.case{
+  --bh:clamp(150px,26vw,290px);
+  position:relative;margin:8px 0 40px;padding:18px clamp(12px,3vw,28px) 0;border-radius:18px 18px 10px 10px;
+  background:
+    radial-gradient(120% 70% at 50% 0%,rgba(255,255,255,.10),transparent 60%),
+    linear-gradient(180deg,var(--back),var(--back-2));
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),inset 0 18px 40px -20px rgba(0,0,0,.35),var(--shadow);
+}
+/* side uprights + crown, all wood */
+.case::before,.case::after{content:"";position:absolute;top:0;bottom:-6px;width:clamp(10px,1.8vw,16px);z-index:2;
+  background:var(--grain),linear-gradient(90deg,var(--wood-3),var(--wood-1) 45%,var(--wood-2));background-size:180px 600px,100% 100%;
+  background-blend-mode:soft-light,normal;box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
+.case::before{left:-4px;border-radius:10px 4px 6px 8px}
+.case::after{right:-4px;border-radius:4px 10px 8px 6px}
+.crown{position:absolute;left:-10px;right:-10px;top:-14px;height:18px;border-radius:9px;z-index:3;
+  background:var(--grain),linear-gradient(180deg,var(--wood-1),var(--wood-2) 60%,var(--wood-3));background-size:600px 180px,100% 100%;
+  background-blend-mode:soft-light,normal;box-shadow:0 8px 14px -8px rgba(0,0,0,.55)}
+
+.row{position:relative;padding-top:30px}
+.row.np{padding-top:10px}
+.ghost{width:calc(var(--bh)*.15);height:var(--bh);flex:none;border:2px dashed color-mix(in srgb,var(--ink) 22%,transparent);border-radius:3px 6px 6px 3px;opacity:.7}
+.plaque{position:absolute;top:2px;left:50%;transform:translateX(-50%);z-index:1;
+  font:500 13px/1 Mitr;letter-spacing:.04em;color:var(--plaque-ink);padding:5px 14px;border-radius:6px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--plaque) 70%,#fff),var(--plaque) 55%,color-mix(in srgb,var(--plaque) 75%,#000));
+  box-shadow:0 2px 4px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.6)}
+.plaque::before,.plaque::after{content:"";position:absolute;top:50%;width:4px;height:4px;margin-top:-2px;border-radius:50%;
+  background:color-mix(in srgb,var(--plaque) 50%,#000);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+.plaque::before{left:5px}.plaque::after{right:5px}
+
+.books{position:relative;z-index:2;display:flex;justify-content:center;align-items:flex-end;gap:calc(var(--bh)*.018);
+  padding:10px 4px 0;margin-bottom:-6px;perspective:1100px;perspective-origin:50% -40%;transform-style:preserve-3d;min-height:calc(var(--bh) + 10px)}
+
+/* the plank: top face + front edge, wood grain from an SVG turbulence */
+.plank{position:relative;height:clamp(20px,3vw,28px);margin:0 calc(-1 * clamp(12px,3vw,28px));z-index:1}
+.plank::before{content:"";position:absolute;left:0;right:0;top:-10px;height:12px;
+  background:var(--grain),linear-gradient(180deg,color-mix(in srgb,var(--wood-1) 70%,#000) 0%,var(--wood-1) 100%);
+  background-size:600px 160px,100% 100%;background-blend-mode:soft-light,normal;
+  clip-path:polygon(1.5% 0,98.5% 0,100% 100%,0 100%)}
+.plank::after{content:"";position:absolute;inset:0;border-radius:0 0 6px 6px;
+  background:var(--grain),linear-gradient(180deg,var(--wood-1) 0%,var(--wood-2) 55%,var(--wood-3) 100%);
+  background-size:600px 160px,100% 100%;background-blend-mode:soft-light,normal;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -2px 0 var(--wood-edge),0 14px 18px -10px rgba(0,0,0,.55)}
+:root{--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='160'%3E%3Cfilter id='g' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0035 .16' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  2.4 0 0 0 -.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")}
+
+/* ---------- a book: a 3D box standing spine-out; its front cover is the right-hand face ---------- */
+.slot{--c:#999;--foil:#d8b878;--sw:calc(var(--bh)*.15);--d:calc(var(--bh)*.746);--spine:color-mix(in srgb,var(--c) 46%,#fff);
+  --t:calc(var(--sw)*.1);--i:calc(var(--sw)*.16); /* board thickness, page-block inset */
+  position:relative;flex:none;width:var(--sw);height:var(--bh);border:0;padding:0;background:none;cursor:pointer;color:#1d2433;
+  transform-style:preserve-3d; /* pass the shelf perspective through to the book box */
+  transition:width .6s cubic-bezier(.22,1,.36,1),margin .6s cubic-bezier(.22,1,.36,1),opacity .4s}
+body.notint .slot{--spine:#f6efe2}
+.slot::after{content:"";position:absolute;left:-15%;right:-15%;bottom:-5px;height:10px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.38),transparent);filter:blur(2px);pointer-events:none}
+.b3d{position:absolute;top:0;left:50%;width:var(--sw);height:var(--bh);margin-left:calc(var(--sw)/-2);transform-style:preserve-3d;
+  transform:translateZ(calc(var(--d)*-.5));transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.b3d>span{position:absolute;backface-visibility:hidden}
+.spine{left:0;top:0;width:var(--sw);height:var(--bh);transform:translateZ(calc(var(--d)/2));border-radius:3px;overflow:hidden;
+  /* rounded spine shading + a fine linen weave over the cloth colour */
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.2),rgba(255,255,255,.34) 20%,rgba(255,255,255,0) 50%,rgba(0,0,0,.18)),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.07) 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.05) 0 1px,transparent 1px 3px),
+    var(--spine);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.3);
+  display:flex;flex-direction:column;align-items:center;padding:calc(var(--sw)*.14) 0}
+/* raised bands with gilt rules, splitting the spine into compartments */
+.hb{flex:none;align-self:stretch;height:calc(var(--sw)*.17);margin:calc(var(--sw)*.1) 0;
+  background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(255,255,255,.5) 38%,rgba(255,255,255,.1) 62%,rgba(0,0,0,.28)),var(--spine);
+  border-top:1px solid var(--foil);border-bottom:1px solid var(--foil);box-shadow:0 1px 2px rgba(0,0,0,.25)}
+/* title label: a deeper shade of the chapter colour with a double gilt frame, like a tooled spine label */
+.lbl{flex:1;min-height:0;align-self:stretch;margin:0 calc(var(--sw)*.13);border-radius:2px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  --lb:color-mix(in srgb,var(--c) 72%,#3b3346);
+  background:linear-gradient(90deg,rgba(255,255,255,.14),rgba(255,255,255,0) 40%,rgba(0,0,0,.14)),var(--lb);
+  box-shadow:inset 0 0 0 1px var(--foil),inset 0 0 0 3px var(--lb),inset 0 0 0 4px color-mix(in srgb,var(--foil) 70%,transparent),0 1px 2px rgba(0,0,0,.3)}
+.el{position:relative;flex:none;width:calc(var(--sw)*.72);aspect-ratio:1;border-radius:24%;display:grid;place-items:center;
+  font:600 calc(var(--sw)*.3)/1 Mitr;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.85);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.9),0 2px 4px rgba(0,0,0,.14)}
+body.notint .el{background:color-mix(in srgb,var(--c) 30%,#fff)}
+.el i{position:absolute;top:2px;left:3px;font:500 calc(var(--sw)*.15)/1 Mitr;font-style:normal;opacity:.65}
+.st{writing-mode:vertical-rl;font:500 calc(var(--sw)*.3)/1.1 Mitr;white-space:nowrap;color:#fff6dc;letter-spacing:.03em;
+  text-shadow:0 1px 1px rgba(0,0,0,.35)}
+.sb{flex:none;font:600 calc(var(--sw)*.24)/1 Mitr;opacity:.75;text-align:center}
+.sb small{display:block;font:500 calc(var(--sw)*.15)/1.2 Mitr;letter-spacing:.06em;opacity:.8}
+.cover,.back{top:0;left:calc((var(--sw) - var(--d))/2);width:var(--d);height:var(--bh);border-radius:2px 5px 5px 2px;overflow:hidden}
+.cover{transform:rotateY(90deg) translateZ(calc(var(--sw)/2));background:#f7f2e8}
+.cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,.22),rgba(0,0,0,0) 5%),
+             linear-gradient(105deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.25) 52%,rgba(255,255,255,0) 64%)}
+/* chapter tint: multiply keeps the dark ink and colours the cream paper */
+.tint{position:absolute;inset:0;pointer-events:none;background:color-mix(in srgb,var(--c) 17%,#fff);mix-blend-mode:multiply;transition:opacity .35s}
+body.notint .tint{opacity:0}
+.back{transform:rotateY(-90deg) translateZ(calc(var(--sw)/2));background:linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.12)),var(--spine)}
+/* hardcover: boards run the full height/depth, the page block sits inset between them */
+.bd,.in{top:0;height:var(--bh)}
+.bd{top:calc((var(--bh) - var(--d))/2);width:var(--t);height:var(--d);transform:rotateX(90deg) translateZ(calc(var(--bh)/2));
+  background:color-mix(in srgb,var(--spine) 80%,#000)}
+.bd.l{left:0}.bd.r{left:calc(var(--sw) - var(--t))}
+.in{left:calc((var(--sw) - var(--d))/2);width:var(--d);background:#efe6d3}
+.in.r{transform:rotateY(-90deg) translateZ(calc(var(--t) - var(--sw)/2))}
+.in.l{transform:rotateY(90deg) translateZ(calc(var(--t) - var(--sw)/2))}
+.pg{left:var(--t);top:calc((var(--bh) - var(--d) + var(--i))/2);width:calc(var(--sw) - 2*var(--t));height:calc(var(--d) - var(--i));
+  transform:rotateX(90deg) translateZ(calc(var(--bh)/2 - var(--i))) translateY(calc(var(--i)/2));
+  background:linear-gradient(0deg,transparent 0 3%,var(--c) 3% 5%,#fff8e8 5% 6%,var(--c) 6% 8%,transparent 8%),
+    repeating-linear-gradient(90deg,#fbf7ee 0 1px,#e4d9c4 1px 2px)}
+.fe{left:var(--t);top:var(--i);width:calc(var(--sw) - 2*var(--t));height:calc(var(--bh) - 2*var(--i));
+  transform:rotateY(180deg) translateZ(calc(var(--d)/2 - var(--i)));background:repeating-linear-gradient(90deg,#fbf7ee 0 1px,#e4d9c4 1px 2px)}
+
+/* hover: slide out a little; click: pull out and turn the cover to face you */
+.books:not(.has-open) .slot:hover,.books:not(.has-open) .slot:focus-visible{z-index:4;width:calc(var(--sw)*.85 + var(--d)*.53 + var(--sw)*.4)}
+.books:not(.has-open) .slot:hover .b3d,.books:not(.has-open) .slot:focus-visible .b3d{transform:translateZ(calc(var(--d)*-.5 + var(--d)*.42)) translateY(-8px) rotateY(-32deg)}
+.slot:focus-visible{outline:none}
+.slot:focus-visible .spine{outline:3px solid var(--accent);outline-offset:-3px}
+.slot.open{width:var(--d);margin:0 calc(var(--sw)*.7);z-index:5;cursor:zoom-out}
+.slot.open .b3d{transform:translateZ(calc(var(--d)*.15)) translateY(-3%) rotateY(-76deg)}
+.slot.open::after{left:0;right:0;bottom:-8px;height:14px}
+.books.has-open .slot:not(.open){margin-right:calc(var(--sw)*-.3);opacity:.82}
+.books.has-open .slot:not(.open):hover{opacity:1}
+.books.has-open .slot:not(.open):hover .b3d{transform:translateZ(calc(var(--d)*-.5 + var(--d)*.15)) translateY(-4px)}
+@media (prefers-reduced-motion:reduce){ .slot,.b3d{transition:none} }
+
+/* ---------- details of the pulled-out book ---------- */
+.info{position:relative;margin:-22px 6px 36px;padding:26px 22px 20px;border-radius:0 0 18px 18px;background:var(--surface);
+  border:1px solid var(--line);border-top:0;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;animation:drop .45s ease}
+@keyframes drop{from{opacity:0;transform:translateY(-10px)}}
+.info .ik{color:var(--muted);font-size:14px}
+.info h3{font-size:22px}
+.info ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.info li{font-size:13.5px;border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:3px 11px}
+.info .note{margin:0;font-size:14px;color:var(--soft)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.btn{border:0;border-radius:14px;padding:10px 16px;font:500 15px/1.2 Mitr;text-decoration:none;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.btn.pri{background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 22px -10px var(--accent)}
+.btn.pri[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:var(--surface2);border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="../index.html"><span class="tile">Sky</span>ChemLab</a>
+    <span class="spacer"></span>
+    <a class="iconbtn" href="../index.html" style="white-space:nowrap">← ข้อสอบ</a>
+    <button class="iconbtn" id="themeBtn" aria-label="สลับธีมสว่าง/มืด">◐</button>
+  </header>
+
+  <section class="hero">
+    <h1>คลังหนังสือ</h1>
+    <p>ชีทสรุปพี่สกาย · ชี้ที่สันเพื่อดึงออกมาดู คลิกเพื่อหยิบออกมาดูปก · E-book ทยอยเปิดเร็วๆ นี้</p>
+    <div class="bar">
+      <div class="chips" role="group" aria-label="เลือกวิชา">
+        <button class="chip" data-s="all" aria-pressed="true">ทั้งหมด</button>
+        <button class="chip" data-s="chem" aria-pressed="false"><img src="../img/chem-72.webp" alt="">เคมี</button>
+        <button class="chip" data-s="phys" aria-pressed="false"><img src="../img/phys-72.webp" alt="">ฟิสิกส์</button>
+        <button class="chip" data-s="bio" aria-pressed="false"><img src="../img/bio-72.webp" alt="">ชีววิทยา</button>
+      </div>
+      <span class="spacer"></span>
+      <label class="tog"><input type="checkbox" id="splitLv"><span class="sw"></span>แยกชั้น</label>
+      <label class="tog"><input type="checkbox" id="tintOn" checked><span class="sw"></span>ย้อมสีปก</label>
+    </div>
+  </section>
+
+  <div id="lib"></div>
+</div>
+
+
+<script>
+/* Set `pdf` to the e-book file (e.g. 'books/04-stoich.pdf') when a chapter is ready to publish. */
+const BOOKS = [
+  {n:1,  slug:'safety',  lv:'m4', c:'#5fae86', title:'ความปลอดภัยและทักษะในปฏิบัติการเคมี', topics:['สัญลักษณ์อันตราย GHS','การใช้อุปกรณ์','การวัดและเลขนัยสำคัญ','หน่วย SI']},
+  {n:2,  slug:'atom',    lv:'m4', c:'#e9876e', title:'อะตอมและตารางธาตุ', topics:['แบบจำลองอะตอม','การจัดเรียงอิเล็กตรอน','สมบัติตามตารางธาตุ','ธาตุกัมมันตรังสี']},
+  {n:3,  slug:'bond',    lv:'m4', c:'#6fa6dc', title:'พันธะเคมี', topics:['พันธะไอออนิก','พันธะโคเวเลนต์','รูปร่างโมเลกุล','แรงระหว่างโมเลกุล','พันธะโลหะ']},
+  {n:4,  slug:'stoich',  lv:'m4', c:'#c99a3e', title:'ปริมาณสารสัมพันธ์', topics:['โมล','สูตรเคมี','สารละลาย','สมการเคมีและสารกำหนดปริมาณ']},
+  {n:5,  slug:'state',   lv:'m5', c:'#9183d8', title:'ของแข็ง ของเหลว แก๊ส', topics:['ของแข็งและการระเหิด','ความดันไอ','กฎของแก๊ส','ความดันย่อย','การแพร่']},
+  {n:6,  slug:'rate',    lv:'m5', c:'#e98f7a', title:'อัตราการเกิดปฏิกิริยาเคมี', topics:['อัตราเฉลี่ย','ทฤษฎีการชน','Ea และกลไก','ปัจจัยที่มีผลต่ออัตรา']},
+  {n:7,  slug:'eq',      lv:'m5', c:'#5fbf9f', title:'สมดุลเคมี', topics:['ภาวะสมดุล','ค่าคงที่สมดุล K','หลักของเลอชาเตอลิเยร์','สมดุลในอุตสาหกรรม']},
+  {n:8,  slug:'acid',    lv:'m5', c:'#e08aa8', title:'กรด-เบส', topics:['ทฤษฎีกรด-เบส','pH และ pOH','เกลือและบัฟเฟอร์','การไทเทรต']},
+  {n:9,  slug:'redox',   lv:'m6', c:'#5aaebb', title:'ไฟฟ้าเคมี', topics:['เลขออกซิเดชัน','เซลล์กัลวานิก','E° และความเป็นไปได้','การผุกร่อน','อิเล็กโทรลิซิส']},
+  {n:10, slug:'organic', lv:'m6', c:'#3f9f7c', title:'เคมีอินทรีย์', topics:['หมู่ฟังก์ชัน','การเรียกชื่อ','ไอโซเมอร์','ปฏิกิริยาเคมีอินทรีย์']},
+  {n:11, slug:'polymer', lv:'m6', c:'#8e5486', title:'พอลิเมอร์', topics:['การเกิดพอลิเมอร์','โครงสร้างและสมบัติ','พลาสติก ยาง เส้นใย','ผลกระทบต่อสิ่งแวดล้อม']},
+];
+const LV = {m4:'ม.4', m5:'ม.5', m6:'ม.6'};
+const EL = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar'];
+const SPINE = {safety:'ความปลอดภัยในปฏิบัติการ', state:'ของแข็ง ของเหลว แก๊ส', rate:'อัตราการเกิดปฏิกิริยา'};
+const SUBJ = {chem:'เคมี', phys:'ฟิสิกส์', bio:'ชีววิทยา'};
+const subjOf = b => b.subj || 'chem';
+const cover = b => `covers/${String(b.n).padStart(2,'0')}-${b.slug}.webp`;
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+let subjF = 'all', split = false, lastPer = 0;
+
+function bookEl(b){
+  return `<span class="b3d">
+    <span class="spine"><span class="hb"></span><span class="el"><i>${b.n}</i>${EL[b.n - 1] || b.n}</span><span class="hb"></span>
+      <span class="lbl"><span class="st">${esc(SPINE[b.slug] || b.title)}</span></span>
+      <span class="hb"></span><span class="sb"><small>บทที่</small>${b.n}</span><span class="hb"></span></span>
+    <span class="cover"><img src="${cover(b)}" alt="" width="720" height="964" loading="lazy" decoding="async"><span class="tint"></span></span>
+    <span class="back"></span><span class="in l"></span><span class="in r"></span><span class="pg"></span><span class="fe"></span>
+    <span class="bd l"></span><span class="bd r"></span></span>`;
+}
+
+/* spines per shelf from the live width (a pulled-out book squeezes the rest, so leave room for it) */
+function perShelf(){
+  const w = Math.min(document.querySelector('.wrap').clientWidth, 1080) - 32;
+  const bh = Math.min(290, Math.max(150, innerWidth * .26)), sw = bh * .15, gap = bh * .018;
+  const pad = Math.min(28, Math.max(12, innerWidth * .03));
+  return Math.max(4, Math.floor((w - 2 * pad - 8 - bh * .4) / (sw + gap)));
+}
+function chunk(list, per){
+  const rows = Math.ceil(list.length / per), size = Math.ceil(list.length / rows), out = [];
+  for (let k = 0; k < list.length; k += size) out.push(list.slice(k, k + size));
+  return out;
+}
+function shelfRow(books, label){
+  const row = document.createElement('div');
+  row.className = 'row' + (label ? '' : ' np');
+  row.innerHTML = `${label ? `<div class="plaque">${label}</div>` : ''}<div class="books"></div><div class="plank"></div>`;
+  const box = row.querySelector('.books');
+  if (!books.length) box.innerHTML = '<span class="ghost"></span>'.repeat(5);
+  books.forEach(b => {
+    const el = document.createElement('button');
+    el.className = 'slot'; el.style.setProperty('--c', b.c);
+    el.setAttribute('aria-label', `บทที่ ${b.n} ${b.title}`); el.setAttribute('aria-expanded', 'false');
+    el.innerHTML = bookEl(b);
+    el.addEventListener('click', () => openBook(b, el));
+    box.appendChild(el);
+  });
+  return row;
+}
+function render(){
+  const per = lastPer = perShelf(), lib = document.getElementById('lib');
+  lib.innerHTML = '';
+  for (const [sk, sname] of Object.entries(SUBJ)) {
+    if (subjF !== 'all' && subjF !== sk) continue;
+    const list = BOOKS.filter(b => subjOf(b) === sk);
+    const sec = document.createElement('section');
+    sec.className = 'subj';
+    sec.innerHTML = `<h2 class="sh"><img src="../img/${sk}-72.webp" alt="">${sname}<small>${list.length ? list.length + ' เล่ม' : 'เร็วๆ นี้'}</small></h2>
+      <div class="case"><div class="crown"></div></div>
+      <div class="info" hidden aria-live="polite"><div class="ik"></div><h3></h3><ul></ul><p class="note"></p>
+        <div class="acts"><button class="btn pri read"></button><a class="btn ghost" href="../index.html">ทำข้อสอบบทนี้</a>
+        <button class="btn ghost shut">↩ เก็บเข้าชั้น</button></div></div>`;
+    const cs = sec.querySelector('.case');
+    if (!list.length) cs.appendChild(shelfRow([], 'กำลังจัดทำ'));
+    else if (!split) chunk(list, per).forEach(r => cs.appendChild(shelfRow(r)));
+    else for (const lv of Object.keys(LV)) {
+      const part = list.filter(b => b.lv === lv);
+      if (part.length) chunk(part, per).forEach((r, k) => cs.appendChild(shelfRow(r, k ? '' : LV[lv])));
+    }
+    sec.querySelector('.shut').addEventListener('click', closeAll);
+    lib.appendChild(sec);
+  }
+}
+
+function closeAll(){
+  document.querySelectorAll('.slot.open').forEach(x => { x.classList.remove('open'); x.setAttribute('aria-expanded', 'false'); });
+  document.querySelectorAll('.books.has-open').forEach(x => x.classList.remove('has-open'));
+  document.querySelectorAll('.info').forEach(x => x.hidden = true);
+}
+function openBook(b, slot){
+  const wasOpen = slot.classList.contains('open');
+  closeAll();
+  if (wasOpen) return;
+  slot.classList.add('open'); slot.setAttribute('aria-expanded', 'true');
+  slot.parentElement.classList.add('has-open');
+  const info = slot.closest('.subj').querySelector('.info');
+  info.querySelector('.ik').textContent = `บทที่ ${b.n} · ${LV[b.lv]}`;
+  info.querySelector('h3').textContent = b.title;
+  info.querySelector('ul').innerHTML = b.topics.map(t => `<li>${esc(t)}</li>`).join('');
+  info.querySelector('.note').textContent = b.pdf ? 'เปิดอ่านได้ทุกอุปกรณ์' : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
+  const read = info.querySelector('.read');
+  read.disabled = !b.pdf;
+  read.textContent = b.pdf ? 'อ่าน E-book' : 'E-book กำลังจะมา';
+  read.onclick = b.pdf ? () => window.open(b.pdf, '_blank', 'noopener') : null;
+  info.hidden = false;
+}
+addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+render();
+addEventListener('resize', () => { if (perShelf() !== lastPer) render(); });
+document.querySelectorAll('.chip').forEach(ch => ch.addEventListener('click', () => {
+  document.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', x === ch));
+  subjF = ch.dataset.s; render();
+}));
+document.getElementById('splitLv').addEventListener('change', e => { split = e.target.checked; render(); });
+document.getElementById('tintOn').addEventListener('change', e => document.body.classList.toggle('notint', !e.target.checked));
+
+/* theme toggle shares the quiz app's saved choice */
+(function(){
+  const root = document.documentElement;
+  let saved = null; try { saved = localStorage.getItem('chemlab.theme'); } catch(e) {}
+  if (saved) root.dataset.theme = saved;
+  document.getElementById('themeBtn').addEventListener('click', () => {
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+    const next = dark ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('chemlab.theme', next); } catch(e) {}
+  });
+})();
+</script>
+</body>
+</html>

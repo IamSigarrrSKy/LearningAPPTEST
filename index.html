@@ -695,6 +695,25 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .qnav .btn{flex:1}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* home: entry to the e-book library — a mini wooden shelf of the 11 chapter spines */
+.libcard{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px 26px;padding:18px 22px;border-radius:var(--r);
+  border:2px solid var(--line);background:var(--surface);color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
+.libcard:hover{border-color:#c08a51;transform:translateY(-2px)}
+.libcard h3{font-size:20px}
+.libcard p{margin:2px 0 6px;color:var(--soft);font-size:14.5px}
+.libcard .go{font-weight:600;color:#b0773f;font-size:14px}
+.minishelf{position:relative;display:flex;align-items:flex-end;gap:3px;padding:0 14px 10px;perspective:500px}
+.minishelf::after{content:"";position:absolute;left:0;right:0;bottom:0;height:11px;border-radius:3px;
+  background:linear-gradient(180deg,#d9ab72,#c08a51 55%,#9c6a3a);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 6px 10px -6px rgba(0,0,0,.5)}
+.minishelf i{--c:#999;width:15px;border-radius:2px;flex:none;transform-origin:50% 100%;transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  background:linear-gradient(180deg,transparent 0 12%,#d8b878 12% 14%,transparent 14% 86%,#d8b878 86% 88%,transparent 88%),
+    linear-gradient(90deg,rgba(0,0,0,.18),rgba(255,255,255,.3) 25%,rgba(0,0,0,.1)),color-mix(in srgb,var(--c) 50%,#fff)}
+.minishelf i:nth-child(odd){height:78px}.minishelf i:nth-child(even){height:70px}.minishelf i:nth-child(3n){height:84px}
+.libcard:hover .minishelf i:nth-child(4){transform:translateY(-8px) rotate(-4deg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .minishelf::after{background:linear-gradient(180deg,#6e4a2f,#573823 55%,#432a19)}}
+:root[data-theme="dark"] .minishelf::after{background:linear-gradient(180deg,#6e4a2f,#573823 55%,#432a19)}
+@media (max-width:640px){ .libcard{grid-template-columns:1fr} .minishelf{justify-self:center} }
+@media (prefers-reduced-motion:reduce){ .minishelf i{transition:none} }
 </style>
 </head>
 <body>
@@ -743,6 +762,12 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       <button class="subject" style="--c:#16936a" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico"><img class="art" src="img/bio-192.webp" alt="" width="68" height="68"></span><h3>ชีววิทยา</h3><p>เซลล์ พันธุศาสตร์ ระบบร่างกาย</p></button>
       <button class="subject" style="--c:#7c5cff" disabled><span class="soon">เร็วๆ นี้</span><span class="blob"></span><span class="ico"><img class="art" src="img/earth-192.webp" alt="" width="68" height="68"></span><h3>โลกและอวกาศ</h3><p>ธรณี บรรยากาศ ดาราศาสตร์</p></button>
     </div>
+
+    <div class="section-title"><h2>คลังหนังสือ</h2><span>E-book ชีทสรุป</span></div>
+    <a class="libcard" href="ebook/shelf.html">
+      <div><h3>📚 ชีทสรุปเคมีพี่สกาย 11 บท</h3><p>หยิบชีทสรุปแต่ละบทจากชั้นมาดูปกและหัวข้อ · E-book ทยอยเปิดให้อ่านเร็วๆ นี้</p><span class="go">เปิดคลังหนังสือ →</span></div>
+      <div class="minishelf" aria-hidden="true"><i style="--c:#5fae86"></i><i style="--c:#e9876e"></i><i style="--c:#6fa6dc"></i><i style="--c:#c99a3e"></i><i style="--c:#9183d8"></i><i style="--c:#e98f7a"></i><i style="--c:#5fbf9f"></i><i style="--c:#e08aa8"></i><i style="--c:#5aaebb"></i><i style="--c:#3f9f7c"></i><i style="--c:#8e5486"></i></div>
+    </a>
 
     <div class="section-title"><h2><img class="art" src="img/medal-72.webp" alt="" width="34" height="34">Leaderboard</h2><span id="boardNote"></span></div>
     <div id="leaderboard"></div>
