@@ -5536,6 +5536,9 @@ const CH4V = [
   steps:['ปริมาตรแก๊สที่ทำปฏิกิริยาและเกิดขึ้นเป็นอัตราส่วนเลขลงตัวน้อยๆ (2 : 1 : 2)','ตามกฎการรวมปริมาตรของแก๊ส']},
 ].map(mc);
 Q.push(...GEN, ...CH4V);
+// Non-integer half-life counts are POSN / first-year level: kept in the bank but not served yet.
+const POSN_IDS = [324, 325];
+Q.forEach(q=>{ if(POSN_IDS.includes(q.id)) q.posn = true; });
 
 /* ---- link sheet / original questions to their pattern ---- */
 const PAT_LINK = {
@@ -5654,7 +5657,7 @@ function loadProg(){
   const p=emptyProg(); loadHist().forEach(r=>applyRecord(p,r)); saveProg(p); return p;   // first run: rebuild from history
 }
 const TIER=['ยังไม่ได้','ทองแดง','เงิน','ทอง'], MEDAL=['🔒','🥉','🥈','🥇'];
-const topicPats = t => [...new Set(Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam).map(patOf))];
+const topicPats = t => [...new Set(Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam&&!q.posn).map(patOf))];
 // Topic medals: bronze = half the patterns tried, silver = every pattern tried, gold = every pattern answered correctly once.
 // Paper medals: bronze = finished the whole paper, silver = best ≥ 60%, gold = best ≥ 80%.
 // Grade cups: the lowest medal among that grade's topics.
@@ -5765,7 +5768,7 @@ const seriesOfTopics = topics => ((topics||[]).find(t=>t.startsWith('series:'))|
 function poolFor(lv, topics){
   if(lv==='alevel'){ const sets=(topics||[]).filter(t=>EXAM_SETS.some(s=>s.id===t)), ser=seriesOfTopics(topics);
     return EXQ.filter(q=>sets.length ? sets.includes(q.exam) : q.series===ser).map(q=>q.id); }
-  return Q.filter(q=>!q.alevel && !q.exam && topics.includes(q.topic)).map(q=>q.id);
+  return Q.filter(q=>!q.alevel && !q.exam && !q.posn && topics.includes(q.topic)).map(q=>q.id);
 }
 function groupByPattern(pool){ const g={}; pool.forEach(id=>{ const k=patOf(QBY[id]); (g[k]=g[k]||[]).push(id); }); return g; }
 const patCount = pool => Object.keys(groupByPattern(pool)).length;
@@ -5812,7 +5815,7 @@ function pickSet(lv, pool, size, topics){
 }
 // A different question of the same pattern (for "retry what I got wrong").
 function siblingOf(id){
-  const k=patOf(QBY[id]), sib=Q.filter(q=>patOf(q)===k && q.id!==id && !q.alevel).map(q=>q.id);
+  const k=patOf(QBY[id]), sib=Q.filter(q=>patOf(q)===k && q.id!==id && !q.alevel && !q.posn).map(q=>q.id);
   return sib.length ? chooseVariant(sib, seenCounts()) : id;
 }
 function topicAcc(t){
@@ -5872,7 +5875,7 @@ function renderLevelBody(){
     B.innerHTML=`<div class="lvbar"><h2>เรื่องใน ${L.name}</h2><span class="count" id="selCount"></span><div class="spacer"></div>
         <span style="display:flex;gap:8px"><button class="btn ghost" id="selAll">เลือกทั้งหมด</button><button class="btn ghost" id="selNone">ล้าง</button></span></div>
       <div class="tgrid">${(()=>{ var tro=Object.fromEntries(trophyList(loadProg()).filter(x=>x.id.startsWith('t:')).map(x=>[x.id.slice(2),x.tier])); return L.topics.map(t=>{
-        const tq=Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
+        const tq=Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam&&!q.posn), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
         return `<button class="tcard" style="--c:${T.c}" data-t="${t}" aria-pressed="${SEL.has(t)}" ${n?'':'disabled'}>
           ${tileHTML(t)}<div class="info"><h4>${T.name} ${(tro[t]||0)?MEDAL[tro[t]]:''}</h4>
           <div class="sub">บทที่ ${T.ch} · ${np<n?`${np} รูปแบบ (${n} ข้อ)`:`${n} ข้อ`} ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
