@@ -1209,7 +1209,15 @@ const Q = [
 function mc(o){
   const {c, ok, e, ...rest} = o;
   return {...rest, type:'mc', choices:c.map((x,i)=> i===ok ? {t:x[0], ok:1}
-    : {t:x[0], why:x[1]||'ตัวเลขนี้ไม่ตรงกับการคำนวณที่ถูก — ดูวิธีทำทีละขั้น', err:x[2]||e})};
+    : {t:x[0], why:x[1]||rightWhy(o.steps, c[ok][0]), err:x[2]||e})};
+}
+// a wrong choice with no reason of its own explains the right answer instead:
+// "ที่ถูกคือ X เพราะ <first step> … <last step>" so the student sees where the answer comes from
+function rightWhy(steps, okText){
+  const segs = (steps||[]).join(' ; ').split(/\s;\s/).map(x=>x.trim()).filter(Boolean);
+  let why = segs.length>1 ? `${segs[0]} … ${segs[segs.length-1]}` : (segs[0]||'');
+  if(why.length>200) why = why.slice(0,198)+'…';
+  return why ? `ที่ถูกคือ ${okText} เพราะ ${why}` : `ที่ถูกคือ ${okText}`;
 }
 const CH1 = [
  // 1.1 ฉลากและสัญลักษณ์
