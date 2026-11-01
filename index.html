@@ -154,7 +154,8 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .subject:disabled{cursor:not-allowed;opacity:.62}
 .subject .soon{position:absolute;top:12px;right:12px;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
 
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){ .modes{grid-template-columns:1fr} }
 .mode{text-align:left;padding:18px 18px 18px 60px;border-radius:var(--r);border:2px solid var(--line);background:var(--surface);position:relative}
 .mode::before{content:"";position:absolute;left:20px;top:22px;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted)}
 .mode.sel{border-color:var(--accent)}
@@ -847,12 +848,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
     <div class="modes">
       <button class="mode sel" data-mode="exam"><span class="stage st-exam" aria-hidden="true"><img class="base" src="img/ex-board.webp" alt=""><img class="part" src="img/ex-pencil.webp" alt=""></span><h3>โหมดสอบ</h3><p>ทำครบทุกข้อก่อน แก้คำตอบได้ ดูผลวิเคราะห์ตอนส่ง</p></button>
       <button class="mode" data-mode="practice"><h3>🧪 โหมดฝึก</h3><p>เฉลยและวินิจฉัยทันทีหลังตอบแต่ละข้อ</p></button>
-    </div>
-
-    <div class="section-title"><h2>คุณเป็น…</h2><span>มือใหม่จะมีปุ่ม “ขั้นตอนช่วยคิด” ในโจทย์คำนวณ</span></div>
-    <div class="seg" id="skillSeg" role="radiogroup" aria-label="ระดับความถนัด">
-      <button data-skill="new" role="radio">🌱 มือใหม่ · มีไกด์</button>
-      <button data-skill="pro" role="radio">🔥 เซียนแล้ว · ไม่มีไกด์</button>
+      <button class="mode" data-mode="chick"><h3>🐣 ลูกเจี๊ยบมาหัดทำโจทย์</h3><p>มีขั้นตอนช่วยคิดทีละขั้นในโจทย์คำนวณ · เฉลยทันทีหลังตอบ · ใช้ไกด์ได้ XP ครึ่งหนึ่ง</p></button>
     </div>
 
     <div class="section-title"><h2>จำนวนข้อ</h2><span>สุ่มให้ครบทุกเรื่องที่เลือกก่อน แล้วค่อยเติม</span></div>
@@ -5900,11 +5896,8 @@ $('#trophyDlg').addEventListener('click',e=>{ if(e.target===$('#trophyDlg')) $('
 
 /* ============ HOME ============ */
 let MODE='exam';
-// มือใหม่ gets the guided steps on calculation questions (in either mode); เซียน never sees them. Remembered per device.
-let SKILL='new'; try{ SKILL=localStorage.getItem('chemlab.skill')||'new'; }catch(e){}
-function renderSkill(){ document.querySelectorAll('#skillSeg button').forEach(b=>{ const on=b.dataset.skill===SKILL; b.classList.toggle('on',on); b.setAttribute('aria-checked',on); }); }
-document.querySelectorAll('#skillSeg button').forEach(b=>b.onclick=()=>{ SKILL=b.dataset.skill; try{ localStorage.setItem('chemlab.skill',SKILL); }catch(e){} renderSkill(); renderStart(); });
-renderSkill();
+// 🐣 ลูกเจี๊ยบ mode runs as practice mode (instant feedback) with the guided steps switched on
+const MODE_NAME={exam:'โหมดสอบ', practice:'โหมดฝึก', chick:'โหมดลูกเจี๊ยบ (มีไกด์)'};
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{
   MODE=b.dataset.mode; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel',x===b));
 });
@@ -6068,7 +6061,7 @@ function renderStart(){
     : 'ทุกข้อให้เลือกความมั่นใจด้วย — ระบบแยกข้อที่ “เดาถูก” กับ “มั่นใจแต่เข้าใจผิด”';
   const ok = n>0 && (LV==='alevel' ? (SIZE!=='year' || exSet) : pool.length);
   $('#startSummary').innerHTML = ok
-    ? `<b>${scope}</b> · ${n} ข้อ · ${MODE==='exam'?'โหมดสอบ':'โหมดฝึก'} · ${SKILL==='new'?'มือใหม่ (มีไกด์)':'เซียน'}<br><span style="font-size:14px">${tip}</span>`
+    ? `<b>${scope}</b> · ${n} ข้อ · ${MODE_NAME[MODE]}<br><span style="font-size:14px">${tip}</span>`
     : (LV==='alevel' ? (seriesSets(EXSERIES).length ? 'เลือกปีของข้อสอบก่อนเริ่ม' : 'ยังไม่มีข้อสอบชุดนี้ — กำลังทยอยเพิ่ม') : 'เลือกอย่างน้อย 1 เรื่องก่อนเริ่ม');
   $('#startBtn').disabled=!ok;
   const last=lastOf(LV); $('#lastResultBtn').hidden=!last;
@@ -6079,7 +6072,7 @@ $('#chemCard').onclick=openSubject;
 $('#backHome').onclick=$('#crHome').onclick=()=>{ refreshHome(); show('home'); };
 $('#startBtn').onclick=()=>{
   const topics = LV==='alevel' && SIZE!=='year' ? ['series:'+EXSERIES] : [...SEL];
-  startQuiz(MODE, pickSet(LV, poolFor(LV,topics), SIZE, topics), {lv:LV, topics, size:SIZE, skill:SKILL});
+  startQuiz(MODE==='chick'?'practice':MODE, pickSet(LV, poolFor(LV,topics), SIZE, topics), {lv:LV, topics, size:SIZE, guide:MODE==='chick'});
 };
 $('#lastResultBtn').onclick=()=>{ const r=lastOf(LV); if(r) renderResult(r); };
 $('#ptable').innerHTML = PT.map(([s,m])=>`<div class="pt"><b>${s}</b><span>${m}</span></div>`).join('');
@@ -6152,7 +6145,6 @@ $('#ptDlg').addEventListener('click', e=>{ if(e.target===$('#ptDlg')) $('#ptDlg'
 let S=null, tick=null;
 function startQuiz(mode, ids, meta){
   if(!hasName()) return needName(()=>startQuiz(mode, ids, meta));
-  meta={...meta, skill:SKILL};   // the มือใหม่/เซียน choice on the start screen decides whether guided steps show
   S={mode, ids, meta, i:0, ans:{}, perm:{}, draw:{}, drawSize:{}, t0:Date.now(), qT:Date.now(), done:false};
   // real-paper questions keep choice order 1–5 because the choices are printed in the image
   ids.forEach(id=>{ const q=QBY[id]; if(q.type==='mc') S.perm[id]=q.fixedOrder ? q.choices.map((_,i)=>i) : shuffle(q.choices.map((_,i)=>i)); S.ans[id]={conf:0,time:0}; });
@@ -6309,7 +6301,7 @@ function guideSteps(q){
   return [...st.slice(0,-1).map((h,j)=>({t:'ขั้นที่ '+(j+1), h})), {t:'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ', h:tail, last:true}];
 }
 function guideHTML(q,a,lock){
-  if(S.meta.skill!=='new' || q.exam || q.kind!=='calc') return '';
+  if(!S.meta.guide || q.exam || q.kind!=='calc') return '';
   const st=guideSteps(q); if(!st.length) return '';
   if(lock) return '';
   const k=a.guide||0;
@@ -7081,12 +7073,12 @@ function renderResult(rec){
 }
 // first paint of the home page, once every helper above is defined
 refreshHome();
-// deep link from the e-book shelf: index.html#ch=4 opens chapter 4's topics in practice mode, ready to start
+// deep link from the e-book shelf: index.html#ch=4 opens chapter 4's topics in ลูกเจี๊ยบ mode (practice + guide), ready to start
 function openChapter(ch){
   const lv=Object.keys(LEVELS).find(k=>k!=='alevel' && LEVELS[k].topics.some(t=>TOPICS[t].ch===ch));
   if(!lv) return;
   LV=lv; SEL=new Set(LEVELS[lv].topics.filter(t=>TOPICS[t].ch===ch)); SIZE='10';
-  MODE='practice'; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel', x.dataset.mode==='practice'));
+  MODE='chick'; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel', x.dataset.mode==='chick'));
   openSubject();
   $('#levelBody').scrollIntoView({block:'start'});
 }
