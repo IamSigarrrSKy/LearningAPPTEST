@@ -728,14 +728,22 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .gbtn:hover{border-style:solid}
 .ghead{display:flex;align-items:center;gap:10px;margin-bottom:10px;font:500 17px/1.3 Mitr}
 .ghead .gtag{font:500 12px/1 Mitr;padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:var(--c)}
-.gstep{display:grid;grid-template-columns:34px 1fr;gap:4px 12px;align-items:start;padding:12px 14px;margin-bottom:8px;border-radius:14px;
+.gstep{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:12px 14px;margin-bottom:8px;border-radius:14px;
   background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);animation:in .35s ease}
 .gstep .gn{grid-row:span 2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:600 14px/1 Mitr;color:#fff;background:var(--c)}
 .gstep b{font:500 14px/1.3 Mitr;color:var(--muted)}
 .gstep .gx{font-size:17px;line-height:1.6;overflow-wrap:anywhere}
 .gstep.last{border:2px solid color-mix(in srgb,var(--c) 50%,var(--line));background:color-mix(in srgb,var(--c) 5%,var(--surface))}
 .gstep.last .gx em{font-style:normal;font-weight:600;color:var(--c);padding:0 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 12%,transparent)}
-.gmore{display:flex;gap:8px;margin-top:2px}
+.gstep>b,.gstep>.gx{grid-column:2}
+.gnext{grid-column:3;grid-row:1 / span 2;align-self:center;border:0;border-radius:12px;padding:10px 14px;cursor:pointer;white-space:nowrap;
+  font:500 15px/1.2 Mitr;background:var(--c);color:#fff;box-shadow:0 8px 18px -10px var(--c)}
+.gnext:hover{filter:brightness(1.08)}
+@media (max-width:560px){ .gnext{grid-column:2;grid-row:auto;justify-self:end;padding:8px 12px} }
+/* a ÷ b in guide working is drawn as a stacked fraction */
+.frac{display:inline-flex;flex-direction:column;align-items:stretch;vertical-align:middle;text-align:center;margin:0 .15em;line-height:1.3}
+.frac>span{padding:0 .3em}
+.frac>span:first-child{border-bottom:1.5px solid currentColor}
 .gvars{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:4px}
 .gvar{display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);font:600 17px/1.3 Mitr}
 .gvar i{font:400 13px/1.2 "IBM Plex Sans Thai",sans-serif;font-style:normal;color:var(--muted)}
@@ -6239,13 +6247,38 @@ function renderQ(){
 /* Guided steps. A question with an entry in guides.js gets the structured guide (given → formula → working → you finish);
    any other calculation falls back to its worked steps, with the result of the last one hidden. */
 const GUIDES = window.CHEMLAB_GUIDES || {};
+/* "a × b ÷ (c × d) = e" → a × b over c × d. Tokens are split on spaces outside brackets; the numerator is the ×-chain
+   to the left of ÷ and the denominator the run of words up to the next operator, so "12 ÷ 44 × 100" stays (12/44) × 100. */
+const FR_OPS=new Set(['×','÷','+','−','-','=','→',';','≈',':','<','>','≤','≥','และ']);
+function fracify(src){
+  if(!src.includes('÷')) return src;
+  const toks=[]; let cur='', depth=0;
+  for(const ch of src){
+    if(ch==='('||ch==='[') depth++; if(ch===')'||ch===']') depth=Math.max(0,depth-1);
+    if(ch===' ' && !depth){ if(cur) toks.push(cur); cur=''; } else cur+=ch;
+  }
+  if(cur) toks.push(cur);
+  const unwrap=t=>/^\(.*\)$/.test(t)&&!/\).*\(/.test(t.slice(1,-1)) ? fracify(t.slice(1,-1)) : t;
+  const out=[];
+  for(let i=0;i<toks.length;i++){
+    if(toks[i]!=='÷' || !out.length){ out.push(toks[i]); continue; }
+    let j=out.length;                                   // numerator: word run, then any "× word run" before it
+    while(j>0 && !FR_OPS.has(out[j-1])) j--;
+    while(j>1 && out[j-1]==='×' && !FR_OPS.has(out[j-2])){ j--; while(j>0 && !FR_OPS.has(out[j-1])) j--; }
+    const num=out.splice(j);
+    const den=[]; while(i+1<toks.length && !FR_OPS.has(toks[i+1])) den.push(toks[++i]);
+    if(!num.length||!den.length){ out.push(...num,'÷',...den); continue; }
+    out.push(`<span class="frac"><span>${num.length===1?unwrap(num[0]):num.join(' ')}</span><span>${den.length===1?unwrap(den[0]):den.join(' ')}</span></span>`);
+  }
+  return out.join(' ');
+}
 function guideSteps(q){
   const g=GUIDES[q.id] || q.guide;   // hand-written (guides.js) or built with a generated question
   if(g){
     const chip=([k,v])=>`<span class="gvar"><i>${k}</i><span>${v}</span></span>`;
     const cards=[{t:'กำหนดตัวแปรจากโจทย์', h:`<div class="gvars">${g.given.map(chip).join('')}${g.find?`<span class="gvar find"><i>${g.find[0]}</i><span>${g.find[1]||'?'}</span></span>`:''}</div>`}];
-    if(g.plan&&g.plan.length) cards.push({t:'เลือกสูตร / หลักการ', h:g.plan.map(x=>`<div class="gmath">${x}</div>`).join('')});
-    (g.work||[]).forEach(([t,x])=>cards.push({t, h:`<div class="gmath">${x}</div>`}));
+    if(g.plan&&g.plan.length) cards.push({t:'เลือกสูตร / หลักการ', h:g.plan.map(x=>`<div class="gmath">${fracify(x)}</div>`).join('')});
+    (g.work||[]).forEach(([t,x])=>cards.push({t, h:`<div class="gmath">${fracify(x)}</div>`}));
     const k=g.result.lastIndexOf('=');
     cards.push({t:'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ', h:`<div class="gmath">${k>0?g.result.slice(0,k+1)+' <em>?</em>':'<em>?</em>'}</div>`, last:true});
     return cards;
@@ -6264,8 +6297,8 @@ function guideHTML(q,a,lock){
   if(!k) return `<div class="guide"><button class="gbtn" data-guide>🧭 ขั้นตอนช่วยคิด <small>ไม่แน่ใจ? ดูวิธีคิดทีละขั้น แล้วคิดขั้นสุดท้ายเอง · ข้อนี้จะได้ XP ครึ่งหนึ่ง</small></button></div>`;
   return `<div class="guide"><div class="ghead">🧭 ขั้นตอนช่วยคิด <span class="gtag">ขั้นที่ ${k}/${st.length}</span></div>
     ${st.slice(0,k).map((c,j)=>`<div class="gstep${c.last?' last':''}"><span class="gn">${j+1}</span>
-      <b>${c.t}</b><div class="gx">${c.h}</div></div>`).join('')}
-    ${k<st.length?`<div class="gmore"><button class="btn ghost" data-guide>ขั้นต่อไป ↓</button></div>`:''}</div>`;
+      <b>${c.t}</b><div class="gx">${c.h}</div>
+      ${j===k-1 && k<st.length?'<button class="gnext" data-guide aria-label="ขั้นต่อไป">ต่อไป →</button>':''}</div>`).join('')}</div>`;
 }
 function pick(oi){
   const id=S.ids[S.i]; if(locked(id)) return;
