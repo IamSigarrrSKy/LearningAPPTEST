@@ -736,6 +736,12 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .gstep.last{border:2px solid color-mix(in srgb,var(--c) 50%,var(--line));background:color-mix(in srgb,var(--c) 5%,var(--surface))}
 .gstep.last .gx em{font-style:normal;font-weight:600;color:var(--c);padding:0 6px;border-radius:6px;background:color-mix(in srgb,var(--c) 12%,transparent)}
 .gmore{display:flex;gap:8px;margin-top:2px}
+.gvars{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:4px}
+.gvar{display:flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);font:600 17px/1.3 Mitr}
+.gvar i{font:400 13px/1.2 "IBM Plex Sans Thai",sans-serif;font-style:normal;color:var(--muted)}
+.gvar.find{border:2px dashed color-mix(in srgb,var(--c) 55%,var(--line));color:var(--c)}
+.gmath{margin-top:6px;padding:10px 14px;border-radius:12px;text-align:center;font:500 18px/1.6 Mitr;
+  background:color-mix(in srgb,var(--c) 7%,var(--surface2));color:color-mix(in srgb,var(--c) 70%,var(--ink))}
 .gused{display:inline-block;font:500 12.5px/1 Mitr;padding:5px 10px;border-radius:999px;margin-bottom:8px;
   background:color-mix(in srgb,var(--warn) 18%,var(--surface));color:var(--warn)}
 /* playful handwriting accents: Itim for praise and "coming soon" tags, Mali for the leaderboard */
@@ -1016,6 +1022,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 <script src="exam/exam-data.js"></script>
 <!-- optional: sets window.CHEMLAB_BACKEND, the Apps Script web-app URL shared by every visitor -->
 <script src="config.js"></script>
+<script src="guides.js"></script>
 <script>
 /* ============ DATA ============ */
 const TOPICS = {
@@ -5674,7 +5681,29 @@ Q.forEach(q=>{
   if(q.ansText) q.ansText=richScripts(q.ansText);
   if(q.unit) q.unit=richScripts(q.unit);
 });
+Object.values(window.CHEMLAB_GUIDES||{}).forEach(g=>{
+  g.given=(g.given||[]).map(([k,v])=>[richScripts(k),richScripts(v)]); if(g.find) g.find=g.find.map(richScripts);
+  g.plan=(g.plan||[]).map(richScripts); g.work=(g.work||[]).map(([t,x])=>[t,richScripts(x)]); g.result=richScripts(g.result||'');
+});
 const QBY = Object.fromEntries(Q.map(q=>[q.id,q]));
+/* Self-check for guides.js, run from the console: checkGuides() → list of problems (empty = all good).
+   Each guide must point at a calculation question, have its parts, and its `calc` must give the number
+   printed in the correct choice (within 3%), or `expect` when that choice is not a plain number (a ratio, a formula). */
+window.checkGuides = function(){
+  const bad=[], num=t=>{ const m=String(t).replace(/<[^>]+>/g,'').replace(/,/g,'').replace(/−/g,'-').match(/-?\d+(\.\d+)?/); return m?+m[0]:null; };
+  for(const [id,g] of Object.entries(GUIDES)){
+    const q=QBY[id];
+    if(!q){ bad.push(id+': no such question'); continue; }
+    if(q.kind!=='calc') bad.push(id+': not a calculation question');
+    if(!g.given||!g.given.length||!g.result) bad.push(id+': missing given/result');
+    if(!g.calc) { bad.push(id+': no calc'); continue; }
+    let v; try{ v=Function('"use strict";return ('+g.calc+')')(); }catch(e){ bad.push(id+': calc error '+e.message); continue; }
+    const right=q.type==='mc' ? q.choices.find(c=>c.ok).t : q.answer, want=g.expect!=null ? g.expect : num(right);
+    if(want==null) continue;   // non-numeric answer (e.g. a formula): checked by eye
+    if(Math.abs(v-want) > Math.abs(want)*0.03+1e-9) bad.push(`${id}: calc gives ${+v.toFixed(4)} but the answer is ${want}`);
+  }
+  return bad;
+};
 Object.entries(PAT_LINK).forEach(([p,ids])=>ids.forEach(id=>{ if(QBY[id] && !QBY[id].alevel) QBY[id].pat=p; }));
 const KEYS = ['ก','ข','ค','ง'];
 const HKEY = 'chemlab.history.v1';
@@ -6158,12 +6187,25 @@ function renderQ(){
 }
 /* Guided steps: every worked step but the last is shown as is; the last one keeps its working
    but hides the result after its final "=", so the student still does the final step themselves. */
+/* Guided steps. A question with an entry in guides.js gets the structured guide (given → formula → working → you finish);
+   any other calculation falls back to its worked steps, with the result of the last one hidden. */
+const GUIDES = window.CHEMLAB_GUIDES || {};
 function guideSteps(q){
+  const g=GUIDES[q.id];
+  if(g){
+    const chip=([k,v])=>`<span class="gvar"><i>${k}</i><span>${v}</span></span>`;
+    const cards=[{t:'กำหนดตัวแปรจากโจทย์', h:`<div class="gvars">${g.given.map(chip).join('')}${g.find?`<span class="gvar find"><i>${g.find[0]}</i><span>${g.find[1]||'?'}</span></span>`:''}</div>`}];
+    if(g.plan&&g.plan.length) cards.push({t:'เลือกสูตร / หลักการ', h:g.plan.map(x=>`<div class="gmath">${x}</div>`).join('')});
+    (g.work||[]).forEach(([t,x])=>cards.push({t, h:`<div class="gmath">${x}</div>`}));
+    const k=g.result.lastIndexOf('=');
+    cards.push({t:'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ', h:`<div class="gmath">${k>0?g.result.slice(0,k+1)+' <em>?</em>':'<em>?</em>'}</div>`, last:true});
+    return cards;
+  }
   const st=(q.steps||[]).filter(Boolean);
   if(st.length<2) return [];
   const last=st[st.length-1], k=last.lastIndexOf('=');
   const tail = k>0 && last.slice(k+1).trim() ? `${last.slice(0,k+1)} <em>?</em>` : 'ใช้ผลจากขั้นข้างบน แล้วเลือกคำตอบ';
-  return [...st.slice(0,-1), tail];
+  return [...st.slice(0,-1).map((h,j)=>({t:'ขั้นที่ '+(j+1), h})), {t:'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ', h:tail, last:true}];
 }
 function guideHTML(q,a,lock){
   if(S.mode!=='practice' || q.exam || q.kind!=='calc') return '';
@@ -6172,8 +6214,8 @@ function guideHTML(q,a,lock){
   const k=a.guide||0;
   if(!k) return `<div class="guide"><button class="gbtn" data-guide>🧭 ขั้นตอนช่วยคิด <small>ไม่แน่ใจ? ดูวิธีคิดทีละขั้น แล้วคิดขั้นสุดท้ายเอง · ข้อนี้จะได้ XP ครึ่งหนึ่ง</small></button></div>`;
   return `<div class="guide"><div class="ghead">🧭 ขั้นตอนช่วยคิด <span class="gtag">ขั้นที่ ${k}/${st.length}</span></div>
-    ${st.slice(0,k).map((x,j)=>`<div class="gstep${j===st.length-1?' last':''}"><span class="gn">${j+1}</span>
-      <b>${j===st.length-1?'ขั้นสุดท้าย · คิดเองแล้วเลือกคำตอบ':'ขั้นที่ '+(j+1)}</b><div class="gx">${x}</div></div>`).join('')}
+    ${st.slice(0,k).map((c,j)=>`<div class="gstep${c.last?' last':''}"><span class="gn">${j+1}</span>
+      <b>${c.t}</b><div class="gx">${c.h}</div></div>`).join('')}
     ${k<st.length?`<div class="gmore"><button class="btn ghost" data-guide>ขั้นต่อไป ↓</button></div>`:''}</div>`;
 }
 function pick(oi){
