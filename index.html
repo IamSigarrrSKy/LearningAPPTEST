@@ -6250,14 +6250,33 @@ const GUIDES = window.CHEMLAB_GUIDES || {};
 /* "a × b ÷ (c × d) = e" → a × b over c × d. Tokens are split on spaces outside brackets; the numerator is the ×-chain
    to the left of ÷ and the denominator the run of words up to the next operator, so "12 ÷ 44 × 100" stays (12/44) × 100. */
 const FR_OPS=new Set(['×','÷','+','−','-','=','→',';','≈',':','<','>','≤','≥','และ']);
+/* "PV/RT", "V₁/T₁", "1/8" become fractions too; unit pairs like g/mol, mol/dm³, L·atm/(mol·K) stay as written. */
+const FR_UNIT=/^(?:g|kg|mg|μg|mol|mmol|kmol|L|mL|dm³|cm³|m³|m|cm|mm|nm|pm|s|min|h|K|°C|atm|mmHg|psi|J|kJ|ppm|ppb|อะตอม|โมเลกุล|%?[wv])$/;   // %w/w, w/v too
+const plainText=h=>h.replace(/<sup>(.*?)<\/sup>/g,(m,a)=>a.replace(/3/g,'³').replace(/2/g,'²')).replace(/<[^>]+>/g,'');
+const isUnit=t=>plainText(t).replace(/^\(|\)$/g,'').split('·').every(u=>FR_UNIT.test(u));
+function slashFrac(tok){
+  let depth=0, tag=false, at=-1;
+  for(let i=0;i<tok.length;i++){
+    const ch=tok[i];
+    if(ch==='<') tag=true; else if(ch==='>') tag=false;
+    else if(!tag){ if(ch==='('||ch==='[') depth++; else if(ch===')'||ch===']') depth--; else if(ch==='/' && !depth && at<0) at=i; }
+  }
+  if(at<=0 || at===tok.length-1) return tok;
+  const num=tok.slice(0,at), den=tok.slice(at+1);
+  if(isUnit(num) && isUnit(den)) return tok;
+  const open=t=>/^\(.*\)$/.test(t) && !/\).*\(/.test(t.slice(1,-1)) ? t.slice(1,-1) : t;
+  return `<span class="frac"><span>${slashFrac(open(num))}</span><span>${slashFrac(open(den))}</span></span>`;
+}
 function fracify(src){
-  if(!src.includes('÷')) return src;
-  const toks=[]; let cur='', depth=0;
+  if(!src.includes('÷') && !/[^<]\/[^a-z>]/.test(src.replace(/<\/[a-z]+>/g,''))) return src;
+  const toks=[]; let cur='', depth=0, tag=false;
   for(const ch of src){
-    if(ch==='('||ch==='[') depth++; if(ch===')'||ch===']') depth=Math.max(0,depth-1);
-    if(ch===' ' && !depth){ if(cur) toks.push(cur); cur=''; } else cur+=ch;
+    if(ch==='<') tag=true; else if(ch==='>') tag=false;
+    else if(!tag){ if(ch==='('||ch==='[') depth++; if(ch===')'||ch===']') depth=Math.max(0,depth-1); }
+    if(ch===' ' && !depth && !tag){ if(cur) toks.push(cur); cur=''; } else cur+=ch;
   }
   if(cur) toks.push(cur);
+  for(let i=0;i<toks.length;i++) if(!FR_OPS.has(toks[i])) toks[i]=slashFrac(toks[i]);
   const unwrap=t=>/^\(.*\)$/.test(t)&&!/\).*\(/.test(t.slice(1,-1)) ? fracify(t.slice(1,-1)) : t;
   const out=[];
   for(let i=0;i<toks.length;i++){
