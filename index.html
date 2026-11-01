@@ -950,7 +950,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 
 <dialog id="nameDlg" aria-labelledby="nameTitle">
   <h3 id="nameTitle">👋 ยินดีต้อนรับสู่ ChemLab</h3>
-  <p>ใส่ชื่อก่อนเริ่มทำข้อสอบ ชื่อจะแสดงบนผลสอบ รูปกระดาษทด และ Leaderboard</p>
+  <p id="nameWhy">ใส่ชื่อก่อนเริ่มทำข้อสอบ ชื่อจะแสดงบนผลสอบ รูปกระดาษทด และ Leaderboard</p>
   <form id="nameForm" method="dialog">
     <label class="field">ชื่อ-นามสกุล หรือชื่อเล่น *<input type="text" id="stuName" required maxlength="60" autocomplete="name" placeholder="เช่น สมชาย ใจดี"></label>
     <label class="field">โรงเรียน *<input type="text" id="stuSchool" required maxlength="80" autocomplete="organization" placeholder="เช่น โรงเรียนขอนแก่นวิทยายน"></label>
@@ -6143,6 +6143,7 @@ $('#ptDlg').addEventListener('click', e=>{ if(e.target===$('#ptDlg')) $('#ptDlg'
 /* ============ QUIZ ============ */
 let S=null, tick=null;
 function startQuiz(mode, ids, meta){
+  if(!hasName()) return needName(()=>startQuiz(mode, ids, meta));
   meta={...meta, skill:SKILL};   // the มือใหม่/เซียน choice on the start screen decides whether guided steps show
   S={mode, ids, meta, i:0, ans:{}, perm:{}, draw:{}, drawSize:{}, t0:Date.now(), qT:Date.now(), done:false};
   // real-paper questions keep choice order 1–5 because the choices are printed in the image
@@ -6527,6 +6528,16 @@ function getStudent(){ try{ return JSON.parse(localStorage.getItem(STU_KEY))||nu
 function studentLabel(){ const s=getStudent(); if(!s||!s.name) return '';
   return `${s.name}${s.school?` · ${s.school}`:''}`; }
 function renderWho(){ const s=getStudent(); $('#whoName').textContent = s&&s.name ? s.name.split(' ')[0].slice(0,14) : 'ใส่ชื่อ'; }
+/* Visitors browse freely; the name form appears only when they start a quiz or open an e-book.
+   needName(then) runs `then` right away for a known student, otherwise after they save the form (and not at all if they close it). */
+let NAME_NEXT=null;
+const hasName = () => { const s=getStudent(); return !!(s && s.name && s.school); };
+function needName(then, why){
+  if(hasName()) return then();
+  NAME_NEXT=then;
+  $('#nameWhy').textContent = why || 'ใส่ชื่อก่อนเริ่มทำข้อสอบ ชื่อจะแสดงบนผลสอบ รูปกระดาษทด และ Leaderboard';
+  openName(false);
+}
 function openName(first){
   const s=getStudent()||{}, d=$('#nameDlg');
   $('#stuName').value=s.name||''; $('#stuSchool').value=s.school||''; $('#stuShow').checked=s.show!==false;
@@ -6541,11 +6552,13 @@ $('#nameForm').onsubmit=e=>{
   const teacher=$('#stuTeacher').value.trim().replace(/\s+/g,' ');
   try{ localStorage.setItem(STU_KEY, JSON.stringify({name, school, teacher, teacherLinked:!!teacher&&teachFound, show:$('#stuShow').checked})); }catch(err){}
   renderWho(); renderPlayer(); toast(`สวัสดี ${name.split(' ')[0]} 👋`);
+  const next=NAME_NEXT; NAME_NEXT=null; if(next) setTimeout(next,0);
   if(backendUrl()) callBackend({action:'profile', ...whoFields()}).then(()=>{ BOARD.at=0; renderBoard(); }).catch(()=>{});
 };
 // the first-visit prompt cannot be dismissed with Esc
 $('#nameDlg').addEventListener('cancel',e=>{ if($('#nameDlg').dataset.first) e.preventDefault(); });
 $('#nameCancel').onclick=()=>$('#nameDlg').close();
+$('#nameDlg').addEventListener('close',()=>{ NAME_NEXT=null; });   // closed without saving: drop the pending quiz / e-book
 // tells the student, as they type, whether the teacher name matches a registered teacher
 let teachTimer=0, teachSeq=0, teachFound=false;
 function checkTeacher(){
@@ -6625,8 +6638,9 @@ $('#teachForm').onsubmit=async e=>{
 };
 $('#whoBtn').onclick=()=>openName(false);
 renderWho();
-// ask again if nothing is saved yet, or the saved profile predates the school field
-if(!getStudent() || !getStudent().school) openName(true);
+// from the e-book shelf: index.html#join=read-4 asks for the name, then goes back to read chapter 4
+{ const m=location.hash.match(/^#join=read-(\d+)$/);
+  if(m) needName(()=>{ location.href=`ebook/shelf.html#read=${m[1]}`; }, 'ใส่ชื่อก่อนอ่าน E-book ฟรี · ใช้ชื่อเดียวกับตอนทำข้อสอบ'); }
 
 /* ============ EXAM HUB ============ */
 function renderHub(){

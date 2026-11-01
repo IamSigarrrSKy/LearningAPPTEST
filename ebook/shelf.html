@@ -395,7 +395,7 @@ function openBook(b, slot){
   const read = info.querySelector('.read');
   read.disabled = !b.pages;
   read.textContent = b.pages ? '📖 อ่าน E-book' : 'E-book กำลังจะมา';
-  read.onclick = b.pages ? () => openReader(b) : null;
+  read.onclick = b.pages ? () => readBook(b) : null;
   slot.closest('.row').after(info);
   info.hidden = false;
 }
@@ -424,6 +424,9 @@ function rdGo(d){
   if (p < 1 || p > RD.b.pages) return;
   RD.p = p; rdDraw(d);
 }
+/* reading needs the same name as the quiz app: unknown visitors fill it in there, then come back to this book */
+function knownStudent(){ try { const s = JSON.parse(localStorage.getItem('chemlab.student.v1')); return !!(s && s.name && s.school); } catch(e) { return false; } }
+function readBook(b){ if (knownStudent()) openReader(b); else location.href = `../index.html#join=read-${b.n}`; }
 function openReader(b){
   RD.b = b; RD.p = 1;
   document.getElementById('rdTitle').textContent = `บทที่ ${b.n} · ${b.title}`;
@@ -442,6 +445,9 @@ addEventListener('resize', () => { if (RD.b) rdDraw(0); });
 
 render();
 addEventListener('resize', () => { if (perShelf() !== lastPer) render(); });
+// back from the name form (index.html#join=read-N → shelf.html#read=N): open that book straight away
+{ const m = location.hash.match(/^#read=(\d+)$/), b = m && BOOKS.find(x => x.n === +m[1]);
+  if (b && b.pages) { history.replaceState(null, '', location.pathname); readBook(b); } }
 /* changing subject slides the shelf out to the side and the next one in; swipe left/right on touch screens does the same */
 const SUBJ_KEYS = Object.keys(SUBJ);
 const calm = matchMedia('(prefers-reduced-motion:reduce)');
