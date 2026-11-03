@@ -757,6 +757,40 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
 .feedback h4,.subject .soon{font-family:Itim,Mitr,sans-serif;font-weight:400}
 .feedback h4{font-size:19px}
 .hand,.brow .who b{font-family:Mali,Mitr,sans-serif;font-weight:600}
+/* ---- v2 home: call to action, live numbers, reaction-style learning path ---- */
+.cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:22px 0 4px}
+.btn.big{padding:14px 22px;font-size:17px;border-radius:16px}
+.cta a.btn{text-decoration:none;display:inline-flex;align-items:center;color:var(--ink)}
+.linkish{border:0;background:none;padding:6px 2px;color:var(--soft);font:500 15px Mitr;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.linkish:hover{color:var(--accent)}
+.stats{display:flex;flex-wrap:wrap;gap:6px 0;margin:22px 0 0;max-width:620px}
+.stats div{padding:2px 22px 2px 0;margin-right:22px;border-right:1px solid var(--line)}
+.stats div:last-child{border-right:0}
+.stats dt{font:600 clamp(24px,3.4vw,32px)/1.1 Mitr;color:var(--ink);font-variant-numeric:tabular-nums}
+.stats dt small{font-size:.62em;vertical-align:.45em;color:var(--accent);margin-left:1px}
+.stats dd{margin:2px 0 0;font-size:13.5px;color:var(--muted)}
+.rxn{display:grid;grid-template-columns:1fr auto 1fr minmax(90px,.7fr) 1fr;align-items:center;gap:10px;margin:8px 0 26px;
+  padding:22px clamp(14px,3vw,28px);border-radius:var(--r);background:
+  radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,#45B5AA 10%,transparent),transparent 55%),
+  radial-gradient(120% 140% at 100% 100%,color-mix(in srgb,#6667AB 12%,transparent),transparent 55%),var(--surface)}
+.rx-node{--c:#888;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;align-items:center;text-align:left;
+  text-decoration:none;color:inherit;border:0;background:none;padding:6px;border-radius:14px;cursor:pointer;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.rx-node .tile{--c:inherit;grid-row:span 2;width:54px;height:54px;font-size:21px;border-radius:15px}
+.rx-node b{font:500 17px/1.25 Mitr}
+.rx-node>span:last-child{font-size:13.5px;color:var(--muted)}
+.rx-node:hover{transform:translateY(-3px)}
+.rx-node:hover .tile{transform:rotate(-4deg) scale(1.05)}
+.rx-op{font:500 30px Mitr;color:var(--muted);text-align:center}
+.rx-arrow{display:flex;flex-direction:column;align-items:stretch;color:var(--soft);text-align:center}
+.rx-arrow svg{width:100%;height:14px}
+.rx-arrow i{font:400 12px "IBM Plex Sans Thai",sans-serif;font-style:normal;color:var(--muted)}
+@media (max-width:860px){
+  .rxn{grid-template-columns:1fr;justify-items:start}
+  .rx-op{justify-self:center;font-size:24px;line-height:1}
+  .rx-arrow{justify-self:center;width:120px;transform:rotate(90deg);margin:22px 0}
+  .stats div{padding-right:14px;margin-right:14px}
+}
+@media (prefers-reduced-motion:reduce){ .rx-node,.rx-node:hover{transition:none;transform:none} }
 </style>
 </head>
 <body>
@@ -778,13 +812,13 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
         <div class="kicker">ChemLab by Sky</div>
         <h1>ข้อสอบ<em>วิทยาศาสตร์</em><br>และแบบฝึกหัด</h1>
         <p>ทำข้อสอบเพื่อประเมินตัวเอง ทบทวน และเข้าใจหลักการมากขึ้น ทุกข้อมีเฉลยพร้อมแนวคิด และบอกได้ว่าพลาดตรงไหน</p>
-        <!-- what's inside, drawn as a mini periodic table: one element tile per collection -->
-        <ul class="incl">
-          <li style="--c:#ff6b4a"><span class="tile"><small>1</small>Bt</span><div><b>แบบฝึกหัดรายบท</b><span>ม.4–ม.6 จากชีทเคมีพี่สกาย สุ่มโจทย์แนวเดียวกันไม่ซ้ำ ดูพัฒนาการได้</span></div></li>
-          <li style="--c:#9b5de5"><span class="tile"><small>2</small>Al</span><div><b>ข้อสอบจริง A-Level / 9 วิชาสามัญ</b><span>ย้อนหลังตั้งแต่ปี 2560 ทำรายปี หรือคละปีแบบสนามจริง</span></div></li>
-          <li style="--c:#16936a"><span class="tile"><small>3</small>Ij</span><div><b>IJSO · NETSAT</b><span>ข้อสอบแข่งขันและสอบตรง กำลังทยอยเพิ่ม</span></div></li>
-          <li style="--c:#d99413"><span class="tile"><small>4</small>Xp</span><div><b>เก็บ XP และเหรียญ</b><span>เลเวลอัปทุกครั้งที่ทำ ชิงอันดับใน Leaderboard</span></div></li>
-        </ul>
+        <div class="cta">
+          <button class="btn primary big" id="ctaChick">🐣 เริ่มหัดทำโจทย์</button>
+          <a class="btn ghost big" href="ebook/shelf.html">📚 อ่าน E-book ฟรี</a>
+          <button class="linkish" id="ctaExam">ข้อสอบจริง A-Level →</button>
+        </div>
+        <!-- live numbers from the bank, laid out like a line of element symbols -->
+        <dl class="stats" id="heroStats"></dl>
       </div>
       <div class="tiles-art" aria-hidden="true">
         <span class="tile" style="--c:#7c5cff;left:6%;top:12%;--rot:-6deg"><small>1</small>H<i>1.008</i></span>
@@ -795,6 +829,15 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
         <span class="tile" style="--c:#d99413;left:78%;top:60%;--rot:6deg;animation-delay:-5s"><small>12</small>Mg<i>24.31</i></span>
       </div>
     </div>
+
+    <!-- the learning path written as a reaction: read + practise → exam-ready -->
+    <section class="rxn" aria-label="เส้นทางเรียน">
+      <a class="rx-node" href="ebook/shelf.html" style="--c:#45B5AA"><span class="tile"><small>1</small>Rd</span><b>อ่านชีทสรุป</b><span>E-book ฟรี 11 บท</span></a>
+      <span class="rx-op" aria-hidden="true">+</span>
+      <button class="rx-node" id="rxChick" style="--c:#FF6F61"><span class="tile"><small>2</small>Pr</span><b>หัดทำทีละขั้น</b><span>โหมดลูกเจี๊ยบ มีไกด์</span></button>
+      <span class="rx-arrow" aria-hidden="true"><i>ฝึกบ่อยๆ</i><svg viewBox="0 0 120 14" preserveAspectRatio="none"><path d="M2 7H112M104 1l10 6-10 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><i>Δ เวลา</i></span>
+      <button class="rx-node" id="rxExam" style="--c:#6667AB"><span class="tile"><small>3</small>Ex</span><b>พร้อมสอบจริง</b><span>A-Level · 9 วิชาสามัญ</span></button>
+    </section>
 
     <div id="playerCard"></div>
 
@@ -7073,6 +7116,14 @@ function renderResult(rec){
 }
 // first paint of the home page, once every helper above is defined
 refreshHome();
+// v2 home: CTA buttons and the live numbers under the headline
+function goChick(){ MODE='chick'; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel', x.dataset.mode==='chick')); openSubject(); }
+$('#ctaChick').onclick=$('#rxChick').onclick=goChick;
+$('#ctaExam').onclick=$('#rxExam').onclick=()=>openSeries('A-Level');
+{ const bank=Q.filter(q=>!q.exam&&!q.posn).length, real=EXQ.length, years=new Set(EXAM_SETS.map(s=>s.year)).size;
+  const n=v=>v.toLocaleString('th-TH');
+  $('#heroStats').innerHTML=[[n(bank),'+','ข้อฝึกพร้อมเฉลย'],[n(real),'','ข้อสอบจริง '+years+' ปี'],['11','','บท E-book อ่านฟรี'],['3','','โหมด สอบ · ฝึก · ลูกเจี๊ยบ']]
+    .map(([v,u,l])=>`<div><dt>${v}${u?`<small>${u}</small>`:''}</dt><dd>${l}</dd></div>`).join(''); }
 // deep link from the e-book shelf: index.html#ch=4 opens chapter 4's topics in ลูกเจี๊ยบ mode (practice + guide), ready to start
 function openChapter(ch){
   const lv=Object.keys(LEVELS).find(k=>k!=='alevel' && LEVELS[k].topics.some(t=>TOPICS[t].ch===ch));
