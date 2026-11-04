@@ -1218,6 +1218,7 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
 <!-- optional: sets window.CHEMLAB_BACKEND, the Apps Script web-app URL shared by every visitor -->
 <script src="config.js"></script>
 <script src="guides.js"></script>
+<script src="guide-notation.js"></script>
 <script>
 /* ============ DATA ============ */
 const TOPICS = {
@@ -5904,6 +5905,8 @@ Q.forEach(q=>{
   if(q.ansText) q.ansText=richScripts(q.ansText);
   if(q.unit) q.unit=richScripts(q.unit);
 });
+Object.entries(window.CHEMLAB_GUIDES||{}).forEach(([id,g])=>normalizeGuideNotation(g,id));
+Q.filter(q=>q.guide).forEach(q=>normalizeGuideNotation(q.guide,q.id));
 [...Object.values(window.CHEMLAB_GUIDES||{}), ...Q.filter(q=>q.guide).map(q=>q.guide)].forEach(g=>{
   g.given=(g.given||[]).map(([k,v])=>[richScripts(k),richScripts(v)]); if(g.find) g.find=g.find.map(richScripts);
   g.plan=(g.plan||[]).map(richScripts); g.work=(g.work||[]).map(([t,x])=>[t,richScripts(x)]); g.result=richScripts(g.result||'');
