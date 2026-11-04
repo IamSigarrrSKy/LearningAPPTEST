@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<title>คลังหนังสือ · ChemLab by Sky</title>
+<title>คลังหนังสือ ChemLab by Sky</title>
 <meta name="description" content="ชีทสรุปเคมีพี่สกาย 11 บท ในรูปแบบ E-book">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -250,6 +250,11 @@ body.notint .tint{opacity:0}
 .rdfoot{display:flex;justify-content:center;gap:8px;padding:10px 16px 14px;flex-wrap:wrap}
 @media (max-width:760px){ .rdstage{padding:10px 8px} .rdstage img{max-width:calc(100vw - 16px);height:auto;max-height:calc(100vh - 150px)}
   .rdstage .sheet{height:auto} .rdnav{display:none} }
+
+/* v3 polish (unslop by @heydamir) */
+body{background-image:none}
+.tile{position:relative;background:var(--surface);border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));box-shadow:0 1px 2px rgba(29,36,51,.08)}
+.tile small{position:absolute;top:2px;left:4px;font:500 9px "JetBrains Mono",monospace;color:var(--c)}
 </style>
 </head>
 <body>
@@ -258,19 +263,19 @@ body.notint .tint{opacity:0}
   <div class="rdstage" id="rdStage"><button class="rdnav prev" id="rdPrev" aria-label="หน้าก่อน">‹</button><div class="sheet" id="rdSheet"></div>
     <button class="rdnav next" id="rdNext" aria-label="หน้าถัดไป">›</button></div>
   <div class="rdfoot"><button class="btn ghost" id="rdBack">‹ ก่อนหน้า</button><button class="btn ghost" id="rdFwd">ถัดไป ›</button>
-    <a class="btn pri" id="rdQuiz" href="../index.html">ทำข้อสอบบทนี้ →</a></div>
+    <a class="btn pri" id="rdQuiz" href="../index.html">ทำข้อสอบบทนี้</a></div>
 </dialog>
 <div class="wrap">
   <header class="top">
-    <a class="brand" href="../index.html"><span class="tile">Sky</span>ChemLab</a>
+    <a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab</a>
     <span class="spacer"></span>
-    <a class="iconbtn" href="../index.html" style="white-space:nowrap">← ข้อสอบ</a>
+    <a class="iconbtn" href="../index.html" style="white-space:nowrap">ข้อสอบ</a>
     <button class="iconbtn" id="themeBtn" aria-label="สลับธีมสว่าง/มืด">◐</button>
   </header>
 
   <section class="hero">
     <h1>คลังหนังสือ</h1>
-    <p>ชีทสรุปพี่สกาย · ชี้ที่สันเพื่อดึงออกมาดู คลิกเพื่อหยิบออกมาอ่าน · อ่านฟรีครบ 11 บท</p>
+    <p>ชีทสรุปพี่สกาย อ่านฟรีครบ 11 บท ชี้ที่สันเพื่อดึงออกมาดู คลิกเพื่อหยิบออกมาอ่าน</p>
     <div class="bar">
       <div class="chips" role="group" aria-label="เลือกวิชา">
         <button class="chip" data-s="chem" aria-pressed="true"><img src="../img/chem-72.webp" alt="">เคมี</button>
@@ -387,11 +392,11 @@ function openBook(b, slot){
   slot.classList.add('open'); slot.setAttribute('aria-expanded', 'true');
   slot.parentElement.classList.add('has-open');
   const info = slot.closest('.subj').querySelector('.info');
-  info.querySelector('.ik').textContent = `บทที่ ${b.n} · ${LV[b.lv]}`;
+  info.querySelector('.ik').textContent = `บทที่ ${b.n}, ${LV[b.lv]}`;
   info.querySelector('h3').textContent = b.title;
   info.querySelector('ul').innerHTML = b.topics.map(t => `<li>${esc(t)}</li>`).join('');
   info.querySelector('.quiz').href = `../index.html#ch=${b.n}`;
-  info.querySelector('.note').textContent = b.pages ? `${b.pages} หน้า · อ่านจบแล้วกด "ทำข้อสอบบทนี้" ฝึกต่อได้ทันที` : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
+  info.querySelector('.note').textContent = b.pages ? `${b.pages} หน้า อ่านจบแล้วกด "ทำข้อสอบบทนี้" ฝึกต่อได้ทันที` : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
   const read = info.querySelector('.read');
   read.disabled = !b.pages;
   read.textContent = b.pages ? '📖 อ่าน E-book' : 'E-book กำลังจะมา';
@@ -426,12 +431,15 @@ function rdGo(d){
 }
 /* reading needs the same name as the quiz app: unknown visitors fill it in there, then come back to this book */
 function knownStudent(){
-  try { if (['guest','account'].includes(sessionStorage.getItem('chemlab.entry.mode'))) return true; } catch(e) {}   // chose Guest / signed in (account version)
-  try { const s = JSON.parse(localStorage.getItem('chemlab.student.v1')); return !!(s && s.name && s.school); } catch(e) { return false; } }
+ try { const mode=sessionStorage.getItem('chemlab.entry.mode');
+  if(mode==='guest')return !!JSON.parse(localStorage.getItem('chemlab.guest.profile.v2'))?.name;
+  if(mode==='account'){const auth=JSON.parse(sessionStorage.getItem('chemlab.private.auth'));return !!auth?.user?.id && auth.expires_at>Date.now()/1000;}
+ }catch{}return false;
+}
 function readBook(b){ if (knownStudent()) openReader(b); else location.href = `../index.html#join=read-${b.n}`; }
 function openReader(b){
   RD.b = b; RD.p = 1;
-  document.getElementById('rdTitle').textContent = `บทที่ ${b.n} · ${b.title}`;
+  document.getElementById('rdTitle').textContent = `บทที่ ${b.n} ${b.title}`;
   document.getElementById('rdQuiz').href = `../index.html#ch=${b.n}`;
   rdDraw(0); rdEl.showModal();
 }
