@@ -15,7 +15,8 @@ window.normalizeGuideNotation = function(g, id) {
         if(match==='M'&&/[0-9]\s*$/.test(whole.slice(0,offset)))return match;
         return 'Mw';
       });
-      if(!molality&&!nonGramMass)text=text.replace(/(?<![A-Za-z])m(?![A-Za-z²³⁻])/g,'g');
+      // An m right after a number is the metre unit (3 × 10⁸ m/s, 10⁻⁹ m), not a mass symbol.
+      if(!molality&&!nonGramMass)text=text.replace(/(?<![A-Za-z])m(?![A-Za-z²³⁻])/g,(match,offset,whole)=>/[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]\s*$/.test(whole.slice(0,offset))?match:'g');
       return text;
     }).join('');
   };

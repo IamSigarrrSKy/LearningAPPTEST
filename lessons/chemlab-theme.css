@@ -1,0 +1,44 @@
+/* ChemLab site theme for the gas lab pages: loaded after each page's own stylesheet so both lessons
+   share the main site's tokens, header, selection style and dark mode. Gas colours keep their meaning. */
+:root{
+  --bg:#f4f1ea;--surface:#fffdf8;--surface2:#f8f4ec;--ink:#1d2433;--soft:#46506a;--muted:#6b7487;--line:#e3dccd;
+  --coral:#c4432b;--accent:#ff6b4a;--ease:cubic-bezier(.2,.7,.2,1);
+  --font-head:Mitr,"IBM Plex Sans Thai",sans-serif;--font-body:"IBM Plex Sans Thai",sans-serif;--font-mono:"JetBrains Mono",ui-monospace,monospace;
+}
+:root[data-theme="dark"]{
+  --bg:#12151d;--surface:#1c212d;--surface2:#232937;--ink:#eef0f6;--soft:#bfc5d4;--muted:#8a92a6;--line:#2e3545;
+  --coral:#ff7d5e;--accent:#ff7d5e;--wash:#1f2a2a;color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink)}
+
+/* header: the same brand as the home page, one quiet link on the right */
+header{align-items:center}
+header .brand{display:inline-flex;align-items:center;gap:12px;font:500 18px var(--font-head);color:var(--ink);text-decoration:none}
+header .brand .tile{position:relative;display:inline-grid;place-items:center;width:38px;height:38px;margin:0;border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:6px;background:var(--surface);color:var(--ink);font:500 16px var(--font-head);box-shadow:0 1px 2px rgba(29,36,51,.08)}
+header .brand .tile small{position:absolute;top:2px;left:4px;font:500 9px var(--font-mono);color:var(--coral)}
+header .brand .long{display:inline;width:auto;height:auto;margin:0 0 0 -8px;border:0;border-radius:0;color:var(--muted);font-weight:400}
+header a.back{font:400 14px var(--font-body);color:var(--soft);text-decoration:underline;text-underline-offset:4px}
+header a.back:hover{color:var(--ink)}
+
+/* labels: sentence case, no wide tracking */
+.eyebrow{font:500 12px var(--font-body);letter-spacing:0;text-transform:none;color:var(--muted)}
+footer{font:400 12px var(--font-body);letter-spacing:0;color:var(--muted)}
+
+/* links in copy: ink with an underline, the way the site writes them */
+main a:not([class*=btn]){color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+.next-lab{color:var(--ink)}
+
+/* controls: hairline, hover is a border step, selection is the site's coral outline */
+button,select{border-color:var(--line);background:var(--surface);color:var(--ink);transition:border-color .2s var(--ease),background-color .2s var(--ease)}
+button:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line));color:var(--ink)}
+:is(button,input,select,a):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.lesson-nav button[aria-current=true],.tabs button[aria-current=true]{background:var(--surface);color:var(--ink);border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.lesson-nav button[aria-current=true] small{color:var(--coral)}
+
+/* panels sit on the same card radius as the site */
+.plot-panel,.apparatus{border-radius:16px}
+
+/* came from the e-book: a clear way back to the same page, next to the brand */
+header .ebook-back{margin-left:auto;margin-right:16px;display:inline-flex;align-items:center;min-height:36px;padding:4px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-decoration:none;font:500 14px var(--font-body)}
+header .ebook-back:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+@media (max-width:600px){header{flex-wrap:wrap}header .ebook-back{order:3;margin:0}}

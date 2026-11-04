@@ -939,6 +939,50 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
 #trophyDlg .pstats>div{flex:1;border:0;border-radius:0;background:transparent;padding:4px 8px}#trophyDlg .pstats>div+div{border-left:1px solid var(--line)}
 .achievement-heading{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;font-size:18px;margin:0 0 10px}.achievement-heading span{font:400 12px var(--font-body);color:var(--muted)}
 @media(max-width:640px){.iconbtn.level-chip{min-width:69px;gap:5px;padding:4px 6px}.level-atom{width:23px;height:28px;font-size:15px}.level-label{font-size:10px;min-width:27px}#home .top{gap:7px}#trophyDlg .lvtile{width:62px;height:68px;font-size:25px}#trophyDlg .pname{font-size:15px}#trophyDlg .player{gap:12px}#trophyDlg .xptext{font-size:11px}}
+
+/* Home atlas: tactile specimen tiles on a quiet drafting surface. */
+.lab-atlas{position:relative;gap:20px;padding:24px 0;background-image:radial-gradient(var(--line) .8px,transparent .8px);background-size:16px 16px}
+.atlas-title{display:flex;justify-content:space-between;align-items:center;font:500 10px var(--font-mono);letter-spacing:.18em;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:10px}
+.lab-atlas .ptmini{gap:7px;align-items:center;padding:0 2px 5px}
+.atlas-note{grid-row:1;grid-column:2/8;text-align:center;align-self:center}.atlas-note b{display:block;font:500 17px var(--font-head);color:var(--ink)}.atlas-note span{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.lab-atlas .atlas-element{border-radius:10px;isolation:isolate;aspect-ratio:.91;box-sizing:border-box;background:linear-gradient(145deg,color-mix(in srgb,var(--f) 6%,var(--surface)),color-mix(in srgb,var(--f) 22%,var(--surface)));border:1px solid color-mix(in srgb,var(--f) 42%,var(--line));box-shadow:inset 0 2px 1px #ffffff65,inset 0 -3px 0 #00000008,0 4px 0 color-mix(in srgb,var(--f) 38%,var(--surface)),0 7px 12px #0000000b;transform:none;transition:transform .2s,box-shadow .2s;color:var(--ink)}
+.atlas-element b{font:600 clamp(14px,1.6vw,23px) var(--font-mono);padding-top:4px}.lab-atlas .atlas-element small{font-size:9px;color:var(--soft);top:5px;left:6px}
+.lab-atlas .atlas-carbon{--f:#df775b!important;transform:translateY(-4px) rotate(-5deg);border-color:var(--accent);box-shadow:inset 0 2px 1px #ffffff88,inset 0 -3px 0 #00000008,0 4px 0 #bf705b,0 12px 18px #bd67452b}
+.lab-atlas .atlas-element:hover{transform:translateY(-5px);z-index:2}.lab-atlas figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11px;color:var(--muted)}
+.atlas-open{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:9px 13px;min-height:44px;color:var(--ink);font:500 12px var(--font-body);cursor:pointer}.atlas-open:hover{border-color:var(--accent);color:var(--accent)}.atlas-open:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.brow{grid-template-columns:54px 40px minmax(0,1fr) auto}.brow .rk.top{display:flex;align-items:center;justify-content:center;overflow:visible}.rank-emblem{display:inline-flex;width:46px;height:52px;filter:drop-shadow(0 3px 2px #00000018);flex:none;--metal:#dfb75a;--face:#fae6ab;--edge:#b68a31;--ribbon:#b9674f;--medal-ink:#735019}.rank-emblem svg{width:100%;height:100%;overflow:visible}.rank-2{--metal:#a8b5c1;--face:#e4eaf0;--edge:#7d91a1;--ribbon:#7e8b9c;--medal-ink:#495e71}.rank-3{--metal:#ca9273;--face:#f1d1b5;--edge:#a66e50;--ribbon:#98705f;--medal-ink:#795139}
+.rank-emblem .ribbon{fill:var(--ribbon)}.medal-edge{fill:var(--metal);stroke:var(--edge);stroke-width:1.3}.medal-face{fill:var(--face);stroke:var(--edge);stroke-width:.7}.laurel{fill:none;stroke:var(--edge);stroke-width:1.5;stroke-linecap:round}.medal-shine{fill:none;stroke:#fff;stroke-opacity:.8;stroke-width:2;stroke-linecap:round}.rank-emblem text{fill:var(--medal-ink);font:700 21px 'JetBrains Mono',monospace}.rank-number{font:500 14px var(--font-mono);color:var(--muted)}
+@media(max-width:640px){.lab-atlas{padding:14px 0;gap:16px;max-width:100%}.lab-atlas .ptmini{gap:5px}.lab-atlas .atlas-element{border-radius:7px}.lab-atlas .atlas-element small{font-size:7px;top:3px;left:4px}.atlas-note b{font-size:14px}.atlas-note span{font-size:10px}.brow{grid-template-columns:42px 32px minmax(0,1fr) auto;gap:8px}.brow .tile{width:32px;height:34px}.rank-emblem{width:38px;height:44px}}
+@media(prefers-reduced-motion:reduce){.lab-atlas .atlas-element{transition:none}.lab-atlas .atlas-element:hover{transform:none}}
+
+
+/* bank page: the brand sits top-left like on the home page and takes you back there */
+.brandback{display:inline-flex;align-items:center;gap:10px;padding:0;border:0;background:none;color:var(--ink);font:500 18px var(--font-head);white-space:nowrap}
+.brandback .tile{width:38px;height:38px;font-size:16px;border-radius:6px}
+.brandback .tile small{font-size:9px;top:2px;left:4px}
+#subject .crumbs{margin-left:16px;padding-left:16px;border-left:1px solid var(--line)}
+#subject .crumbs button{text-decoration:none;color:var(--soft)}
+#subject .crumbs button:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:640px){.brandback .nm{display:none}#subject .crumbs{margin-left:8px;padding-left:8px}}
+
+/* entry to the gas lab, from v4 */
+.interactive-lesson{display:flex;align-items:center;gap:24px;margin:28px 0;padding:24px;border-block:1px solid var(--line);color:var(--ink);text-decoration:none;transition:background-color .2s var(--ease)}
+.lesson-mark{display:flex;align-items:baseline;gap:4px;font:500 40px var(--font-mono);color:var(--accent-fill);flex:none}
+.lesson-mark span{font-size:22px;color:var(--soft)}
+.interactive-lesson small{font-size:12px;color:var(--muted)}
+.interactive-lesson h2{font:500 21px var(--font-head);margin:4px 0}
+.interactive-lesson p{font-size:14px;color:var(--muted);margin:0}
+.interactive-lesson>b{margin-left:auto;flex:none;font-weight:500;font-size:14px;color:var(--accent-fill);white-space:nowrap}
+.interactive-lesson:hover{background:var(--surface)}
+.interactive-lesson:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+@media(max-width:600px){.interactive-lesson{gap:16px;padding:20px 8px;flex-wrap:wrap}.lesson-mark{font-size:30px}.interactive-lesson h2{font-size:17px}.interactive-lesson>b{margin-left:0}}
+
+/* home periodic table: no dotted backdrop behind it */
+.lab-atlas{background:none}
+
+/* lab button next to the hero actions: the P×V mark tells it apart from the e-book */
+.lab-cta{gap:8px}
+.lab-cta span{font:500 12px var(--font-mono);color:var(--accent-fill)}
 </style>
 </head>
 <body>
@@ -962,12 +1006,16 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
         <div class="cta">
           <button class="btn primary big" id="ctaChick">เริ่มหัดทำโจทย์</button>
           <a class="btn ghost big" href="ebook/shelf.html">อ่าน E-book ฟรี</a>
+          <a class="btn ghost big lab-cta" href="lessons/boyle.html">ห้องทดลอง</a>
           <button class="linkish" id="ctaExam" hidden>ข้อสอบจริง A-Level</button>
         </div>
         <!-- live numbers from the bank, laid out like a line of element symbols -->
         <dl class="stats" id="heroStats"></dl>
       </div>
-      <figure class="ptfig" aria-label="ตารางธาตุ คาบ 1 ถึง 3"><div class="ptmini" aria-hidden="true"><span class="tile pt-nm" style="grid-row:1;grid-column:1"><small>1</small>H<i>1.008</i></span><span class="tile pt-ng" style="grid-row:1;grid-column:8"><small>2</small>He<i>4.003</i></span><span class="tile pt-al" style="grid-row:2;grid-column:1"><small>3</small>Li<i>6.94</i></span><span class="tile pt-ae" style="grid-row:2;grid-column:2"><small>4</small>Be<i>9.012</i></span><span class="tile pt-md" style="grid-row:2;grid-column:3"><small>5</small>B<i>10.81</i></span><span class="tile pt-nm" style="grid-row:2;grid-column:4"><small>6</small>C<i>12.01</i></span><span class="tile pt-nm" style="grid-row:2;grid-column:5"><small>7</small>N<i>14.01</i></span><span class="tile pt-nm" style="grid-row:2;grid-column:6"><small>8</small>O<i>16.00</i></span><span class="tile pt-hl" style="grid-row:2;grid-column:7"><small>9</small>F<i>19.00</i></span><span class="tile pt-ng" style="grid-row:2;grid-column:8"><small>10</small>Ne<i>20.18</i></span><span class="tile pt-al" style="grid-row:3;grid-column:1"><small>11</small>Na<i>22.99</i></span><span class="tile pt-ae" style="grid-row:3;grid-column:2"><small>12</small>Mg<i>24.31</i></span><span class="tile pt-pm" style="grid-row:3;grid-column:3"><small>13</small>Al<i>26.98</i></span><span class="tile pt-md" style="grid-row:3;grid-column:4"><small>14</small>Si<i>28.09</i></span><span class="tile pt-nm" style="grid-row:3;grid-column:5"><small>15</small>P<i>30.97</i></span><span class="tile pt-nm" style="grid-row:3;grid-column:6"><small>16</small>S<i>32.06</i></span><span class="tile pt-hl" style="grid-row:3;grid-column:7"><small>17</small>Cl<i>35.45</i></span><span class="tile pt-ng" style="grid-row:3;grid-column:8"><small>18</small>Ar<i>39.95</i></span></div><figcaption><span class="lg pt-al">โลหะแอลคาไล</span><span class="lg pt-ae">แอลคาไลน์เอิร์ท</span><span class="lg pt-md">กึ่งโลหะ</span><span class="lg pt-nm">อโลหะ</span><span class="lg pt-hl">แฮโลเจน</span><span class="lg pt-ng">แก๊สมีตระกูล</span></figcaption></figure>
+      <figure class="ptfig lab-atlas" aria-label="ตารางธาตุ 18 ธาตุแรก">
+<div class="atlas-title"><span>THE ELEMENTS</span><span>01 — 18</span></div>
+<div class="ptmini"><span class="tile atlas-element " style="grid-row:1;grid-column:1;--f:#d88c6c" aria-label="H เลขอะตอม 1"><small>1</small><b>H</b></span><span class="tile atlas-element " style="grid-row:1;grid-column:8;--f:#9483b1" aria-label="He เลขอะตอม 2"><small>2</small><b>He</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:1;--f:#d88c6c" aria-label="Li เลขอะตอม 3"><small>3</small><b>Li</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:2;--f:#d88c6c" aria-label="Be เลขอะตอม 4"><small>4</small><b>Be</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:3;--f:#73a39b" aria-label="B เลขอะตอม 5"><small>5</small><b>B</b></span><span class="tile atlas-element atlas-carbon" style="grid-row:2;grid-column:4;--f:#73a39b" aria-label="C เลขอะตอม 6"><small>6</small><b>C</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:5;--f:#73a39b" aria-label="N เลขอะตอม 7"><small>7</small><b>N</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:6;--f:#73a39b" aria-label="O เลขอะตอม 8"><small>8</small><b>O</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:7;--f:#73a39b" aria-label="F เลขอะตอม 9"><small>9</small><b>F</b></span><span class="tile atlas-element " style="grid-row:2;grid-column:8;--f:#9483b1" aria-label="Ne เลขอะตอม 10"><small>10</small><b>Ne</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:1;--f:#d88c6c" aria-label="Na เลขอะตอม 11"><small>11</small><b>Na</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:2;--f:#d88c6c" aria-label="Mg เลขอะตอม 12"><small>12</small><b>Mg</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:3;--f:#73a39b" aria-label="Al เลขอะตอม 13"><small>13</small><b>Al</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:4;--f:#73a39b" aria-label="Si เลขอะตอม 14"><small>14</small><b>Si</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:5;--f:#73a39b" aria-label="P เลขอะตอม 15"><small>15</small><b>P</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:6;--f:#73a39b" aria-label="S เลขอะตอม 16"><small>16</small><b>S</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:7;--f:#73a39b" aria-label="Cl เลขอะตอม 17"><small>17</small><b>Cl</b></span><span class="tile atlas-element " style="grid-row:3;grid-column:8;--f:#9483b1" aria-label="Ar เลขอะตอม 18"><small>18</small><b>Ar</b></span></div>
+<figcaption><span>เลขอะตอม · สัญลักษณ์ธาตุ</span><button type="button" class="atlas-open" onclick="openPT()">สำรวจตารางธาตุ <span aria-hidden="true">↗</span></button></figcaption></figure>
     </div>
 
     <!-- the learning path written as a reaction: read + practise → exam-ready -->
@@ -978,9 +1026,6 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
       <span class="rx-arrow" aria-hidden="true"><i>ฝึกบ่อยๆ</i><svg viewBox="0 0 120 14" preserveAspectRatio="none"><path d="M2 7H112M104 1l10 6-10 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><i>Δ เวลา</i></span>
       <button class="rx-node" id="rxExam" style="--c:#6667AB"><span class="tile"><small>3</small>Ex</span><b>พร้อมสอบจริง</b><span>A-Level, 9 วิชาสามัญ</span></button>
     </section>
-
-
-
     <div class="section-title"><h2>เลือกวิชา</h2><span>เริ่มจากเคมี วิชาอื่นตามมา</span></div>
     <div class="subjects">
       <button class="subject" style="--c:#ff6b4a" id="chemCard"><img class="sicon" src="img/canva/chem-icon.webp" alt="" width="64" height="64"><h3>เคมี</h3><p>แบบฝึกหัด ม.4 ถึง ม.6, A-Level, IJSO, NETSAT</p><span class="go">เข้าสู่คลังข้อสอบ</span></button>
@@ -1007,7 +1052,7 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
 <section id="subject" class="screen">
   <div class="wrap">
     <div class="top">
-      <button class="iconbtn" id="backHome" aria-label="กลับหน้าแรก"></button>
+      <button class="brandback" id="backHome" aria-label="กลับหน้าแรก"><span class="tile" style="--c:var(--accent)"><small>6</small>C</span><span class="nm">ChemLab</span></button>
       <nav class="crumbs" aria-label="ตำแหน่ง"><button id="crHome">หน้าแรก</button><span>›</span><span>เคมี</span><span>›</span><b id="crLevel">ม.4</b></nav>
       <div class="spacer"></div>
       <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg><span class="tbadge" hidden></span></button>
@@ -6923,6 +6968,10 @@ async function syncAttempts(rec){
   BOARD.at=0; renderBoard();
 }
 const BOARD={tab:'all', at:0, data:null, err:''};
+function rankEmblem(rank){
+ if(rank>3)return '<span class="rank-number">'+rank+'</span>';
+ return '<span class="rank-emblem rank-'+rank+'" role="img" aria-label="อันดับ '+rank+'"><svg viewBox="0 0 64 72" aria-hidden="true"><path class="ribbon" d="M17 39 10 68 22 62 29 70 33 44M34 44 39 70 46 62 58 68 48 39"/><circle class="medal-edge" cx="33" cy="29" r="24"/><circle class="medal-face" cx="33" cy="29" r="19"/><path class="laurel" d="M22 40Q12 29 22 18M44 40Q54 29 44 18M19 35l-5-2m5-4-5-4m6-1-3-5m30 16 5-2m-5-4 5-4m-6-1 3-5"/><path class="medal-shine" d="M18 16Q32 5 47 16"/><text x="33" y="36" text-anchor="middle">'+rank+'</text></svg></span>';
+}
 async function renderBoard(){
   const el=$('#leaderboard'); if(!el) return;
   if(!backendUrl()){ $('#boardNote').textContent='';
@@ -6935,7 +6984,7 @@ async function renderBoard(){
     if(!d) body=`<div class="boardmsg">${BOARD.err?'⚠️ โหลดอันดับไม่ได้: '+esc(BOARD.err):'กำลังโหลด…'}</div>`;
     else if(!d.top.length) body=`<div class="boardmsg">ยังไม่มีใครในอันดับ — ทำข้อสอบชุดแรกเพื่อเป็นคนแรก!</div>`;
     else body=d.top.map((r,i)=>{ const L=levelOf(r.xp).L, [sym]=elementFor(L);
-      return `<div class="brow ${r.me?'me':''}"><span class="rk ${i<3?'top':''}">${['🥇','🥈','🥉'][i]||i+1}</span>
+      return `<div class="brow ${r.me?'me':''}"><span class="rk ${i<3?'top':''}">${rankEmblem(i+1)}</span>
         <span class="tile lvtile" style="--c:${levelColor(L)}"><small>${L}</small>${sym}</span>
         <span class="who"><b>${esc(r.name)}${r.me?' (คุณ)':''}</b><span>${esc(r.school)}</span></span>
         <span class="pts">${r.xp.toLocaleString()}<small>XP · ${r.runs} ชุด</small></span></div>`; }).join('')

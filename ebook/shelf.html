@@ -255,12 +255,22 @@ body.notint .tint{opacity:0}
 body{background-image:none}
 .tile{position:relative;background:var(--surface);border:1.5px solid color-mix(in srgb,var(--c) 45%,var(--line));box-shadow:0 1px 2px rgba(29,36,51,.08)}
 .tile small{position:absolute;top:2px;left:4px;font:500 9px "JetBrains Mono",monospace;color:var(--c)}
+
+/* lab note pinned to the e-book page, like a sticky note on the sheet */
+.rdstage{position:relative}
+.rdlab{position:absolute;right:72px;bottom:16px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(520px,calc(100% - 144px));padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 8px 24px rgba(29,36,51,.12)}
+.rdlab span{font-size:12px;color:var(--muted)}
+.rdlab a{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:4px 12px;border-radius:8px;background:#c4432b;color:#fffdf8;font:500 14px "IBM Plex Sans Thai",sans-serif;text-decoration:none}
+.rdlab a::before{content:"P×V";font:500 11px "JetBrains Mono",monospace;opacity:.8}
+.rdlab a:hover{filter:brightness(1.08)}
+.rdlab a:focus-visible{outline:2px solid #ff6b4a;outline-offset:2px}
+@media (max-width:760px){.rdlab{right:12px;left:12px;bottom:12px;max-width:none}}
 </style>
 </head>
 <body>
 <dialog class="rd" id="reader" aria-labelledby="rdTitle">
   <div class="rdbar"><h3 id="rdTitle"></h3><span class="pgn" id="rdPg"></span><button class="iconbtn" id="rdClose" aria-label="ปิด">✕</button></div>
-  <div class="rdstage" id="rdStage"><button class="rdnav prev" id="rdPrev" aria-label="หน้าก่อน">‹</button><div class="sheet" id="rdSheet"></div>
+  <div class="rdstage" id="rdStage"><button class="rdnav prev" id="rdPrev" aria-label="หน้าก่อน">‹</button><div class="sheet" id="rdSheet"></div><div class="rdlab" id="rdLabs" hidden></div>
     <button class="rdnav next" id="rdNext" aria-label="หน้าถัดไป">›</button></div>
   <div class="rdfoot"><button class="btn ghost" id="rdBack">‹ ก่อนหน้า</button><button class="btn ghost" id="rdFwd">ถัดไป ›</button>
     <a class="btn pri" id="rdQuiz" href="../index.html">ทำข้อสอบบทนี้</a></div>
@@ -295,6 +305,22 @@ body{background-image:none}
 <script>
 /* Spine colours: Pantone Colors of the Year, one tone family per grade (ม.4 coral/warm · ม.5 blue · ม.6 green/berry). */
 /* A chapter becomes readable once its pages are in books/NN-slug/p01.webp… — set `pages` to the page count. */
+// chapters that have an interactive experiment room; `pages` lists which book pages each experiment belongs to
+const L = '../lessons/';
+const LABS = {5:{home:L+'boyle.html', pages:[
+  {from:21, to:22, href:L+'gas-mixtures.html#motion', label:'ทฤษฎีจลน์ของแก๊ส'},
+  {from:23, to:25, href:L+'boyle.html#boyle',         label:'กฎของบอยล์'},
+  {from:26, to:27, href:L+'boyle.html#charles',       label:'กฎของชาร์ล'},
+  {from:26, to:27, href:L+'boyle.html#gay',           label:'กฎของเกย์-ลูสแซก'},
+  {from:28, to:31, href:L+'boyle.html#combined',      label:'กฎรวมแก๊ส'},
+  {from:32, to:35, href:L+'boyle.html#ideal',         label:'กฎแก๊สอุดมคติ'},
+  {from:36, to:40, href:L+'gas-mixtures.html#dalton', label:'ความดันย่อยของดอลตัน'},
+  {from:38, to:38, href:L+'gas-mixtures.html#valve',  label:'เปิดวาล์วรวมแก๊ส'},
+  {from:41, to:44, href:L+'gas-mixtures.html#motion', label:'การแพร่ของแก๊ส'},
+]}};
+// experiments for the pages on screen, without repeats
+const labsFor = (n, ps) => { const seen = new Set();
+  return (LABS[n]?.pages || []).filter(x => ps.some(p => p >= x.from && p <= x.to) && !seen.has(x.href) && seen.add(x.href)); };
 const BOOKS = [
   {n:1,  slug:'safety',  lv:'m4', pages:34, c:'#FF6F61', title:'ความปลอดภัยและทักษะในปฏิบัติการเคมี', topics:['สัญลักษณ์อันตราย GHS','การใช้อุปกรณ์','การวัดและเลขนัยสำคัญ','หน่วย SI']},
   {n:2,  slug:'atom',    lv:'m4', pages:64, c:'#FFBE98', title:'อะตอมและตารางธาตุ', topics:['แบบจำลองอะตอม','การจัดเรียงอิเล็กตรอน','สมบัติตามตารางธาตุ','ธาตุกัมมันตรังสี']},
@@ -366,8 +392,8 @@ function render(){
     sec.innerHTML = `<h2 class="sh"><img src="../img/${sk}-72.webp" alt="">${sname}${list.length ? `<small>${list.length} เล่ม</small>` : '<small class="soon">เร็วๆ นี้</small>'}</h2>
       <div class="case"><div class="crown"></div></div>
       <div class="info" hidden aria-live="polite"><div class="ik"></div><h3></h3><ul></ul><p class="note"></p>
-        <div class="acts"><button class="btn pri read"></button><a class="btn ghost quiz" href="../index.html">ทำข้อสอบบทนี้</a>
-        <button class="btn ghost shut">↩ เก็บเข้าชั้น</button></div></div>`;
+        <div class="acts"><button class="btn pri read"></button><a class="btn ghost quiz" href="../index.html">ทำข้อสอบบทนี้</a><a class="btn ghost lab" href="../lessons/boyle.html" hidden>เข้าห้องทดลอง</a>
+        <button class="btn ghost shut">เก็บเข้าชั้น</button></div></div>`;
     const cs = sec.querySelector('.case');
     if (!list.length) cs.appendChild(shelfRow([], 'กำลังจัดทำ'));
     else if (!split) chunk(list, per).forEach(r => cs.appendChild(shelfRow(r)));
@@ -396,10 +422,11 @@ function openBook(b, slot){
   info.querySelector('h3').textContent = b.title;
   info.querySelector('ul').innerHTML = b.topics.map(t => `<li>${esc(t)}</li>`).join('');
   info.querySelector('.quiz').href = `../index.html#ch=${b.n}`;
+  const lab = info.querySelector('.lab'); lab.hidden = !LABS[b.n]; if (LABS[b.n]) lab.href = LABS[b.n].home;
   info.querySelector('.note').textContent = b.pages ? `${b.pages} หน้า อ่านจบแล้วกด "ทำข้อสอบบทนี้" ฝึกต่อได้ทันที` : 'เล่มนี้ยังไม่เปิดให้อ่านออนไลน์ ระหว่างนี้ฝึกทำข้อสอบบทนี้ก่อนได้';
   const read = info.querySelector('.read');
   read.disabled = !b.pages;
-  read.textContent = b.pages ? '📖 อ่าน E-book' : 'E-book กำลังจะมา';
+  read.textContent = b.pages ? 'อ่าน E-book' : 'E-book กำลังจะมา';
   read.onclick = b.pages ? () => readBook(b) : null;
   slot.closest('.row').after(info);
   info.hidden = false;
@@ -418,6 +445,10 @@ function rdDraw(dir){
   sh.innerHTML = ps.map(k => `<img src="${pageSrc(b, k)}" alt="หน้า ${k}" width="1240" height="1755">`).join('');
   sh.style.animation = 'none'; sh.offsetWidth; sh.style.animation = '';
   document.getElementById('rdPg').textContent = `หน้า ${ps.join('–')} / ${b.pages}`;
+  // a pinned note on the page: "try this in the lab" for the topic being read
+  const labs = labsFor(b.n, ps), box = document.getElementById('rdLabs');
+  box.hidden = !labs.length;
+  box.innerHTML = labs.length ? `<span>ลองในห้องทดลอง</span>` + labs.map(x => `<a href="${x.href.replace('#', `?from=${b.n}-${ps[0]}#`)}">${esc(x.label)}</a>`).join('') : '';
   const first = ps[0] === 1, last = ps[ps.length - 1] >= b.pages;
   ['rdPrev','rdBack'].forEach(id => document.getElementById(id).disabled = first);
   ['rdNext','rdFwd'].forEach(id => document.getElementById(id).disabled = last);
@@ -436,9 +467,9 @@ function knownStudent(){
   if(mode==='account'){const auth=JSON.parse(sessionStorage.getItem('chemlab.private.auth'));return !!auth?.user?.id && auth.expires_at>Date.now()/1000;}
  }catch{}return false;
 }
-function readBook(b){ if (knownStudent()) openReader(b); else location.href = `../index.html#join=read-${b.n}`; }
-function openReader(b){
-  RD.b = b; RD.p = 1;
+function readBook(b, p){ if (knownStudent()) openReader(b, p); else location.href = `../index.html#join=read-${b.n}`; }
+function openReader(b, p = 1){
+  RD.b = b; RD.p = Math.min(Math.max(1, p), b.pages);
   document.getElementById('rdTitle').textContent = `บทที่ ${b.n} ${b.title}`;
   document.getElementById('rdQuiz').href = `../index.html#ch=${b.n}`;
   rdDraw(0); rdEl.showModal();
@@ -456,8 +487,9 @@ addEventListener('resize', () => { if (RD.b) rdDraw(0); });
 render();
 addEventListener('resize', () => { if (perShelf() !== lastPer) render(); });
 // back from the name form (index.html#join=read-N → shelf.html#read=N): open that book straight away
-{ const m = location.hash.match(/^#read=(\d+)$/), b = m && BOOKS.find(x => x.n === +m[1]);
-  if (b && b.pages) { history.replaceState(null, '', location.pathname); readBook(b); } }
+// #read=N opens book N; #read=N&p=K (back from a lab) opens it at page K
+{ const m = location.hash.match(/^#read=(\d+)(?:&p=(\d+))?$/), b = m && BOOKS.find(x => x.n === +m[1]);
+  if (b && b.pages) { history.replaceState(null, '', location.pathname); readBook(b, m[2] ? +m[2] : 1); } }
 /* changing subject slides the shelf out to the side and the next one in; swipe left/right on touch screens does the same */
 const SUBJ_KEYS = Object.keys(SUBJ);
 const calm = matchMedia('(prefers-reduced-motion:reduce)');
