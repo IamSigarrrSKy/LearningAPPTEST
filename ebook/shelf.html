@@ -425,7 +425,9 @@ function rdGo(d){
   RD.p = p; rdDraw(d);
 }
 /* reading needs the same name as the quiz app: unknown visitors fill it in there, then come back to this book */
-function knownStudent(){ try { const s = JSON.parse(localStorage.getItem('chemlab.student.v1')); return !!(s && s.name && s.school); } catch(e) { return false; } }
+function knownStudent(){
+  try { if (['guest','account'].includes(sessionStorage.getItem('chemlab.entry.mode'))) return true; } catch(e) {}   // chose Guest / signed in (account version)
+  try { const s = JSON.parse(localStorage.getItem('chemlab.student.v1')); return !!(s && s.name && s.school); } catch(e) { return false; } }
 function readBook(b){ if (knownStudent()) openReader(b); else location.href = `../index.html#join=read-${b.n}`; }
 function openReader(b){
   RD.b = b; RD.p = 1;

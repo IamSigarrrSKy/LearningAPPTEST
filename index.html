@@ -15,6 +15,7 @@
   --ink:#1d2433; --soft:#46506a; --muted:#7a8296; --line:#e3dccd;
   --accent:#ff6b4a; --accent-ink:#ffffff; --ok:#16936a; --bad:#d93a44; --warn:#d99413;
   --ok-bg:#e3f5ec; --bad-bg:#fde8e9; --warn-bg:#fdf1d8;
+  --ok-fill:#11795a; --bad-fill:#b42332; --on-fill:#ffffff;   /* solid right/wrong badges; text on them reaches 4.5:1 */
   --shadow:0 1px 2px rgba(29,36,51,.06),0 10px 28px -14px rgba(29,36,51,.25);
   --hex:rgba(29,36,51,.05);
   --glass-hi:rgba(255,255,255,.85); --glass-lo:rgba(255,255,255,.55); --glass-in:rgba(255,255,255,.9);
@@ -25,6 +26,7 @@
   --ink:#eef0f6; --soft:#bfc5d4; --muted:#8a92a6; --line:#2e3545;
   --accent:#ff7d5e; --accent-ink:#1a0d08; --ok:#3ccf97; --bad:#ff6b73; --warn:#f2b84b;
   --ok-bg:#163428; --bad-bg:#3a1b1f; --warn-bg:#3a2e16;
+  --ok-fill:#3ccf97; --bad-fill:#ff7b82; --on-fill:#10141c;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
   --hex:rgba(255,255,255,.035);
   --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
@@ -34,6 +36,7 @@
   --ink:#eef0f6; --soft:#bfc5d4; --muted:#8a92a6; --line:#2e3545;
   --accent:#ff7d5e; --accent-ink:#1a0d08; --ok:#3ccf97; --bad:#ff6b73; --warn:#f2b84b;
   --ok-bg:#163428; --bad-bg:#3a1b1f; --warn-bg:#3a2e16;
+  --ok-fill:#3ccf97; --bad-fill:#ff7b82; --on-fill:#10141c;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px -14px rgba(0,0,0,.6);
   --hex:rgba(255,255,255,.035);
   --glass-hi:rgba(255,255,255,.12); --glass-lo:rgba(255,255,255,.03); --glass-in:rgba(255,255,255,.2);
@@ -41,11 +44,12 @@
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
+html{overflow-x:clip}
 body{
   background:var(--bg);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='97' viewBox='0 0 84 97'%3E%3Cpath d='M42 2 80 24v48L42 94 4 72V24z' fill='none' stroke='%23888' stroke-opacity='.13' stroke-width='1.4'/%3E%3C/svg%3E");
   color:var(--ink); font:16px/1.65 "IBM Plex Sans Thai",system-ui,sans-serif;
-  min-height:100vh; overflow-x:hidden;
+  min-height:100vh; overflow-x:clip;
 }
 h1,h2,h3,h4{font-family:Mitr,"IBM Plex Sans Thai",sans-serif;font-weight:500;line-height:1.3;margin:0}
 button{font:inherit;color:inherit;cursor:pointer}
@@ -143,7 +147,7 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .section-title{display:flex;align-items:baseline;gap:10px;margin:30px 0 14px}
 .section-title h2{font-size:22px}
 .section-title span{color:var(--muted);font-size:14px}
-.subjects{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.subjects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .subject{--c:#888;position:relative;text-align:left;padding:18px;border-radius:var(--r);border:2px solid var(--line);background:var(--surface);overflow:hidden;min-height:150px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,transform .15s}
 .subject:not(:disabled):hover{transform:translateY(-3px);border-color:var(--c)}
 .subject.sel{border-color:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent)}
@@ -154,8 +158,8 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .subject:disabled{cursor:not-allowed;opacity:.62}
 .subject .soon{position:absolute;top:12px;right:12px;font-size:12px;padding:2px 8px;border-radius:999px;background:var(--surface2);color:var(--muted)}
 
-.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media (max-width:760px){ .modes{grid-template-columns:1fr} }
+.modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:760px){ .modes{grid-template-columns:minmax(0,1fr)} }
 .mode{text-align:left;padding:18px 18px 18px 60px;border-radius:var(--r);border:2px solid var(--line);background:var(--surface);position:relative}
 .mode::before{content:"";position:absolute;left:20px;top:22px;width:22px;height:22px;border-radius:50%;border:2px solid var(--muted)}
 .mode.sel{border-color:var(--accent)}
@@ -200,7 +204,7 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .tcard{--c:#888;display:flex;gap:14px;align-items:center;text-align:left;padding:14px;border-radius:16px;border:2px solid var(--line);background:var(--surface);position:relative;transition:border-color .15s,background .15s}
 .tcard .tile{width:52px;height:52px;font-size:19px}
 .tcard .info{flex:1;min-width:0}
-.tcard h4{font-size:16px}
+.tcard :is(h3,h4){font-size:16px}
 .tcard .sub{font-size:13px;color:var(--muted)}
 .tcard .acc{height:6px;border-radius:99px;background:var(--bg2);margin-top:6px;overflow:hidden}
 .tcard .acc i{display:block;height:100%;border-radius:99px}
@@ -223,7 +227,7 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .qprog{flex:1;min-width:0}
 .qprog .lbl{display:flex;justify-content:space-between;font-size:14px;color:var(--soft)}
 .qprog .bar{height:8px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-top:4px}
-.qprog .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.qprog .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transform-origin:0 50%;transform:scaleX(0);transition:transform .4s}
 .timer{font-family:"JetBrains Mono";font-size:15px;padding:6px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
 
 .qlayout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start;padding-bottom:40px}
@@ -243,9 +247,9 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 .choice.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,var(--surface))}
 .choice.sel .key{background:var(--c);color:#fff;border-color:var(--c)}
 .choice.right{border-color:var(--ok);background:var(--ok-bg)}
-.choice.right .key{background:var(--ok);color:#fff;border-color:var(--ok)}
+.choice.right .key{background:var(--ok-fill);color:var(--on-fill);border-color:var(--ok-fill)}
 .choice.wrong{border-color:var(--bad);background:var(--bad-bg)}
-.choice.wrong .key{background:var(--bad);color:#fff;border-color:var(--bad)}
+.choice.wrong .key{background:var(--bad-fill);color:var(--on-fill);border-color:var(--bad-fill)}
 .choice:disabled{cursor:default}
 .numrow{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
 .numbox{flex:1;min-width:200px;display:flex;align-items:center;border:2px solid var(--line);border-radius:14px;background:var(--surface2);padding:0 16px;transition:border-color .15s}
@@ -276,7 +280,7 @@ h2 .art,h3 .art{display:inline-block;width:34px;height:34px;border-radius:10px;v
 
 .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:80px}
 .side .card{padding:16px}
-.side h4{font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.side :is(h3,h4){font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .dots{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .dot{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--line);background:var(--surface2);font:600 13px "JetBrains Mono";display:grid;place-items:center;min-height:36px}
 .dot.ans{background:color-mix(in srgb,var(--accent) 18%,var(--surface));border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
@@ -352,7 +356,8 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .hbar .name{display:flex;align-items:center;gap:8px;min-width:0}
 .hbar .name em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hbar .track{height:14px;border-radius:99px;background:var(--bg2);overflow:hidden;display:flex}
-.hbar .track i{display:block;height:100%;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.hbar .track i{display:block;height:100%;transform-origin:0 50%;animation:barIn 1s cubic-bezier(.2,.8,.2,1)}
+@keyframes barIn{from{transform:scaleX(0)}}   /* bars keep their width and grow in with transform */
 .hbar .val{text-align:right;font-family:"JetBrains Mono";font-size:13px}
 .sw{width:12px;height:12px;border-radius:4px;flex:none}
 
@@ -385,12 +390,12 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .missrow{display:grid;grid-template-columns:30px minmax(0,1.3fr) minmax(0,1fr) 52px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 .missrow:last-child{border:0}
 .rank{font:700 14px "JetBrains Mono";color:var(--muted);text-align:center}
-.missrow.top .rank{color:#fff;background:var(--bad);border-radius:8px;padding:2px 0}
+.missrow.top .rank{color:var(--on-fill);background:var(--bad-fill);border-radius:8px;padding:2px 0}
 .missrow .q{min-width:0}
 .missrow .q div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .missrow .q small{color:var(--muted);font-size:12px}
 .missrow .track{height:12px;border-radius:99px;background:var(--bg2);overflow:hidden;position:relative}
-.missrow .track i{position:absolute;inset:0 auto 0 0;background:var(--bad);border-radius:99px;transition:width 1s}
+.missrow .track i{position:absolute;inset:0 auto 0 0;background:var(--bad);border-radius:99px;transform-origin:0 50%;animation:barIn 1s cubic-bezier(.2,.8,.2,1)}
 .missrow .track .me{position:absolute;top:-3px;width:4px;height:18px;border-radius:2px;background:var(--ink)}
 .missrow .val{text-align:right;font-family:"JetBrains Mono"}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
@@ -429,8 +434,8 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .bubble{width:58px;height:58px;border-radius:50%;border:2.5px solid var(--line);background:var(--surface2);font:700 22px "JetBrains Mono";display:grid;place-items:center;transition:transform .1s,border-color .15s,background .15s}
 .bubble:hover:not(:disabled){border-color:var(--c);transform:translateY(-1px)}
 .bubble.sel{background:var(--c);border-color:var(--c);color:#fff}
-.bubble.right{background:var(--ok);border-color:var(--ok);color:#fff}
-.bubble.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+.bubble.right{background:var(--ok-fill);border-color:var(--ok-fill);color:var(--on-fill)}
+.bubble.wrong{background:var(--bad-fill);border-color:var(--bad-fill);color:var(--on-fill)}
 .bubble:disabled{cursor:default}
 .tcard.exam .tile small{font-size:9px}
 @media (max-width:575px){.bubbles{gap:8px}.bubble{width:50px;height:50px;font-size:19px}}
@@ -449,11 +454,11 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .dartico{position:relative;display:block;width:56px;height:56px;flex:none;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
 .dartico img{position:absolute;mix-blend-mode:multiply}
 .dartico .tgt{left:5.5px;top:0;width:45px;height:56px;transform-origin:48% 47%}
-.dartico .dart{left:-16px;top:42px;width:34px;height:34px;z-index:2;opacity:.6;transform:rotate(12deg) scale(.9);transform-origin:100% 0;
-  transition:left .22s cubic-bezier(.2,1.3,.4,1),top .22s cubic-bezier(.2,1.3,.4,1),opacity .22s,transform .22s}
+.dartico .dart{left:-3.5px;top:23.3px;width:34px;height:34px;z-index:2;opacity:.6;transform:translate(-12.5px,18.7px) rotate(12deg) scale(.9);transform-origin:100% 0;
+  transition:opacity .22s,transform .22s cubic-bezier(.2,1.3,.4,1)}
 .dartico .spark{position:absolute;left:23px;top:22.5px;width:8px;height:8px;border-radius:50%;z-index:3;pointer-events:none}
 .hubcard:not(:disabled):is(:hover,:focus-visible) .dartico{transform:translateY(-6px) scale(1.08)}
-.hubcard:not(:disabled):is(:hover,:focus-visible) .dartico .dart{left:-3.5px;top:23.3px;opacity:1;transform:rotate(12deg)}
+.hubcard:not(:disabled):is(:hover,:focus-visible) .dartico .dart{opacity:1;transform:translate(0,0) rotate(12deg)}
 .hubcard:not(:disabled):is(:hover,:focus-visible) .dartico .tgt{animation:bullseye .38s ease-out .08s}
 .hubcard:not(:disabled):is(:hover,:focus-visible) .dartico .spark{animation:sparkBurst .4s ease-out .08s}
 @keyframes bullseye{35%{transform:scale(.88) rotate(-5deg) translate(3px,2px)} 70%{transform:scale(1.05) rotate(2deg)}}
@@ -520,7 +525,7 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .pname{font:600 17px Mitr}
 .plv{color:var(--soft);font-size:14px;margin-bottom:6px}
 .xpbar{height:12px;border-radius:99px;background:var(--bg2);overflow:hidden}
-.xpbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#ffb347);transition:width 1s}
+.xpbar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#ffb347);transform-origin:0 50%;animation:barIn 1s cubic-bezier(.2,.8,.2,1)}
 .xptext{font-size:12px;color:var(--muted);margin-top:4px}
 .pstats{display:flex;gap:10px}
 .pstats>div{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center;min-width:76px}
@@ -528,7 +533,7 @@ dialog.ptdlg{max-width:1040px;width:calc(100% - 24px);padding:18px 18px 14px}
 .pstats span{font-size:12px;color:var(--muted)}
 .trophyBtn{position:relative}
 .qtop .trophyBtn{flex:none}
-.tbadge{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#e5484d;color:#fff;font:700 11px/20px "JetBrains Mono";text-align:center;box-shadow:0 0 0 2px var(--bg);animation:tbump 1.8s ease-in-out infinite}
+.tbadge{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:var(--bad-fill);color:var(--on-fill);font:700 11px/20px "JetBrains Mono";text-align:center;box-shadow:0 0 0 2px var(--bg);animation:tbump 1.8s ease-in-out infinite}
 dialog.tdlg{max-width:720px;max-height:min(88vh,780px);overflow:auto;padding:20px 20px 16px}
 .tdhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px}
 .tdhead h3{margin:0}
@@ -548,7 +553,7 @@ dialog.tdlg{max-width:720px;max-height:min(88vh,780px);overflow:auto;padding:20p
 .mdl .nm{font-size:12px;text-align:center;line-height:1.3;max-width:104px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--soft)}
 .mdl .st{color:#e0a800;font-size:11px;letter-spacing:1px;line-height:1}
 .mdl.new .coin{animation:tglow 1.4s ease-in-out infinite}
-.mdl.new .coin::after{content:'รับ!';position:absolute;bottom:-7px;right:-12px;background:var(--accent);color:#fff;font:600 11px "IBM Plex Sans Thai",sans-serif;padding:1px 8px;border-radius:999px;transform:rotate(6deg)}
+.mdl.new .coin::after{content:'รับ!';position:absolute;bottom:-7px;right:-12px;background:var(--bad-fill);color:var(--on-fill);font:600 11px "IBM Plex Sans Thai",sans-serif;padding:1px 8px;border-radius:999px;transform:rotate(6deg)}
 .mdl.sel .coin{transform:scale(1.08);box-shadow:0 0 0 5px color-mix(in srgb,var(--ring) 28%,transparent)}
 .mdl.pop .coin{animation:tpop .7s ease-out}
 .tddetail{display:flex;gap:14px;align-items:center;padding-top:12px;border-top:1px dashed var(--line);min-height:60px}
@@ -609,7 +614,7 @@ dialog.tdlg{max-width:720px;max-height:min(88vh,780px);overflow:auto;padding:20p
 #padCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;
   background-color:#fffef8;background-image:linear-gradient(#e7eef7 1px,transparent 1px),linear-gradient(90deg,#e7eef7 1px,transparent 1px);background-size:28px 28px}
 .padhint{position:absolute;left:16px;bottom:12px;font-size:12px;color:#8a92a6;pointer-events:none}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:80;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-size:14px;transition:all .25s;pointer-events:none;max-width:calc(100% - 32px)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;z-index:80;background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-size:14px;transition:opacity .25s,transform .25s;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;font-size:14px;min-width:0}
 .field input{width:100%;min-width:0}
@@ -640,7 +645,7 @@ dialog.skydlg{max-width:520px}
 .trial{display:inline-block;margin:0 0 16px;padding:4px 12px;border-radius:999px;font-size:13.5px;font-weight:600;
   background:var(--ok-bg);color:var(--ok)}
 .skyact{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.btn.line{background:#06c755;color:#fff;border-color:#06c755;text-decoration:none}
+.btn.line{background:#06c755;color:#00210c;border-color:#06c755;text-decoration:none}
 .skyact .qr{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--muted)}
 .skyact .qr img{width:96px;height:96px;border-radius:10px;background:#fff;padding:4px}
 @media (max-width:600px){ .skyact .qr{display:none} .skyact .btn.line{flex:1} }
@@ -670,7 +675,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .hero{grid-template-columns:1fr}
   .tiles-art{height:180px}
   .tiles-art .tile{width:64px;height:64px;font-size:24px}
-  .subjects,.levels{grid-template-columns:1fr 1fr}
+  .subjects,.levels{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ainfo{grid-template-columns:1fr}
   .qlayout{grid-template-columns:minmax(0,1fr)}
   .side{position:static}
@@ -678,7 +683,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
   .kpis{grid-template-columns:1fr 1fr}
 }
 @media (max-width:575px){
-  .modes,.choices{grid-template-columns:1fr}
+  .modes,.choices{grid-template-columns:minmax(0,1fr)}
   .padbar{gap:6px;padding:8px}
   .padbar .tool{min-width:36px;height:36px;font-size:15px}
   .padbar .btn{padding:6px 10px;min-height:36px!important}
@@ -921,7 +926,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       </svg>
       <div class="qprog">
         <div class="lbl"><span id="qLabel">ข้อ 1 / 12</span><span id="qAnswered">ตอบแล้ว 0</span></div>
-        <div class="bar"><i id="qBar" style="width:0"></i></div>
+        <div class="bar"><i id="qBar"></i></div>
       </div>
       <span class="timer" id="timer" aria-label="เวลาที่ใช้">00:00</span>
       <button class="iconbtn trophyBtn" aria-label="ห้องถ้วยรางวัล"><img class="art" src="img/trophy-72.webp" alt="" width="28" height="28"><span class="tbadge" hidden></span></button>
@@ -933,7 +938,7 @@ dialog .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
       </div>
       <aside class="side">
         <div class="card">
-          <h4>แผนที่ข้อสอบ <button class="btn primary" id="submitTop" style="min-height:34px;padding:4px 12px;font-size:13px">ส่งคำตอบ</button></h4>
+          <h3 class="maph">แผนที่ข้อสอบ <button class="btn primary" id="submitTop" style="min-height:34px;padding:4px 12px;font-size:13px">ส่งคำตอบ</button></h3>
           <div class="dots" id="dots"></div>
         </div>
         <div class="card">
@@ -6064,7 +6069,7 @@ function renderLevelBody(){
         const medal=trophyList(loadProg()).find(x=>x.id==='e:'+s.id)?.tier||0;
         return `<button class="tcard exam" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'}" data-set="${s.id}" aria-pressed="${SEL.has(s.id)}" title="${medal?'เหรียญ'+TIER[medal]:''}">
           <span class="tile" style="--c:${s.id[0]==='a'?'#9b5de5':'#2563eb'};width:58px;height:52px;font-size:17px"><small>${s.id[0]==='a'?'A-L':'9สามัญ'}</small>${String(s.year).slice(2)}</span>
-          <div class="info"><h4>${s.name} ${medal?MEDAL[medal]:''}</h4><div class="sub">${s.q.length} ข้อ${nn?` (ปรนัย ${s.q.length-nn} · เติมตัวเลข ${nn})`:' ปรนัย'}</div>
+          <div class="info"><h3>${s.name} ${medal?MEDAL[medal]:''}</h3><div class="sub">${s.q.length} ข้อ${nn?` (ปรนัย ${s.q.length-nn} · เติมตัวเลข ${nn})`:' ปรนัย'}</div>
           <div class="sub">${last?`ล่าสุด ${last.score}/${last.total} · ดีที่สุด ${best}%`:'ยังไม่เคยทำ'}</div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
       }).join('')}</div>
@@ -6076,7 +6081,7 @@ function renderLevelBody(){
       <div class="tgrid">${(()=>{ var tro=Object.fromEntries(trophyList(loadProg()).filter(x=>x.id.startsWith('t:')).map(x=>[x.id.slice(2),x.tier])); return L.topics.map(t=>{
         const tq=Q.filter(q=>q.topic===t&&!q.alevel&&!q.exam&&!q.posn), n=tq.length, np=patCount(tq.map(q=>q.id)), a=topicAcc(t), T=TOPICS[t];
         return `<button class="tcard" style="--c:${T.c}" data-t="${t}" aria-pressed="${SEL.has(t)}" ${n?'':'disabled'}>
-          ${tileHTML(t)}<div class="info"><h4>${T.name} ${(tro[t]||0)?MEDAL[tro[t]]:''}</h4>
+          ${tileHTML(t)}<div class="info"><h3>${T.name} ${(tro[t]||0)?MEDAL[tro[t]]:''}</h3>
           <div class="sub">บทที่ ${T.ch} · ${np<n?`${np} รูปแบบ (${n} ข้อ)`:`${n} ข้อ`} ·${a?`ทำถูก ${a.p}% (${a.n} ครั้ง)`:'ยังไม่เคยทำ'}</div>
           <div class="acc"><i style="width:${a?a.p:0}%;background:${!a?'transparent':a.p>=67?'var(--ok)':a.p>=34?'var(--warn)':'var(--bad)'}"></i></div></div>
           <span class="chk" aria-hidden="true">✓</span></button>`;
@@ -6383,7 +6388,7 @@ function updateChrome(){
   const n=S.ids.length, done=S.ids.filter(answered).length;
   $('#qLabel').textContent=`ข้อ ${S.i+1} / ${n}`;
   $('#qAnswered').textContent=`ตอบแล้ว ${done}/${n}`;
-  $('#qBar').style.width=pct(done,n)+'%';
+  $('#qBar').style.transform=`scaleX(${done/n})`;
   $('#fluid').setAttribute('y', 48 - 34*(done/n) - 2);
   $('#dots').innerHTML=S.ids.map((id,k)=>{
     let c='dot'; const a=S.ans[id];
