@@ -7140,5 +7140,11 @@ function openChapter(ch){
 }
 { const m=location.hash.match(/^#ch=(\d+)$/); if(m) openChapter(+m[1]); }
 </script>
+<!-- accounts: Guest (results kept on this device, reported to Kru Sky's Drive) or Google / email sign-in (Supabase, each learner sees only their own results).
+     account/supabase-config.js holds only the project URL and the publishable key; secret keys never belong in this site. -->
+<script src="account/supabase-2.118.0.js"></script>
+<script src="account/supabase-config.js"></script>
+<script src="account/learning-next.js"></script>
+<script src="account/private-account.js"></script>
 </body>
 </html>
