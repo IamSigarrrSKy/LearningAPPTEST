@@ -233,6 +233,7 @@
     }
   </style>
   <link rel="stylesheet" href="exp-theme.css">
+  <link rel="stylesheet" href="bohr.css">
 </head>
 <body class="min-h-screen pb-16">
 
@@ -362,7 +363,24 @@
         </div>
 
       </div>
-    </section>
+    <section class="bohr" id="bohrLab" aria-labelledby="bhTitle">
+  <h2 id="bhTitle">แบบจำลองอะตอมของโบร์: สภาวะพื้น สภาวะถูกกระตุ้น และการคายพลังงาน</h2>
+  <p class="lead">อะตอมไฮโดรเจน: ให้พลังงานแล้วอิเล็กตรอนกระโดดขึ้นระดับสูง จากนั้นปล่อยให้ตกลงมาเพื่อดูว่าคายแสงสีอะไร</p>
+  <div class="grid">
+    <div><svg id="bhAtom" viewBox="0 0 420 400" role="img" aria-label="แบบจำลองอะตอมไฮโดรเจนของโบร์ 6 ระดับพลังงาน"></svg>
+      <svg id="bhLevels" viewBox="0 0 440 350" role="img" aria-label="แผนภาพระดับพลังงาน En เท่ากับลบ 13.6 หารด้วย n กำลังสอง อิเล็กตรอนโวลต์"></svg></div>
+    <div>
+      <p class="state" id="bhState"></p><p class="state-note" id="bhStateNote"></p>
+      <div class="row" id="bhUpRow"><h4>ให้พลังงาน (ดูดพลังงาน กระโดดขึ้น)</h4><div class="row" id="bhUp"></div></div>
+      <div class="row"><h4>คายพลังงาน (ตกลงมา ปล่อยแสง)</h4><div class="row" id="bhDown"></div></div>
+      <div class="row"><button id="bhCascade">ตกลงทีละขั้นจนถึงสภาวะพื้น</button><button id="bhBalmer">ดูอนุกรมบาลเมอร์ทั้งชุด</button><button id="bhReset">เริ่มใหม่</button></div>
+      <div class="readout" id="bhReadout" role="status"></div>
+    </div>
+  </div>
+  <div class="spec"><svg id="bhSpectrum" viewBox="0 0 700 112" role="img" aria-label="สเปกตรัมเส้นที่อะตอมคายออกมา"></svg><p id="bhCount"></p></div>
+  <p class="muted" style="font-size:13px;margin:12px 0 0">ค่าพลังงาน E<sub>n</sub> = −13.6 ÷ n² eV ใช้ได้กับไฮโดรเจนเท่านั้น ระดับยิ่งสูง ช่องว่างระหว่างระดับยิ่งแคบ</p>
+</section>
+</section>
 
     <!-- ===================================================================
          LAB 2: สัญลักษณ์นิวเคลียร์ & การจัดเรียงอิเล็กตรอนครบ 3 รูปแบบ (หลัก, ย่อย, ออร์บิทัล)
@@ -3082,5 +3100,6 @@
   </script>
 <script>/* ChemLab: #lab2 opens that tab; ?from=N-P (opened from the e-book) turns the e-book link into a way back to page P */
 addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
+<script src="bohr.js"></script>
 </body>
 </html>

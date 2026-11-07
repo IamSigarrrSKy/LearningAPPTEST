@@ -1,0 +1,54 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลองไฟฟ้าเคมี ChemLab</title>
+<meta name="description" content="ห้องทดลองไฟฟ้าเคมีแบบโต้ตอบ: เซลล์กัลวานิก อิเล็กโทรลิซิส และโลหะในสารละลายไอออนของโลหะอื่น">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gas-mixtures.css">
+<link rel="stylesheet" href="electro.css">
+<link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<script>addEventListener('DOMContentLoaded',()=>{const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/);if(m){const a=document.createElement('a');a.className='back ebook-back';a.href=`../ebook/shelf.html#read=${m[1]}&p=${m[2]}`;a.textContent=`กลับไป e-book หน้า ${m[2]}`;document.querySelector('header .brand').after(a);}});</script>
+<main>
+<h1>ไฟฟ้ามาจากปฏิกิริยาเคมีได้อย่างไร?</h1>
+<p class="lead">บทที่ 9 ไฟฟ้าเคมี เลือกโลหะ ดูอิเล็กตรอนวิ่งในลวด และดูว่าขั้วไหนสึก ขั้วไหนพอก</p>
+<nav class="tabs" aria-label="เลือกการทดลอง"><button data-tab="galvanic" aria-current="true">เซลล์กัลวานิก</button><button data-tab="electrolysis">อิเล็กโทรลิซิส</button><button data-tab="displace">โลหะในสารละลาย</button></nav>
+
+<!-- ============ 1. galvanic cell ============ -->
+<section id="galvanicPanel" aria-labelledby="gTitle">
+  <div class="experiment-heading"><div><h2 id="gTitle">ต่อโลหะ 2 ชนิด แล้วได้ไฟฟ้า</h2><p>โลหะที่ให้อิเล็กตรอนง่ายกว่าเป็นแอโนด อิเล็กตรอนวิ่งผ่านลวดไปหาแคโทด</p></div>
+    <div class="pick"><label class="control" for="gLeft">ครึ่งเซลล์ซ้าย<select id="gLeft"></select></label><label class="control" for="gRight">ครึ่งเซลล์ขวา<select id="gRight"></select></label></div></div>
+  <div class="controls single"><label class="control" for="gTime"><span>เวลาที่ปล่อยให้เซลล์ทำงาน <output id="gTimeOut">0 นาที</output></span><input id="gTime" type="range" min="0" max="30" step="1" value="0"><small>ดูว่าแอโนดบางลง แคโทดหนาขึ้น และสีสารละลายเปลี่ยน</small></label></div>
+  <div class="bench">
+    <div class="visual"><svg id="gScene" viewBox="0 0 640 430" role="img" aria-label="เซลล์กัลวานิก สองบีกเกอร์ต่อด้วยลวดและสะพานเกลือ"></svg><p class="caption">จุดสีเขียวคืออิเล็กตรอนในลวด ไอออนในสะพานเกลือ: ไอออนลบไปฝั่งแอโนด ไอออนบวกไปฝั่งแคโทด เพื่อให้ประจุในแต่ละบีกเกอร์สมดุล</p></div>
+    <div class="readout" id="gRead" role="status"></div>
+  </div>
+</section>
+
+<!-- ============ 2. electrolysis ============ -->
+<section id="electrolysisPanel" hidden aria-labelledby="eTitle">
+  <div class="experiment-heading"><div><h2 id="eTitle">ใช้ไฟฟ้าบังคับให้เกิดปฏิกิริยา</h2><p>เซลล์อิเล็กโทรไลต์ต้องมีแบตเตอรี่ แอโนดต่อขั้วบวก แคโทดต่อขั้วลบ ตรงข้ามกับเซลล์กัลวานิก</p></div>
+    <label class="control" for="eMode">เลือกการทดลอง<select id="eMode"><option value="water">แยกน้ำด้วยไฟฟ้า (H₂SO₄ เจือจาง)</option><option value="plate">ชุบช้อนด้วยทองแดง (CuSO₄)</option></select></label></div>
+  <div class="controls single"><label class="control" for="eTime"><span>เวลาที่ผ่านไฟฟ้า <output id="eTimeOut">0 นาที</output></span><input id="eTime" type="range" min="0" max="30" step="1" value="0"><small id="eHint"></small></label></div>
+  <div class="bench">
+    <div class="visual"><svg id="eScene" viewBox="0 0 640 430" role="img" aria-label="เซลล์อิเล็กโทรไลต์"></svg></div>
+    <div class="readout" id="eRead" role="status"></div>
+  </div>
+</section>
+
+<!-- ============ 3. metal in another metal's solution ============ -->
+<section id="displacePanel" hidden aria-labelledby="dTitle">
+  <div class="experiment-heading"><div><h2 id="dTitle">จุ่มโลหะลงในสารละลาย เกิดปฏิกิริยาไหม?</h2><p>ทายก่อน แล้วกดจุ่ม ปฏิกิริยาเกิดเมื่อไอออนในสารละลายรับอิเล็กตรอนได้ดีกว่าไอออนของโลหะที่จุ่ม</p></div>
+    <div class="pick"><label class="control" for="dMetal">แผ่นโลหะ<select id="dMetal"></select></label><label class="control" for="dIon">สารละลาย<select id="dIon"></select></label></div></div>
+  <div class="acts"><button id="dGuessYes">ทายว่าเกิด</button><button id="dGuessNo">ทายว่าไม่เกิด</button><button id="dDip" class="primary">จุ่มเลย</button></div>
+  <div class="bench">
+    <div class="visual"><svg id="dScene" viewBox="0 0 640 400" role="img" aria-label="แผ่นโลหะในบีกเกอร์สารละลาย"></svg></div>
+    <div class="readout" id="dRead" role="status"></div>
+  </div>
+</section>
+
+<section class="note-box"><h3>ค่าที่ใช้ในห้องนี้</h3><p>ศักย์ไฟฟ้ารีดักชันมาตรฐาน E° (V) ที่ 25 °C: Mg −2.37, Al −1.66, Zn −0.76, Fe −0.44, Ni −0.25, Pb −0.13, Cu +0.34, Ag +0.80 ใช้ E°cell = E°แคโทด − E°แอโนด ภาพการสึกและพอกเป็นภาพจำลอง ไม่ได้วัดมวลจริง</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="electro.js"></script>
+</body></html>

@@ -1,0 +1,30 @@
+/* Chapter 9 electrochemistry lab, on top of the gas lab workbench and the ChemLab theme */
+.pick{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.pick select,#eMode{width:100%;margin-top:6px}
+.controls.single{grid-template-columns:minmax(0,1fr)}
+.readout{min-width:0;font-size:15px}
+.readout p{margin:0 0 8px;color:var(--ink)}
+.readout .muted,.readout dd.muted{color:var(--muted);font-size:14px}
+.readout .eq{font-family:var(--font-number);font-size:14px}
+.readout .eq.big{font-size:18px;margin-bottom:16px}
+.readout dl{margin:0}
+.readout dt{margin:12px 0 2px;font-size:13px;color:var(--muted)}
+.readout dd{margin:0 0 2px}
+.readout .ok{color:#1f6f61;font-weight:500}
+.readout .bad{color:var(--coral);font-weight:500}
+.visual svg .lbl{font:500 14px var(--font-body);fill:var(--ink)}
+.visual svg .lbl.small{font-size:12px;fill:var(--muted)}
+.visual svg .meter{font:600 20px var(--font-number);fill:var(--ink)}
+.visual svg .meterU{font:500 12px var(--font-body);fill:var(--muted)}
+.visual svg .eDot{fill:#1f6f61}
+.visual svg .anDot{fill:#fffdf8;stroke:#c4432b;stroke-width:2}
+.visual svg .catDot{fill:#c4432b}
+.visual svg .bubble{fill:#fffdf8;stroke:#7a8ea0;stroke-width:1.5}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}
+.acts button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.acts .primary{background:#c4432b;border-color:#c4432b;color:#fffdf8}
+.acts .primary:hover{color:#fffdf8;filter:brightness(1.08)}
+.note-box{margin-top:40px;padding-top:24px;border-top:1px solid var(--line)}
+.note-box h3{font-size:16px;margin:0 0 4px}
+.note-box p{font-size:14px;margin:0}
+@media (max-width:760px){.pick{grid-template-columns:minmax(0,1fr)}}
