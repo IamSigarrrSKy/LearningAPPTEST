@@ -28,7 +28,7 @@
 <!-- ============ 2. electrolysis ============ -->
 <section id="electrolysisPanel" hidden aria-labelledby="eTitle">
   <div class="experiment-heading"><div><h2 id="eTitle">ใช้ไฟฟ้าบังคับให้เกิดปฏิกิริยา</h2><p>เซลล์อิเล็กโทรไลต์ต้องมีแบตเตอรี่ แอโนดต่อขั้วบวก แคโทดต่อขั้วลบ ตรงข้ามกับเซลล์กัลวานิก</p></div>
-    <label class="control" for="eMode">เลือกการทดลอง<select id="eMode"><option value="water">แยกน้ำด้วยไฟฟ้า (H₂SO₄ เจือจาง)</option><option value="plate">ชุบช้อนด้วยทองแดง (CuSO₄)</option></select></label></div>
+    <label class="control" for="eMode">เลือกการทดลอง<select id="eMode"><option value="water">แยกน้ำด้วยไฟฟ้า (H₂SO₄ เจือจาง)</option><option value="plate">ชุบช้อนด้วยทองแดง (CuSO₄)</option><option value="refine">ทำทองแดงให้บริสุทธิ์ (CuSO₄)</option></select></label></div>
   <div class="controls single"><label class="control" for="eTime"><span>เวลาที่ผ่านไฟฟ้า <output id="eTimeOut">0 นาที</output></span><input id="eTime" type="range" min="0" max="30" step="1" value="0"><small id="eHint"></small></label></div>
   <div class="bench">
     <div class="visual"><svg id="eScene" viewBox="0 0 640 430" role="img" aria-label="เซลล์อิเล็กโทรไลต์"></svg></div>
@@ -47,7 +47,7 @@
   </div>
 </section>
 
-<section class="note-box"><h3>ค่าที่ใช้ในห้องนี้</h3><p>ศักย์ไฟฟ้ารีดักชันมาตรฐาน E° (V) ที่ 25 °C: Mg −2.37, Al −1.66, Zn −0.76, Fe −0.44, Ni −0.25, Pb −0.13, Cu +0.34, Ag +0.80 ใช้ E°cell = E°แคโทด − E°แอโนด ภาพการสึกและพอกเป็นภาพจำลอง ไม่ได้วัดมวลจริง</p></section>
+<section class="note-box"><h3>ค่าที่ใช้ในห้องนี้</h3><p>ศักย์ไฟฟ้ารีดักชันมาตรฐาน E° (V) ที่ 25 °C: Mg −2.37, Al −1.66, Zn −0.76, Fe −0.44, Ni −0.25, Pb −0.13, Cu +0.34, Ag +0.80, Au +1.50 ใช้ E°cell = E°แคโทด − E°แอโนด ภาพการสึกและพอกเป็นภาพจำลอง ไม่ได้วัดมวลจริง</p></section>
 </main>
 <footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
 <script src="electro.js"></script>

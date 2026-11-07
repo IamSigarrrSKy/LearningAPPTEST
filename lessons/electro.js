@@ -123,6 +123,28 @@
         for (let k = 0; k < 6; k++) { const u = (phase * 2 + k / 6) % 1; b += `<circle cx="${420 + (k % 3 - 1) * 8}" cy="${330 - u * 30}" r="4" class="bubble"/>`; if (k < 3) b += `<circle cx="${220 + (k - 1) * 8}" cy="${330 - ((phase * 2 + k / 3) % 1) * 30}" r="4" class="bubble"/>`; }
         g.innerHTML = b;
       };
+    } else if (mode === 'refine') {
+      // electrorefining: impure copper anode, pure copper cathode; Zn and Fe go into solution, Ag and Au fall as anode mud
+      $('eHint').textContent = 'เลื่อนเวลาแล้วดู: แท่งทองแดงไม่บริสุทธิ์ (+) สึก แผ่นทองแดงบริสุทธิ์ (−) หนาขึ้น เงินกับทองตกลงก้นถังเป็นกากแอโนด';
+      s += beaker(120, 200, 400, 200, mix(WATER, M.Cu.sol, .8), .85);
+      const bar = 46 * (1 - .45 * t), sheet = 8 + 22 * t;
+      s += `<rect x="${230 - bar / 2}" y="120" width="${bar}" height="250" rx="3" fill="#b07a52" stroke="var(--ink)" stroke-width="2"/>`;
+      // impurities in the anode: grey (Zn, Fe) and gold/silver flecks
+      [[0, 150, '#9ea7b1'], [-.3, 190, '#d9d9d9'], [.25, 230, '#d8b34a'], [-.1, 270, '#7f7b77'], [.3, 310, '#d9d9d9'], [-.25, 345, '#d8b34a']].forEach(([fx, y, c]) =>
+        s += `<circle cx="${230 + fx * bar}" cy="${y}" r="5" fill="${c}" stroke="var(--ink)" stroke-width="1"/>`);
+      s += `<rect x="${420 - sheet / 2}" y="120" width="${sheet}" height="250" rx="2" fill="${M.Cu.metal}" stroke="var(--ink)" stroke-width="2"/>`;
+      // anode mud: Ag and Au do not dissolve, they drop to the bottom under the anode
+      for (let i = 0; i < Math.round(14 * t); i++) s += `<circle cx="${205 + (i * 13) % 52}" cy="${388 - Math.floor(i / 4) * 6}" r="4" fill="${i % 2 ? '#d8b34a' : '#d9d9d9'}" stroke="var(--ink)" stroke-width=".8"/>`;
+      s += `<path d="M290 60 V75 H230 V120 M350 60 V75 H420 V120" fill="none" stroke="var(--ink)" stroke-width="2.5"/>`;
+      s += label(230, 422, 'แอโนด (+) Cu ไม่บริสุทธิ์') + label(420, 422, 'แคโทด (−) Cu บริสุทธิ์');
+      $('eRead').innerHTML = `<p class="eq big">ได้ทองแดงบริสุทธิ์ 99.9% ที่แคโทด</p><dl>
+        <dt>แอโนด (ขั้วบวก) ออกซิเดชัน</dt><dd class="eq">Cu(s) → Cu²⁺(aq) + 2e⁻</dd>
+        <dd class="muted">Zn และ Fe ที่ปนอยู่ให้อิเล็กตรอนง่ายกว่า (E° −0.76, −0.44 V) จึงละลายเป็น Zn²⁺, Fe²⁺ ไปด้วย</dd>
+        <dd class="muted">Ag และ Au (E° +0.80, +1.50 V) ให้อิเล็กตรอนยากกว่า Cu จึงไม่ละลาย หลุดตกก้นถังเป็นกากแอโนด (anode mud)</dd>
+        <dt>แคโทด (ขั้วลบ) รีดักชัน</dt><dd class="eq">Cu²⁺(aq) + 2e⁻ → Cu(s)</dd>
+        <dd class="muted">มีแต่ Cu²⁺ ที่ไปพอก เพราะรับอิเล็กตรอนได้ดีกว่า Zn²⁺ และ Fe²⁺ ซึ่งค้างอยู่ในสารละลาย</dd></dl>
+        <p class="muted">ใช้ความต่างศักย์ต่ำๆ ให้พอเกิดแค่ปฏิกิริยาของทองแดง กากแอโนดยังเก็บไปสกัดเงินและทองได้อีก</p>`;
+      loops[1] = () => {};
     } else {
       $('eHint').textContent = 'ช้อนต่อขั้วลบเป็นแคโทด ทองแดงจากสารละลายมาพอกที่ช้อน แท่งทองแดงที่ขั้วบวกค่อยๆ สึก';
       s += beaker(120, 200, 400, 200, mix(WATER, M.Cu.sol, .8), .85);

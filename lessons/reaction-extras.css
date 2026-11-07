@@ -1,0 +1,10 @@
+/* additions for the chapter 7 and 8 labs (see reaction-extras.js) */
+.syringe-fig{margin:0 0 24px;padding:16px 20px;border-radius:16px;background:var(--surface)}
+.syringe-fig svg{display:block;width:100%;max-width:640px;height:auto}
+.syringe-fig .syr-lbl{font:500 14px var(--font-number);fill:var(--ink)}
+.syringe-fig figcaption{font-size:13px;color:var(--muted);margin-top:4px}
+.ind-note{font-size:14px;color:var(--ink);padding:12px 16px;border-left:3px solid var(--accent);background:var(--surface);border-radius:0 10px 10px 0}
+#indicator{display:block;width:100%;margin-top:6px}
+.clip-fig{margin:0 0 24px;max-width:760px}
+.clip-fig video{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.clip-fig figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
