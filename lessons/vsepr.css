@@ -27,3 +27,8 @@
 .vsepr .legend .l2{border-top:3px dashed var(--coral)}
 .vsepr .legend .l3{border-top:5px dashed var(--coral)}
 @media (max-width:760px){.vsepr .bench{grid-template-columns:minmax(0,1fr)}}
+
+/* the explainer clip above the explorer */
+.vsepr .vs-clip{margin:16px 0 24px;max-width:760px}
+.vsepr .vs-clip video{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.vsepr .vs-clip figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
