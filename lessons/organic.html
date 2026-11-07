@@ -1,0 +1,108 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลองเคมีอินทรีย์ ChemLab</title>
+<meta name="description" content="ห้องทดลองเคมีอินทรีย์: สร้างโมเลกุลและเรียกชื่อ IUPAC ไอโซเมอร์ จุดเดือดและการละลายน้ำ การทดสอบด้วย Br2 KMnO4 Na NaHCO3 และปฏิกิริยาเอสเทอริฟิเคชัน">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+  .name-big{font:500 clamp(24px,3vw,34px)/1.3 var(--font-head);color:var(--ink);margin:0 0 4px;word-break:break-word}
+  .name-common{font-size:14px;color:var(--muted);margin:0 0 16px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chips button{min-height:36px;padding:6px 12px;font-size:13px}
+  #bSvg .bond{stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;fill:none}
+  #bSvg .hetero{font:500 22px var(--font-mono);fill:#c4432b}
+  #bSvg .loc{font:600 15px var(--font-mono);fill:#2f8a74}
+  #bSvg .big{font:500 34px var(--font-mono);fill:var(--ink)}
+  .tube-wrap{display:flex;gap:28px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+  .grid-tab{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  .grid-tab th,.grid-tab td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:center}
+  .grid-tab th:first-child,.grid-tab td:first-child{text-align:left}
+  .grid-tab td.y{color:#1f6f61;font-weight:600}.grid-tab td.n{color:var(--muted)}
+  .grid-tab tr.cur td{background:color-mix(in srgb,var(--accent) 8%,transparent)}
+  .eqn{font:500 clamp(15px,1.9vw,20px)/1.7 var(--font-mono);color:var(--ink);word-break:break-word}
+  .eqn .acid{color:#2f8a74}.eqn .alc{color:#d9822b}.eqn .w{color:#c4432b;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+  #eSvg text{font:500 22px var(--font-mono)}
+  #eSvg g.mv{transition:transform 1.2s cubic-bezier(.5,0,.2,1),opacity .6s}
+  .smell{display:inline-block;margin-top:4px;padding:6px 12px;border-radius:999px;background:color-mix(in srgb,#d9822b 14%,transparent);color:var(--ink);font-size:14px}
+  @media (prefers-reduced-motion:reduce){#eSvg g.mv{transition:none}}
+</style>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>ต่อคาร์บอน เติมหมู่ฟังก์ชัน แล้วดูว่าสารเปลี่ยนไปอย่างไร</h1>
+<p class="lead">บทที่ 10 เคมีอินทรีย์ สร้างโมเลกุลแล้วเรียกชื่อ IUPAC เทียบจุดเดือดของแต่ละหมู่ฟังก์ชัน ทดสอบสารด้วยรีเอเจนต์ และทำเอสเทอร์กลิ่นผลไม้</p>
+<nav class="tabs" aria-label="เลือกการทดลอง"><button data-tab="build">สร้างโมเลกุลและเรียกชื่อ</button><button data-tab="props">จุดเดือดและการละลายน้ำ</button><button data-tab="tests">ทดสอบหมู่ฟังก์ชัน</button><button data-tab="ester">เอสเทอริฟิเคชัน</button></nav>
+
+<!-- 1. build and name -->
+<section data-panel="build" aria-labelledby="bTitle">
+  <div class="experiment-heading"><div><h2 id="bTitle">สร้างโมเลกุล แล้วอ่านชื่อ IUPAC</h2><p>เลือกจำนวนคาร์บอนในโซ่หลัก หมู่ฟังก์ชัน ตำแหน่ง และหมู่เมทิลที่แตกกิ่ง เลขสีเขียวบนโครงสร้างคือการนับเลขคาร์บอนที่ถูกต้อง</p></div></div>
+  <figure class="clip-fig"><video controls playsinline preload="none" poster="media/iupac-naming-poster.webp" width="1920" height="1080" aria-label="คลิป 30 วินาที เรียกชื่อ 4-methylpentan-2-ol: หาโซ่หลัก นับเลขจากปลายที่ใกล้หมู่ OH แล้วต่อชื่อ"><source src="media/iupac-naming.mp4" type="video/mp4"></video>
+    <figcaption>คลิป 30 วินาที: นับเลขคาร์บอนจากปลายไหน แล้วต่อชื่อ IUPAC อย่างไร</figcaption></figure>
+  <div class="controls">
+    <label class="control" for="bFam">หมู่ฟังก์ชัน<select id="bFam"></select></label>
+    <label class="control" for="bN"><span>คาร์บอนในโซ่หลัก <output id="bNOut">4</output></span><input id="bN" type="range" min="1" max="6" step="1" value="4"></label>
+    <label class="control" for="bPos">ตำแหน่งหมู่ฟังก์ชันหรือพันธะ<select id="bPos"></select></label>
+    <label class="control" for="bBr">หมู่เมทิล (−CH₃) ที่แตกกิ่ง<select id="bBr"></select></label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="bSvg" viewBox="0 0 600 300" role="img" aria-label="สูตรโครงสร้างแบบเส้นพันธะ"></svg><p class="caption">สูตรโครงสร้างแบบเส้นพันธะ: ปลายเส้นและมุมแต่ละมุมคือคาร์บอน 1 อะตอม ไม่เขียน H ที่ต่อกับคาร์บอน</p></div>
+    <div class="readout" role="status">
+      <p class="name-big" id="bName"></p><p class="name-common" id="bCommon"></p>
+      <dl><dt>สูตรโมเลกุล</dt><dd id="bMol"></dd><dt>สูตรโครงสร้างแบบย่อ</dt><dd id="bCond"></dd><dt>สูตรทั่วไป</dt><dd id="bGen"></dd></dl>
+      <p class="muted" id="bWhy" style="margin-top:14px"></p>
+      <h3 style="margin-top:18px">ไอโซเมอร์ (สูตรโมเลกุลเดียวกัน) ที่สร้างได้ในห้องนี้</h3>
+      <div class="chips" id="bIso"></div>
+      <p class="muted" id="bIsoNote" style="margin-top:8px"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. boiling point and solubility -->
+<section data-panel="props" hidden aria-labelledby="pTitle">
+  <div class="experiment-heading"><div><h2 id="pTitle">หมู่ฟังก์ชันไหนเดือดยากที่สุด?</h2><p>เทียบสารที่มีมวลโมเลกุลใกล้กัน หรือดูว่าโซ่คาร์บอนยาวขึ้นแล้วจุดเดือดและการละลายน้ำเปลี่ยนอย่างไร</p></div></div>
+  <div class="controls">
+    <label class="control" for="pMode">เปรียบเทียบ<select id="pMode"><option value="mass">หมู่ฟังก์ชันต่างกัน มวลโมเลกุลใกล้กัน (58–60)</option><option value="chain">ความยาวโซ่: แอลเคนกับแอลกอฮอล์</option></select></label>
+    <label class="control" for="pN" id="pNWrap" hidden><span>คาร์บอน <output id="pNOut">4</output></span><input id="pN" type="range" min="1" max="8" step="1" value="4"></label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="pSvg" viewBox="0 0 640 400" role="img" aria-label="กราฟจุดเดือด"></svg><p class="caption" id="pCap"></p></div>
+    <div class="readout" role="status" id="pRead"></div>
+  </div>
+</section>
+
+<!-- 3. tests -->
+<section data-panel="tests" hidden aria-labelledby="tTitle">
+  <div class="experiment-heading"><div><h2 id="tTitle">หยดรีเอเจนต์ แล้วดูการเปลี่ยนแปลง</h2><p>เลือกสารกับรีเอเจนต์ แล้วกด "หยดลงในหลอด" ผลที่ได้จะเติมลงในตารางด้านล่างให้เทียบกัน</p></div></div>
+  <div class="controls">
+    <label class="control" for="tSub">สารในหลอดทดลอง<select id="tSub"></select></label>
+    <label class="control" for="tRea">รีเอเจนต์<select id="tRea"></select></label>
+  </div>
+  <div class="acts"><button class="primary" id="tGo">หยดลงในหลอด</button><button id="tClear">ล้างตาราง</button></div>
+  <div class="bench">
+    <div class="visual"><svg id="tSvg" viewBox="40 0 560 390" role="img" aria-label="หลอดทดลอง"></svg></div>
+    <div class="readout" role="status"><p class="big" id="tObs">เลือกสารแล้วกดหยด</p><p class="eq" id="tEq"></p><p class="muted" id="tWhy"></p></div>
+  </div>
+  <table class="grid-tab" id="tGrid" aria-label="ตารางผลการทดสอบ"></table>
+</section>
+
+<!-- 4. esterification -->
+<section data-panel="ester" hidden aria-labelledby="eTitle">
+  <div class="experiment-heading"><div><h2 id="eTitle">กรด + แอลกอฮอล์ → เอสเทอร์ + น้ำ</h2><p>ใช้ H₂SO₄ เข้มข้นเป็นตัวเร่งและให้ความร้อน OH จากกรดรวมกับ H จากแอลกอฮอล์เป็นน้ำ ส่วนที่เหลือต่อกันเป็นเอสเทอร์</p></div></div>
+  <div class="controls">
+    <label class="control" for="eAcid">กรดคาร์บอกซิลิก<select id="eAcid"></select></label>
+    <label class="control" for="eAlc">แอลกอฮอล์<select id="eAlc"></select></label>
+    <label class="control" for="eMode">ปฏิกิริยา<select id="eMode"><option value="make">เอสเทอริฟิเคชัน (สร้างเอสเทอร์)</option><option value="acid">ไฮโดรลิซิสในกรด (ย้อนกลับ)</option><option value="base">ไฮโดรลิซิสใน NaOH (สะพอนิฟิเคชัน)</option></select></label>
+  </div>
+  <div class="acts"><button class="primary" id="eGo">ให้ความร้อน</button><button id="eReset">เริ่มใหม่</button></div>
+  <div class="bench">
+    <div class="visual"><svg id="eSvg" viewBox="20 20 540 240" role="img" aria-label="การรวมตัวของกรดและแอลกอฮอล์"></svg><p class="caption">สีเขียว = ส่วนที่มาจากกรด สีส้ม = ส่วนที่มาจากแอลกอฮอล์ ขีดเส้นใต้สีแดง = ส่วนที่ออกมาเป็นน้ำ</p></div>
+    <div class="readout" role="status"><p class="eqn" id="eEq"></p><dl id="eDl"></dl><p id="eSmell"></p><p class="muted" id="eWhy" style="margin-top:12px"></p></div>
+  </div>
+</section>
+
+<section class="note-box"><p>ข้อมูลจุดเดือดและการละลายน้ำเป็นค่าที่ความดัน 1 atm จากตารางข้อมูลมาตรฐาน ห้องสร้างโมเลกุลรองรับโซ่หลักไม่เกิน 6 คาร์บอน หมู่ฟังก์ชันเดียว และหมู่เมทิลได้ 1 หมู่ ผลการทดสอบเป็นไปตามตารางสรุปในชีทบทที่ 10</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="lab-shell.js"></script>
+<script src="organic.js"></script>
+</body></html>

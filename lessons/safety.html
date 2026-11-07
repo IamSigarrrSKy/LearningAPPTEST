@@ -1,0 +1,90 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลองความปลอดภัยและการวัด ChemLab</title>
+<meta name="description" content="ห้องทดลองบทที่ 1: สัญลักษณ์ GHS อ่านค่าปริมาตรจากกระบอกตวงและบิวเรต ความคลาดเคลื่อนจากมุมมอง และเลขนัยสำคัญ">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+  .ghs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:14px 0}
+  .ghs-grid button{display:grid;justify-items:center;gap:6px;padding:10px 6px;min-height:0}
+  .ghs-grid svg{width:76px;height:76px}
+  .ghs-grid small{font-size:12px;line-height:1.35;color:var(--ink)}
+  .ghs-grid.hide-names small{visibility:hidden}
+  .ghs-grid button.right{border-color:#1f6f61;box-shadow:0 0 0 2px #1f6f61}
+  .ghs-grid button.wrong{border-color:var(--coral);opacity:.55}
+  .ask{padding:16px 0 8px;border-bottom:1px solid var(--line)}
+  .ask .big{font:500 clamp(22px,2.6vw,28px)/1.35 var(--font-head);margin:0;color:var(--ink)}
+  .answer-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 14px}
+  .answer-row input{font:500 18px var(--font-mono);width:140px;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+  .sf input{font:500 18px var(--font-mono);width:100%;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin-top:6px}
+  .digits{font:500 clamp(26px,4vw,40px)/1.4 var(--font-mono);letter-spacing:.04em;word-break:break-all;margin:8px 0}
+  .digits .s{color:#1f6f61;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+  .digits .n{color:var(--muted)}
+  .digits .q{color:#d9822b}
+  #rSvg text{font:500 15px var(--font-mono)}
+</style>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>ก่อนเริ่มทดลอง: อ่านฉลาก อ่านขีด และจดตัวเลขให้ถูก</h1>
+<p class="lead">บทที่ 1 ความปลอดภัยและทักษะในปฏิบัติการเคมี ฝึกจับคู่สารกับสัญลักษณ์ GHS อ่านค่าปริมาตรจากสเกล และใช้เลขนัยสำคัญ</p>
+<nav class="tabs" aria-label="เลือกการทดลอง"><button data-tab="ghs">สัญลักษณ์ GHS</button><button data-tab="read">อ่านค่าปริมาตร</button><button data-tab="sigfig">เลขนัยสำคัญ</button></nav>
+
+<!-- 1. GHS -->
+<section data-panel="ghs" aria-labelledby="gTitle">
+  <div class="experiment-heading"><div><h2 id="gTitle">ขวดนี้ต้องติดสัญลักษณ์อะไร?</h2><p>สัญลักษณ์ GHS เป็นรูปในกรอบสี่เหลี่ยมข้าวหลามตัดขอบสีแดง แต่ละรูปบอกอันตรายต่างกัน สารหนึ่งชนิดอาจมีได้หลายรูป</p></div></div>
+  <label class="check"><input id="gHide" type="checkbox"> ซ่อนชื่อสัญลักษณ์ (โหมดท้าทาย)</label>
+  <div class="ask"><p class="muted" id="gCount"></p><p class="big" id="gQ"></p></div>
+  <div class="ghs-grid" id="gGrid" role="group" aria-label="สัญลักษณ์ GHS ทั้ง 9 แบบ"></div>
+  <div class="acts"><button class="primary" id="gNext" hidden>ข้อต่อไป</button></div>
+  <div class="readout" role="status" id="gRead"></div>
+</section>
+
+<!-- 2. reading a scale -->
+<section data-panel="read" hidden aria-labelledby="rTitle">
+  <div class="experiment-heading"><div><h2 id="rTitle">อ่านที่ท้องโค้งของเมนิสคัส แล้วประมาณอีก 1 ตำแหน่ง</h2><p>ค่าที่บันทึกต้องละเอียดกว่าขีดสเกลที่เล็กที่สุด 1 ตำแหน่ง ลองเลื่อนระดับสายตาแล้วดูว่าค่าที่เห็นเปลี่ยนไปอย่างไร</p></div></div>
+  <figure class="clip-fig"><video controls playsinline preload="none" poster="media/parallax-reading-poster.webp" width="1920" height="1080" aria-label="คลิป 30 วินาที อ่านปริมาตรในกระบอกตวงเมื่อตาอยู่ระดับเดียวกับท้องโค้ง สูงกว่า และต่ำกว่า"><source src="media/parallax-reading.mp4" type="video/mp4"></video>
+    <figcaption>คลิป 30 วินาที: มองจากด้านบนหรือด้านล่าง ค่าที่อ่านได้เปลี่ยนไปอย่างไร</figcaption></figure>
+  <div class="controls">
+    <label class="control" for="rInst">อุปกรณ์<select id="rInst"><option value="cyl50">กระบอกตวง 50 mL (ขีดละ 1 mL)</option><option value="cyl10">กระบอกตวง 10 mL (ขีดละ 0.1 mL)</option><option value="bur">บิวเรต 50 mL (ขีดละ 0.1 mL)</option></select></label>
+    <label class="control" for="rEye"><span>ระดับสายตา <output id="rEyeOut">ระดับเดียวกับท้องโค้ง</output></span><input id="rEye" type="range" min="-1" max="1" step=".05" value="0"></label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="rSvg" viewBox="0 0 640 420" role="img" aria-label="สเกลของอุปกรณ์วัดปริมาตรและเมนิสคัส"></svg><p class="caption">ภาพขยายเฉพาะช่วงรอบผิวของเหลว เส้นประคือแนวสายตา</p></div>
+    <div class="readout" role="status">
+      <p>อ่านได้กี่ mL?</p>
+      <div class="answer-row"><input id="rIn" inputmode="decimal" autocomplete="off" aria-label="ค่าที่อ่านได้ (mL)"><span>mL</span><button class="primary" id="rCheck">ตรวจ</button><button id="rNew">ข้อใหม่</button></div>
+      <p id="rFb"></p><p class="muted" id="rWhy"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. significant figures -->
+<section data-panel="sigfig" hidden aria-labelledby="sTitle">
+  <div class="experiment-heading"><div><h2 id="sTitle">ตัวเลขไหนนับเป็นเลขนัยสำคัญ?</h2><p>พิมพ์ตัวเลขที่วัดได้ ขีดเส้นใต้สีเขียวคือหลักที่นับ สีเทาคือศูนย์ที่ไม่นับ แล้วลองคำนวณ 2 ค่าเพื่อดูว่าคำตอบควรเหลือกี่หลัก</p></div></div>
+  <div class="bench">
+    <div class="sf">
+      <label class="control" for="sNum">ตัวเลข (เช่น 0.004050, 12.300, 6.022e23)<input id="sNum" value="0.004050" autocomplete="off"></label>
+      <p class="digits" id="sDigits"></p><p id="sCount" class="big"></p><p class="muted" id="sWhy"></p>
+      <label class="control" for="sRound" style="margin-top:16px"><span>ปัดให้เหลือ <output id="sRoundOut">3</output> ตัว</span><input id="sRound" type="range" min="1" max="6" step="1" value="3"></label>
+      <p class="eq" id="sRounded"></p>
+    </div>
+    <div class="sf">
+      <h3>คำนวณกับค่าที่วัดได้</h3>
+      <div class="controls" style="margin-top:0">
+        <label class="control" for="cA">ค่าที่ 1<input id="cA" value="12.52" autocomplete="off"></label>
+        <label class="control" for="cOp">เครื่องหมาย<select id="cOp"><option value="+">+</option><option value="-">−</option><option value="*" selected>×</option><option value="/">÷</option></select></label>
+        <label class="control" for="cB">ค่าที่ 2<input id="cB" value="3.1" autocomplete="off"></label>
+      </div>
+      <label class="check"><input id="cExact" type="checkbox"> ค่าที่ 1 เป็นจำนวนนับหรือค่านิยาม เช่น 3 ขวด, 1 m = 100 cm</label>
+      <div class="readout" role="status" id="cRead"></div>
+    </div>
+  </div>
+</section>
+
+<section class="note-box"><p>สัญลักษณ์ในห้องนี้วาดอย่างง่ายเพื่อการเรียน ฉลากจริงใช้รูปมาตรฐาน GHS ของสหประชาชาติ การปัดตัวเลขใช้หลักเดียวกับชีท: ถ้าตัวที่ตัดทิ้งเป็น 5 พอดี ดูตัวหน้า เลขคี่ปัดขึ้น เลขคู่ตัดทิ้ง</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="lab-shell.js"></script>
+<script src="safety.js"></script>
+</body></html>

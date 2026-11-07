@@ -1,0 +1,95 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลองอัตราการเกิดปฏิกิริยา ChemLab</title>
+<meta name="description" content="ห้องทดลองอัตราการเกิดปฏิกิริยาเคมี: ทฤษฎีการชน การกระจายพลังงาน พลังงานก่อกัมมันต์ ตัวเร่ง และการวัดอัตรา">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+  #collideCanvas{aspect-ratio:16/10;border:1.5px solid var(--line);border-radius:12px;background:var(--bg)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);margin-top:8px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+</style>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>ทำไมบางปฏิกิริยาเร็ว บางปฏิกิริยาช้า?</h1>
+<p class="lead">บทที่ 6 อัตราการเกิดปฏิกิริยาเคมี ปฏิกิริยาเกิดเมื่ออนุภาคชนกันด้วยพลังงานมากพอและทิศทางเหมาะสม ลองปรับปัจจัยแล้วดูว่าการชนที่ได้ผลเปลี่ยนไปอย่างไร</p>
+<nav class="tabs" aria-label="เลือกการทดลอง"><button data-tab="collide">ทฤษฎีการชน</button><button data-tab="energy">พลังงานของอนุภาค</button><button data-tab="profile">พลังงานก่อกัมมันต์และตัวเร่ง</button><button data-tab="measure">วัดอัตราจากแก๊สที่เกิด</button></nav>
+
+<!-- 1. collisions -->
+<section data-panel="collide" aria-labelledby="cTitle">
+  <div class="experiment-heading"><div><h2 id="cTitle">ชนกันแล้วเกิดปฏิกิริยาทุกครั้งไหม?</h2><p>A + B → C จุดสีเขียวคือ A จุดสีส้มคือ B ชนกันแรงพอจึงกลายเป็น C (สีม่วง)</p></div></div>
+  <div class="controls">
+    <label class="control" for="cTemp"><span>อุณหภูมิ <output id="cTempOut">300 K</output></span><input id="cTemp" type="range" min="250" max="500" step="10" value="300"><small>อนุภาคเคลื่อนที่เร็วขึ้นและแรงขึ้น</small></label>
+    <label class="control" for="cConc"><span>จำนวน A และ B (ความเข้มข้น) <output id="cConcOut">20 + 20</output></span><input id="cConc" type="range" min="6" max="40" step="2" value="20"><small>อนุภาคมากขึ้นในพื้นที่เท่าเดิม</small></label>
+    <label class="check"><input id="cCat" type="checkbox"> ใส่ตัวเร่งปฏิกิริยา (ลดพลังงานก่อกัมมันต์)</label>
+  </div>
+  <div class="acts"><button id="cReset">เริ่มใหม่</button><button id="cPause">หยุดชั่วคราว</button></div>
+  <div class="bench">
+    <div class="visual"><canvas id="collideCanvas" width="800" height="500" role="img" aria-label="กล่องอนุภาค A และ B ชนกัน"></canvas>
+      <div class="legend"><span><i style="background:#2f8a74"></i>A</span><span><i style="background:#d9822b"></i>B</span><span><i style="background:#7a62c4"></i>C (ผลิตภัณฑ์)</span><span>วงกระพริบสีแดง = ชนกันแต่พลังงานไม่พอ</span></div></div>
+    <div class="readout" role="status"><dl>
+      <dt>ชนกันระหว่าง A กับ B</dt><dd id="cHits">0 ครั้ง/วินาที</dd>
+      <dt>ชนแล้วเกิดปฏิกิริยา</dt><dd id="cGood">0 ครั้ง/วินาที</dd>
+      <dt>สัดส่วนที่ได้ผล</dt><dd id="cFrac">0%</dd>
+      <dt>เหลือ A</dt><dd id="cLeftA">20</dd><dt>เกิด C แล้ว</dt><dd id="cMadeC">0</dd></dl>
+      <p class="muted" id="cNote" style="margin-top:14px"></p></div>
+  </div>
+</section>
+
+<!-- 2. energy distribution -->
+<section data-panel="energy" hidden aria-labelledby="eTitle">
+  <div class="experiment-heading"><div><h2 id="eTitle">อนุภาคที่มีพลังงานพอ มีกี่เปอร์เซ็นต์?</h2><p>กราฟการกระจายพลังงานของอนุภาค พื้นที่ทางขวาของเส้น Eₐ คืออนุภาคที่ชนแล้วเกิดปฏิกิริยาได้</p></div></div>
+  <figure class="clip-fig"><video controls playsinline preload="none" poster="media/rate-fridge-poster.webp" width="1920" height="1080" aria-label="คลิป 30 วินาที ทำไมอาหารในตู้เย็นเสียช้า: กราฟพลังงานของอนุภาคที่ 27, 37 และ 5 องศาเซลเซียส"><source src="media/rate-fridge.mp4" type="video/mp4"></video>
+    <figcaption>คลิป 30 วินาที: ทำไมอาหารในตู้เย็นเสียช้า ดูส่วนปลายของกราฟที่มีพลังงานถึง E<sub>a</sub></figcaption></figure>
+  <div class="controls">
+    <label class="control" for="eTemp"><span>อุณหภูมิ <output id="eTempOut">300 K</output></span><input id="eTemp" type="range" min="250" max="500" step="5" value="300"></label>
+    <label class="control" for="eEa"><span>พลังงานก่อกัมมันต์ Eₐ <output id="eEaOut">50 kJ/mol</output></span><input id="eEa" type="range" min="20" max="90" step="1" value="50"></label>
+    <label class="check"><input id="eCat" type="checkbox"> ใส่ตัวเร่ง (Eₐ ลดลง 40%)</label>
+    <label class="check"><input id="eRef" type="checkbox" checked> แสดงกราฟที่ 300 K ไว้เทียบ</label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="eGraph" viewBox="0 0 640 360" role="img" aria-label="กราฟการกระจายพลังงานของอนุภาค"></svg><p class="caption">แกนนอนคือพลังงานจลน์ แกนตั้งคือจำนวนอนุภาค พื้นที่ใต้กราฟทั้งหมดเท่ากันทุกอุณหภูมิ (จำนวนอนุภาคเท่าเดิม)</p></div>
+    <div class="readout" role="status"><dl>
+      <dt>อนุภาคที่มีพลังงาน ≥ Eₐ</dt><dd id="eFrac"></dd>
+      <dt>เทียบกับที่ 300 K</dt><dd id="eRatio"></dd>
+      <dt>Eₐ ที่ใช้</dt><dd id="eEaUsed"></dd></dl>
+      <p class="muted" id="eNote" style="margin-top:14px"></p></div>
+  </div>
+</section>
+
+<!-- 3. energy profile -->
+<section data-panel="profile" hidden aria-labelledby="pTitle">
+  <div class="experiment-heading"><div><h2 id="pTitle">ต้องข้ามเนินพลังงานก่อน</h2><p>สารตั้งต้นต้องได้พลังงานอย่างน้อยเท่า Eₐ จึงผ่านสารเชิงซ้อนกัมมันต์ไปเป็นผลิตภัณฑ์ ตัวเร่งเปิดเส้นทางใหม่ที่เนินต่ำกว่า</p></div></div>
+  <div class="controls">
+    <label class="control" for="pEa"><span>Eₐ ไปข้างหน้า <output id="pEaOut">80 kJ/mol</output></span><input id="pEa" type="range" min="20" max="160" step="5" value="80"></label>
+    <label class="control" for="pDH"><span>ΔH ของปฏิกิริยา <output id="pDHOut">−60 kJ/mol</output></span><input id="pDH" type="range" min="-120" max="120" step="5" value="-60"></label>
+    <label class="check"><input id="pCat" type="checkbox" checked> แสดงเส้นทางเมื่อมีตัวเร่ง</label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="pGraph" viewBox="0 0 640 380" role="img" aria-label="แผนภาพพลังงานของปฏิกิริยา"></svg></div>
+    <div class="readout" role="status" id="pRead"></div>
+  </div>
+</section>
+
+<!-- 4. measure the rate -->
+<section data-panel="measure" hidden aria-labelledby="mTitle">
+  <div class="experiment-heading"><div><h2 id="mTitle">วัดอัตราจากปริมาตรแก๊ส H₂</h2><p>Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g) ใช้ Mg 0.050 g กับ HCl มากเกินพอ เก็บแก๊สในกระบอกฉีดยา</p></div></div>
+  <div class="controls">
+    <label class="control" for="mConc"><span>ความเข้มข้น HCl <output id="mConcOut">1.0 mol/L</output></span><input id="mConc" type="range" min=".5" max="2" step=".1" value="1"></label>
+    <label class="control" for="mTemp"><span>อุณหภูมิ <output id="mTempOut">25 °C</output></span><input id="mTemp" type="range" min="15" max="55" step="5" value="25"></label>
+    <label class="control" for="mForm">รูปของ Mg<select id="mForm"><option value="1">แถบ Mg (พื้นที่ผิวน้อย)</option><option value="4">ผง Mg (พื้นที่ผิวมาก)</option></select></label>
+    <label class="control" for="mTime"><span>อ่านค่าที่เวลา <output id="mTimeOut">20 s</output></span><input id="mTime" type="range" min="2" max="120" step="1" value="20"></label>
+  </div>
+  <div class="bench">
+    <div class="visual"><svg id="mGraph" viewBox="0 0 640 380" role="img" aria-label="กราฟปริมาตรแก๊สกับเวลา"></svg><p class="caption">เส้นประสีเทาคือการทดลองอ้างอิง (HCl 1.0 mol/L, 25 °C, แถบ Mg) เส้นสีแดงคือเส้นสัมผัส ความชันคืออัตราขณะนั้น</p></div>
+    <div class="readout" role="status" id="mRead"></div>
+  </div>
+</section>
+
+<section class="note-box"><p>ค่าในห้องนี้เป็นแบบจำลองสอนแนวคิด: การชนในกล่องเป็นสองมิติ กราฟพลังงานใช้การกระจายแบบแมกซ์เวลล์-โบลต์ซมันน์ และกราฟแก๊สใช้ V = V<sub>max</sub>(1 − e<sup>−kt</sup>) โดย k ขึ้นกับความเข้มข้น อุณหภูมิ (Eₐ = 50 kJ/mol) และพื้นที่ผิว</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="lab-shell.js"></script>
+<script src="rate.js"></script>
+</body></html>

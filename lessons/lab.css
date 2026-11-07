@@ -1,0 +1,60 @@
+/* Shared layout for ChemLab lab pages. Load it before chemlab-theme.css (tokens, header, buttons, dark mode):
+   <link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+   Page parts: header > .brand + .back; main > h1 + .lead + nav.tabs > button[data-tab];
+   section[data-panel] > .experiment-heading, .controls > label.control, .bench > .visual + .readout; .note-box; footer. */
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--font-body)}
+[hidden]{display:none!important}
+header,main,footer{max-width:1200px;margin:auto;padding:24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}
+h1{font:500 clamp(28px,3.6vw,42px)/1.35 var(--font-head);margin:8px 0 8px}
+h2{font:500 clamp(21px,2.4vw,28px)/1.4 var(--font-head);margin:0 0 6px}
+h3{font:500 17px/1.4 var(--font-head);margin:0 0 10px}
+p{color:var(--muted);margin:6px 0 14px}
+.lead{margin-bottom:24px}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:12px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.tabs button{flex:1 1 0;min-width:140px}
+button,select{font:500 14px var(--font-body);min-height:44px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:var(--ink);background:var(--surface);cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+button.primary{background:#c4432b;border-color:#c4432b;color:#fffdf8}
+button.primary:hover{filter:brightness(1.08);color:#fffdf8}
+button[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.experiment-heading{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:end;margin-bottom:8px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 24px;margin:16px 0 24px;padding:20px 0;border-block:1px solid var(--line)}
+.control{display:block;min-width:0;font-size:14px;color:var(--ink)}
+.control>span{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:4px 12px}
+.control output{font:500 14px var(--font-mono);font-variant-numeric:tabular-nums}
+.control small{display:block;color:var(--muted);font-size:12px}
+.control select{display:block;width:100%;margin-top:6px}
+input[type=range]{width:100%;height:28px;margin:10px 0 2px;accent-color:#c4432b;touch-action:pan-y}
+.check{display:flex;align-items:center;gap:10px;font-size:14px;min-height:40px}
+.check input{width:20px;height:20px;accent-color:#c4432b}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.bench{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:start}
+.visual{min-width:0;background:var(--surface);border-radius:16px;padding:20px}
+.visual svg,.visual canvas{display:block;width:100%;height:auto}
+.visual svg text{font:13px var(--font-body);fill:var(--ink)}
+.caption{font-size:12px;margin:8px 0 0}
+.readout{min-width:0;font-size:15px}
+.readout p{color:var(--ink);margin:0 0 8px}
+.readout .muted,.muted{color:var(--muted);font-size:14px}
+.readout .eq,.eq{font-family:var(--font-mono);font-size:14px}
+.readout .big{font-size:18px;margin-bottom:14px}
+.readout dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px}
+.readout dt{color:var(--muted)}
+.readout dd{margin:0;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.ok{color:#1f6f61;font-weight:500}
+.bad{color:var(--coral);font-weight:500}
+.clip-fig{margin:0 0 24px;max-width:760px}
+.clip-fig video{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.clip-fig figcaption{margin-top:8px;font-size:14px;color:var(--muted)}
+.note-box{margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.note-box p{font-size:14px;margin:0}
+footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:24px}
+@media (max-width:760px){
+  header,main,footer{padding:18px}
+  .experiment-heading,.bench{grid-template-columns:minmax(0,1fr)}
+  .tabs button{flex:1 1 100%;text-align:left}
+  .visual{padding:14px}
+}

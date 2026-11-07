@@ -1,0 +1,72 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลองพอลิเมอร์ ChemLab</title>
+<meta name="description" content="ห้องทดลองพอลิเมอร์: ปฏิกิริยาการเกิดพอลิเมอร์แบบเติมและแบบควบแน่น มวลโมเลกุล โครงสร้างแบบเส้น กิ่ง ร่างแห เทอร์มอพลาสติกกับเทอร์มอเซต และรหัสรีไซเคิล">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+  #cSvg text{font:500 17px var(--font-mono)}
+  #cSvg g.mv{transition:transform 1.1s cubic-bezier(.5,0,.2,1),opacity .6s}
+  #sCanvas{aspect-ratio:16/10;border-radius:12px;background:var(--bg)}
+  .codes{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:12px 0}
+  .codes button{display:grid;place-items:center;gap:2px;padding:8px 4px;min-height:72px}
+  .codes svg{width:36px;height:34px}
+  .codes small{font:500 12px var(--font-mono)}
+  .item-card{padding:18px 0 10px;border-bottom:1px solid var(--line)}
+  .item-card .big{font:500 clamp(22px,2.6vw,28px)/1.35 var(--font-head);margin:0 0 4px;color:var(--ink)}
+  .codes button.right{border-color:#1f6f61;box-shadow:0 0 0 2px #1f6f61}
+  .codes button.wrong{border-color:var(--coral);opacity:.6}
+  @media (max-width:760px){.codes{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  @media (prefers-reduced-motion:reduce){#cSvg g.mv{transition:none}}
+</style>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>ต่อโมเลกุลเล็กๆ เป็นสายยาว แล้วได้พลาสติกแบบไหน</h1>
+<p class="lead">บทที่ 11 พอลิเมอร์ ต่อมอนอเมอร์ด้วยปฏิกิริยาแบบเติมและแบบควบแน่น ดูว่าโครงสร้างสายทำให้พลาสติกหลอมได้หรือไม่ แล้วลองแยกขยะตามรหัสรีไซเคิล</p>
+<nav class="tabs" aria-label="เลือกการทดลอง"><button data-tab="chain">ต่อมอนอเมอร์เป็นพอลิเมอร์</button><button data-tab="structure">โครงสร้างกับความร้อน</button><button data-tab="recycle">รหัสรีไซเคิล</button></nav>
+
+<!-- 1. polymerisation -->
+<section data-panel="chain" aria-labelledby="cTitle">
+  <div class="experiment-heading"><div><h2 id="cTitle">แบบเติม หรือ แบบควบแน่น?</h2><p>แบบเติม: พันธะคู่ C=C เปิดออกแล้วต่อกันโดยไม่มีอะไรหลุดออกมา แบบควบแน่น: มอนอเมอร์มีหมู่ฟังก์ชัน 2 ปลาย ต่อกันแล้วได้โมเลกุลเล็ก เช่น H₂O ออกมาทุกจุดที่ต่อ</p></div></div>
+  <figure class="clip-fig"><video controls playsinline preload="none" poster="media/polymer-addition-condensation-poster.webp" width="1920" height="1080" aria-label="คลิป 30 วินาที เอทิลีนต่อกันแบบเติม และกรดกับเอมีนต่อกันแบบควบแน่นโดยมีน้ำหลุดออกมา"><source src="media/polymer-addition-condensation.mp4" type="video/mp4"></video>
+    <figcaption>คลิป 30 วินาที: แบบเติมไม่มีอะไรหลุดออก แบบควบแน่นได้น้ำออกมาทุกจุดที่ต่อ</figcaption></figure>
+  <div class="controls">
+    <label class="control" for="cPoly">พอลิเมอร์<select id="cPoly"></select></label>
+    <label class="control" for="cN"><span>ระดับการเกิดพอลิเมอร์ (n) <output id="cNOut">1000</output></span><input id="cN" type="range" min="2" max="4.3" step=".01" value="3"><small>จำนวนหน่วยซ้ำในหนึ่งสาย</small></label>
+  </div>
+  <div class="acts"><button class="primary" id="cGo">ต่อกันเป็นสาย</button><button id="cReset">แยกเป็นมอนอเมอร์</button></div>
+  <div class="bench">
+    <div class="visual"><svg id="cSvg" viewBox="0 0 640 300" role="img" aria-label="มอนอเมอร์ต่อกันเป็นพอลิเมอร์"></svg><p class="caption" id="cCap"></p></div>
+    <div class="readout" role="status"><p class="big" id="cName"></p><dl id="cDl"></dl><p class="muted" id="cWhy" style="margin-top:14px"></p></div>
+  </div>
+</section>
+
+<!-- 2. structure and heat -->
+<section data-panel="structure" hidden aria-labelledby="sTitle">
+  <div class="experiment-heading"><div><h2 id="sTitle">ให้ความร้อน แล้วพลาสติกหลอมหรือไหม้?</h2><p>สายพอลิเมอร์ที่ไม่ได้เชื่อมกันจะเลื่อนผ่านกันได้เมื่อร้อน จึงหลอมและขึ้นรูปใหม่ได้ (เทอร์มอพลาสติก) ส่วนสายที่เชื่อมขวางกันเป็นร่างแหเลื่อนไม่ได้ (เทอร์มอเซต)</p></div></div>
+  <div class="controls">
+    <label class="control" for="sType">โครงสร้างของสาย<select id="sType"><option value="linear">แบบเส้น (เช่น HDPE)</option><option value="branch">แบบกิ่ง (เช่น LDPE)</option><option value="cross">แบบร่างแห เชื่อมขวาง (เช่น เมลามีน)</option></select></label>
+    <label class="control" for="sTemp"><span>อุณหภูมิ <output id="sTempOut">25 °C</output></span><input id="sTemp" type="range" min="25" max="320" step="5" value="25"></label>
+  </div>
+  <div class="bench">
+    <div class="visual"><canvas id="sCanvas" width="800" height="500" role="img" aria-label="สายพอลิเมอร์เมื่อได้รับความร้อน"></canvas><p class="caption">เส้นสีแดงคือพันธะโคเวเลนต์ที่เชื่อมระหว่างสาย ภาพเป็นแบบจำลองแนวคิด ไม่ใช่ขนาดจริง</p></div>
+    <div class="readout" role="status" id="sRead"></div>
+  </div>
+</section>
+
+<!-- 3. recycling codes -->
+<section data-panel="recycle" hidden aria-labelledby="rTitle">
+  <div class="experiment-heading"><div><h2 id="rTitle">ของชิ้นนี้ทำจากพลาสติกรหัสอะไร?</h2><p>รหัสในสามเหลี่ยมใต้ภาชนะบอกชนิดพลาสติก เพื่อแยกไปรีไซเคิลให้ถูกประเภท ทั้ง 7 รหัสเป็นเทอร์มอพลาสติก จึงหลอมขึ้นรูปใหม่ได้</p></div></div>
+  <div class="item-card"><p class="muted" id="rCount"></p><p class="big" id="rItem"></p><p class="muted" id="rHint"></p></div>
+  <div class="codes" id="rCodes" role="group" aria-label="เลือกรหัสรีไซเคิล"></div>
+  <div class="acts"><button id="rNext" class="primary">ชิ้นต่อไป</button></div>
+  <div class="readout" role="status" id="rRead"></div>
+</section>
+
+<section class="note-box"><p>มวลโมเลกุลคิดจากมวลของหน่วยซ้ำ × n โดยไม่นับหมู่ที่ปลายสาย ซึ่งมีผลน้อยมากเมื่อสายยาว อุณหภูมิหลอมเหลวของ HDPE และ LDPE เป็นค่าโดยประมาณ</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="lab-shell.js"></script>
+<script src="polymer.js"></script>
+</body></html>
