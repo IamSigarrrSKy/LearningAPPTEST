@@ -1,0 +1,3326 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ห้องทดลองบทที่ 4 ปริมาณสารสัมพันธ์ ChemLab</title>
+  <link rel="stylesheet" href="exp-tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f5f2eb;
+      --bg-card: #ffffff;
+      --bg-subtle: #faf8f4;
+      --border-warm: #e4dfd5;
+      --border-strong: #d2cbc0;
+      --text-main: #1d232a;
+      --text-muted: #6e6a61;
+      --text-light: #948f84;
+      --accent-terra: #c24d2c;
+      --accent-terra-hover: #a93f21;
+      --accent-terra-soft: #fbece7;
+      --accent-teal: #1f6f61;
+      --accent-teal-soft: #e6f3f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input[type="range"].exp-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #e5e0d6;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+      margin: 8px 0 4px 0;
+    }
+
+    input[type="range"].exp-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-terra);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+    }
+
+    input[type="range"].exp-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      background: var(--accent-terra-hover);
+    }
+
+    input[type="range"].exp-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-terra);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    .exp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(29, 35, 42, 0.025);
+    }
+
+    .formula-sidebar {
+      border-left: 3px solid var(--accent-terra);
+      padding-left: 16px;
+    }
+
+    .btn-terra {
+      background-color: var(--accent-terra);
+      color: #ffffff;
+      border: 1px solid var(--accent-terra);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-terra:hover {
+      background-color: var(--accent-terra-hover);
+    }
+
+    .btn-teal {
+      background-color: var(--accent-teal);
+      color: #ffffff;
+      border: 1px solid var(--accent-teal);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-teal:hover {
+      background-color: #18584d;
+    }
+
+    .btn-outline-warm {
+      background-color: #ffffff;
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-outline-warm:hover {
+      background-color: var(--bg-subtle);
+      border-color: #b8b0a2;
+    }
+
+    .btn-outline-warm.active-sub {
+      background-color: var(--accent-terra-soft);
+      border-color: var(--accent-terra);
+      color: var(--accent-terra);
+      font-weight: 700;
+    }
+
+    .tab-pill {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-pill.active {
+      background-color: var(--accent-terra);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(194, 77, 44, 0.22);
+    }
+
+    .tab-pill:not(.active) {
+      background-color: #ffffff;
+      color: var(--text-muted);
+      border-color: var(--border-warm);
+    }
+
+    .tab-pill:not(.active):hover {
+      color: var(--text-main);
+      background-color: var(--bg-subtle);
+    }
+
+    .step-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.73rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .select-warm {
+      background-color: #faf8f4;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.86rem;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <link rel="stylesheet" href="exp-theme.css">
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-30 bg-[#f5f2eb]/95 backdrop-blur border-b border-[#e4dfd5]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a class="lab-brand" href="../index.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 4 ปริมาณสารสัมพันธ์</span>
+        </div>
+        <button id="btnOpenConstModal" class="md:hidden btn-outline-warm !py-1.5 !px-3 !text-xs">ค่าคงที่</button>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="lab-links"><a href="../ebook/shelf.html#read=4">อ่าน e-book บทที่ 4</a><a href="../index.html#ch=4">ทำโจทย์บทที่ 4</a></div>
+      <nav class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" aria-label="เลือกห้องทดลอง">
+        <button data-tab="lab1" class="tab-pill active">01 นับโมล & อะตอมย่อย</button>
+        <button data-tab="lab2" class="tab-pill">02 สารละลาย & จุดเดือด</button>
+        <button data-tab="lab3" class="tab-pill">03 เจือจาง · ตักแบ่ง · ผสม</button>
+        <button data-tab="lab4" class="tab-pill">04 ปฏิกิริยา & สารกำหนดปริมาณ</button>
+        <button data-tab="sheet" class="tab-pill">ชีทสรุปเนื้อหา</button>
+        <button data-tab="quiz" class="tab-pill">โจทย์ฝึกหัด & A-Level</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+
+    <!-- ===================================================================
+         LAB 1: การนับโมล โมเลกุล อะตอมย่อย & สะพานโมล (NO GRAPHS!)
+         =================================================================== -->
+    <section id="view_lab1" class="space-y-6">
+      <!-- Title Banner -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 1 · มวลอะตอม มวลโมเลกุล และสะพานโมล</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            นับโมเลกุล แยกอะตอมย่อย แล้วแปลงผ่านสะพานโมลอย่างไร?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            ลองกดเพิ่มโมเลกุล แยกพันธะเพื่อนับอะตอมแต่ละธาตุ และดูความเชื่อมโยงระหว่าง ตาชั่ง (g) ↔ โมล (n) ↔ ลูกโป่งแก๊สที่ STP
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btnOpenConstDesktop" class="btn-outline-warm !py-1.5 !px-3 !text-xs">ดูมวลอะตอม & ค่าคงที่</button>
+        </div>
+      </div>
+
+      <!-- Top Control & Formula Summary Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-4 py-1">
+          <div class="formula-sidebar">
+            <div class="text-xs text-[#6e6a61] mb-1">หัวใจของการนับสารเคมี</div>
+            <div class="text-xl sm:text-2xl font-bold font-mono-num text-[#1d232a] mb-1">
+              n = g/MW = N/Nₐ = V/22.4
+            </div>
+            <div class="text-xs font-mono-num font-semibold text-[#1f6f61] mb-2">
+              1 mol = 6.02×10²³ อนุภาค · 1 amu = 1.66×10⁻²⁴ g
+            </div>
+            <div class="text-xs text-[#6e6a61] leading-relaxed">
+              อัตราส่วนเลขห้อยในสูตรเคมี ใช้ได้ทั้งการนับเป็น <b>"โมเลกุลเดี่ยว"</b> และการนับเป็น <b>"โมล"</b> เช่น H₂O 1 โมล มี H 2 โมล และ O 1 โมลเสมอ
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 exp-card p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+            <div>
+              <label for="l1_molSelect" class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกสารเคมีที่ต้องการนำมาทดลองนับ:</label>
+              <select id="l1_molSelect" class="select-warm w-full font-semibold">
+                <option value="0">H₂O (น้ำ · MW = 18 1 โมเลกุลมี 2 H + 1 O)</option>
+                <option value="1">NH₃ (แอมโมเนีย · MW = 17 1 โมเลกุลมี 1 N + 3 H)</option>
+                <option value="2">CO₂ (คาร์บอนไดออกไซด์ · MW = 44 1 C + 2 O)</option>
+                <option value="3">CH₄ (มีเทน · MW = 16 1 C + 4 H)</option>
+                <option value="4">H₂SO₄ (กรดซัลฟิวริก · MW = 98 2 H + 1 S + 4 O)</option>
+              </select>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-semibold text-[#1d232a]">
+                <span>จำนวนชุดที่ตักมาทดลอง (โมเลกุล หรือ โมล)</span>
+                <span id="l1_countLabel" class="font-mono-num text-[#c24d2c] font-bold">3 โมเลกุล (และเปรียบเทียบ 3.0 mol)</span>
+              </div>
+              <input type="range" id="l1_countSlider" class="exp-slider" min="1" max="8" step="1" value="3">
+              <div class="flex justify-between text-[11px] font-mono-num text-[#6e6a61]">
+                <span>1 ชุด</span>
+                <span>5 ชุด</span>
+                <span>8 ชุด</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons for Lab 1 -->
+          <div class="border-t border-[#ece8df] mt-4 pt-3.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <button id="l1_btnAddMol" class="btn-outline-warm !py-1.5 !px-3 !text-xs">+ เพิ่ม 1 โมเลกุล</button>
+              <button id="l1_btnSubMol" class="btn-outline-warm !py-1.5 !px-3 !text-xs">− ลด 1 โมเลกุล</button>
+              <button id="l1_btnSplitAtoms" class="btn-terra !py-1.5 !px-3.5 !text-xs">แยกพันธะเพื่อนับอะตอมย่อย</button>
+            </div>
+            <div id="l1_liveSummary" class="text-xs font-mono-num font-semibold text-[#1f6f61] bg-[#e6f3f0] px-3 py-1 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Visual Experiment Cards Side-by-Side -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Card 01: Visual Molecule & Atom Counter -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">1 นับโมเลกุลและอะตอม</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">ถาดจำลองการนับโมเลกุล & แยกอะตอมย่อย</h2>
+              </div>
+              <span id="l1_splitStateBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#faf8f4] border border-[#e4dfd5] text-[#6e6a61]">
+                สถานะ: อยู่รวมเป็นโมเลกุล
+              </span>
+            </div>
+
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l1_atomCanvas" width="460" height="270" class="w-full h-[260px]"></canvas>
+            </div>
+
+            <!-- Atom Breakdown Pills -->
+            <div id="l1_atomBreakdownCards" class="grid grid-cols-3 gap-2.5 mt-4"></div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l1_atomCaption"></div>
+        </div>
+
+        <!-- Card 02: Visual Mole Bridge Apparatus (Scale + Mole Box + STP Balloon) -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">2 สะพานโมล</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">สะพานโมล: ตาชั่ง (g) ↔ โมล (n) ↔ แก๊ส STP (dm³)</h2>
+              </div>
+              <button id="l1_btnLiquidTrap" class="btn-outline-warm !py-1 !px-2.5 !text-xs">
+                ทดสอบกับดัก: น้ำเหลวที่ 0°C
+              </button>
+            </div>
+
+            <!-- Mole Slider specifically for the Mole Bridge Station -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-3.5 mb-3">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                <span class="text-xs font-semibold text-[#1d232a]">ปรับปริมาณบนสะพานโมล (n):</span>
+                <div class="flex gap-1.5">
+                  <button data-l1-n="0.10" class="l1-preset-n btn-outline-warm !py-0.5 !px-2 !text-xs font-mono-num">0.10 mol</button>
+                  <button data-l1-n="0.50" class="l1-preset-n btn-outline-warm !py-0.5 !px-2 !text-xs font-mono-num">0.50 mol</button>
+                  <button data-l1-n="1.00" class="l1-preset-n btn-outline-warm !py-0.5 !px-2 !text-xs font-mono-num">1.00 mol</button>
+                  <button data-l1-n="2.00" class="l1-preset-n btn-outline-warm !py-0.5 !px-2 !text-xs font-mono-num">2.00 mol</button>
+                </div>
+              </div>
+              <input type="range" id="l1_bridgeMoleSlider" class="exp-slider" min="0.10" max="2.00" step="0.05" value="0.50">
+            </div>
+
+            <!-- Visual SVG of Scale + Mole Box + STP Gas Cylinder -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-3">
+              <svg id="l1_bridgeSvg" viewBox="0 0 500 220" class="w-full h-auto select-none"></svg>
+            </div>
+
+            <!-- Step-by-step Conversion Box -->
+            <div id="l1_bridgeSteps" class="mt-3 p-3 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l1_bridgeNote"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 2: สารละลาย (ตัวทำละลาย + ตัวถูกละลาย) & สมบัติคอลลิเกทีฟ (จุดเดือด/จุดเยือกแข็ง)
+         =================================================================== -->
+    <section id="view_lab2" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 3.1 & 3.3 · องค์ประกอบของสารละลายและสมบัติคอลลิเกทีฟ</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            ตักตัวถูกละลายใส่ตัวทำละลาย ความเข้มข้นและจุดเดือดเปลี่ยนอย่างไร?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            สังเกตเม็ดตัวถูกละลายในโมเลกุลน้ำ เปรียบเทียบตัวหารของแต่ละหน่วยความเข้มข้น และดูการพุ่งขึ้นของจุดเดือดตามจำนวนอนุภาค
+          </p>
+        </div>
+      </div>
+
+      <!-- Control Bar for Lab 2 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <div class="lg:col-span-4 py-1">
+          <div class="formula-sidebar">
+            <div class="text-xs text-[#6e6a61] mb-1">ความเข้มข้น & สมบัติคอลลิเกทีฟ</div>
+            <div class="text-xl font-bold font-mono-num text-[#1d232a] mb-1">
+              ΔTb = Kb·m   |   ΔTf = Kf·m
+            </div>
+            <div class="text-xs font-mono-num font-semibold text-[#1f6f61] mb-2">
+              น้ำบริสุทธิ์: Tb = 100 °C (Kb=0.51) · Tf = 0 °C (Kf=1.86)
+            </div>
+            <div class="text-xs text-[#6e6a61] leading-relaxed">
+              ยิ่งมี <b>"จำนวนอนุภาคของตัวถูกละลาย"</b> ในตัวทำละลายมาก จุดเดือดยิ่งสูงขึ้น และจุดเยือกแข็งยิ่งต่ำลง (สารที่แตกตัวเป็นไอออนจะให้ผลคูณตามจำนวนไอออน!)
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 exp-card p-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="l2_soluteSelect" class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกชนิดตัวถูกละลาย (Solute):</label>
+              <select id="l2_soluteSelect" class="select-warm w-full font-semibold">
+                <option value="0">กลูโคส C₆H₁₂O₆ (MW = 180 ไม่แตกตัว = 1 อนุภาค)</option>
+                <option value="1">เกลือแกง NaCl (MW = 58.5 · แตกตัวให้ Na⁺ + Cl⁻ = 2 ไอออน)</option>
+                <option value="2">แคลเซียมคลอไรด์ CaCl₂ (MW = 111 แตกตัวให้ Ca²⁺ + 2Cl⁻ = 3 ไอออน)</option>
+                <option value="3">ยูเรีย (NH₂)₂CO (MW = 60 ไม่แตกตัว = 1 อนุภาค)</option>
+              </select>
+            </div>
+
+            <!-- Interactive Spoon / Pour Buttons -->
+            <div class="flex flex-col justify-end">
+              <div class="text-xs font-semibold text-[#1d232a] mb-1.5">กดตักสารหรือเติมน้ำลงในบีกเกอร์ทดลอง:</div>
+              <div class="flex flex-wrap gap-2">
+                <button id="l2_btnSpoonSolute" class="btn-terra !py-2 !px-3.5 !text-xs">
+                  ตักเติมตัวถูกละลาย (+0.10 mol)
+                </button>
+                <button id="l2_btnAddWater" class="btn-teal !py-2 !px-3.5 !text-xs">
+                  เติมน้ำตัวทำละลาย (+100 g)
+                </button>
+                <button id="l2_btnReset" class="btn-outline-warm !py-2 !px-3 !text-xs">
+                  เริ่มใหม่
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-3 border-t border-[#ece8df]">
+            <div>
+              <div class="flex justify-between text-xs font-semibold">
+                <span>ปริมาณตัวถูกละลายที่ใส่ลงไป (n)</span>
+                <span id="l2_soluteReadout" class="font-mono-num text-[#c24d2c] font-bold">0.20 mol (36.0 g)</span>
+              </div>
+              <input type="range" id="l2_soluteSlider" class="exp-slider" min="0.00" max="1.00" step="0.05" value="0.20">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-semibold">
+                <span>มวลน้ำที่เป็นตัวทำละลาย (W)</span>
+                <span id="l2_solventReadout" class="font-mono-num text-[#1f6f61] font-bold">500 g (0.50 kg)</span>
+              </div>
+              <input type="range" id="l2_solventSlider" class="exp-slider" min="200" max="1000" step="50" value="500">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Visual Experiment Cards for Lab 2 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Card: Visual Beaker with Solvent + Solute + Unit Denominator Comparison -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">1 ตัวทำละลายและตัวถูกละลาย</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">ภาพจำลองตัวทำละลาย (น้ำ) + ตัวถูกละลาย</h2>
+              </div>
+              <span id="l2_ionBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fbece7] text-[#c24d2c]">
+                ไม่แตกตัว (1 อนุภาค/โมเลกุล)
+              </span>
+            </div>
+
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l2_beakerCanvas" width="460" height="250" class="w-full h-[245px]"></canvas>
+            </div>
+
+            <!-- Unit Denominator Visual Box (matching Figure 4.10 on page 25!) -->
+            <div class="mt-4">
+              <div class="text-xs font-bold text-[#1d232a] mb-2">เทียบหน่วยความเข้มข้นจากบีกเกอร์ใบนี้ (ระวังตัวหาร!):</div>
+              <div id="l2_unitCards" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"></div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l2_beakerCaption"></div>
+        </div>
+
+        <!-- Right Card: Colligative Properties Boiling & Freezing Point Visual Thermometer -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">2 จุดเดือดและจุดเยือกแข็ง</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">การเพิ่มจุดเดือด (ΔTb) & ลดจุดเยือกแข็ง (ΔTf)</h2>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e6f3f0] text-[#1f6f61]">
+                ขึ้นกับความเข้มข้นอนุภาค (m × i)
+              </span>
+            </div>
+
+            <!-- Visual Thermometer & Phase Range Diagram SVG -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-3">
+              <svg id="l2_thermoSvg" viewBox="0 0 480 250" class="w-full h-auto select-none"></svg>
+            </div>
+
+            <!-- Colligative Calculation Breakdown -->
+            <div id="l2_colligativeSteps" class="mt-3 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
+            <b>ทำไมยิ่งเข้มข้นจุดเดือดยิ่งสูงขึ้น?</b> เพราะอนุภาคตัวถูกละลายที่ระเหยยากไปแทรกตัวขวางโมเลกุลน้ำที่ผิวหน้า ทำให้น้ำระเหยเป็นไอได้ยากขึ้น ต้องใช้อุณหภูมิสูงกว่า 100 °C จึงจะเดือด!
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 3: การเจือจาง (เติมน้ำ) · การตักแบ่งสารละลาย · การเทผสมสารละลาย
+         =================================================================== -->
+    <section id="view_lab3" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 3.2 · การเจือจาง การตักแบ่ง และการผสมสารละลาย</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            เติมน้ำเจือจาง · ตักแบ่งออกมา · เทผสมกัน ความเข้มข้นและโมลเป็นอย่างไร?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            เลือกการทดลองทั้ง 3 รูปแบบ แล้วกดปุ่มเทน้ำ ตักแบ่งสารละลาย หรือเทบีกเกอร์ผสมกันเพื่อดูการเปลี่ยนแปลงของเม็ดอนุภาคจริง
+          </p>
+        </div>
+      </div>
+
+      <!-- Sub-Experiment Selector Buttons (3 Visual Scenarios) -->
+      <div class="exp-card p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap gap-2">
+          <button data-l3-mode="dilute" class="l3-mode-btn btn-outline-warm active-sub">
+            1. การเจือจาง (กดเติมน้ำ → ความเข้มข้นลด โมลเท่าเดิม)
+          </button>
+          <button data-l3-mode="aliquot" class="l3-mode-btn btn-outline-warm">
+            2. การตักแบ่งสารละลาย (ตักออกมา → ความเข้มข้นเท่าเดิม โมลลดลง)
+          </button>
+          <button data-l3-mode="mix" class="l3-mode-btn btn-outline-warm">
+            3. การเทผสมสารละลาย 2 บีกเกอร์ (c₁V₁ + c₂V₂)
+          </button>
+        </div>
+        <button id="l3_btnResetMode" class="btn-outline-warm !py-1.5 !px-3 !text-xs">ตั้งค่าเริ่มต้นใหม่</button>
+      </div>
+
+      <!-- Interactive Stage for Lab 3 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Visual Interactive Stage (7 cols) -->
+        <div class="lg:col-span-7 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div id="l3_stageEyebrow" class="step-eyebrow">สถานีที่ 1 การเจือจาง</div>
+                <h2 id="l3_stageTitle" class="text-lg sm:text-xl font-bold text-[#1d232a]">การเจือจาง: กดเติมน้ำแล้วดูความเข้มข้นเปลี่ยน</h2>
+              </div>
+              <span id="l3_stageBadge" class="px-2.5 py-1 rounded-full text-xs font-mono-num font-semibold bg-[#fbece7] text-[#c24d2c]">
+                c₁V₁ = c₂V₂
+              </span>
+            </div>
+
+            <!-- Interactive Canvas for Pouring Water / Scooping Aliquot / Mixing Beakers -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l3_labCanvas" width="540" height="300" class="w-full h-[290px]"></canvas>
+            </div>
+
+            <!-- Action Controls directly under Canvas -->
+            <div id="l3_actionToolbar" class="mt-4 flex flex-wrap items-center justify-center gap-2.5"></div>
+          </div>
+
+          <div id="l3_stageCaption" class="mt-4 pt-3 border-t border-[#f0ece3] text-xs text-[#6e6a61]"></div>
+        </div>
+
+        <!-- Right Explanation & Live Parameters Card (5 cols) -->
+        <div class="lg:col-span-5 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="step-eyebrow mb-1">ค่าที่ปรับและวิธีคิดทีละขั้น</div>
+            <h3 id="l3_rightTitle" class="text-lg font-bold text-[#1d232a] mb-3">ปรับค่าเริ่มต้นและดูวิธีคิดทีละขั้น</h3>
+
+            <!-- Dynamic Sliders / Controls for current Lab 3 sub-mode -->
+            <div id="l3_rightControls" class="space-y-3.5 bg-[#faf8f4] p-4 rounded-xl border border-[#e4dfd5] mb-4"></div>
+
+            <!-- Live Comparison / Step-by-Step Cards -->
+            <div id="l3_rightBreakdown" class="space-y-2.5 text-xs sm:text-sm"></div>
+          </div>
+
+          <div id="l3_examTipBox" class="mt-4 p-3 rounded-xl bg-[#e6f3f0] text-[#1f6f61] text-xs leading-relaxed"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 4: กึ่งแอนิเมชันสารกำหนดปริมาณ + อัตราส่วนโดยโมล & สัดส่วนโดยมวล
+         =================================================================== -->
+    <section id="view_lab4" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 4 · สมการเคมี อัตราส่วนโมล สัดส่วนโดยมวล และสารกำหนดปริมาณ</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            กึ่งแอนิเมชันจับคู่สารกำหนดปริมาณ · อัตราส่วนโมล & สัดส่วนโดยมวล
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            กดทำปฏิกิริยาทีละชุดเพื่อดูอนุภาคจับคู่กันจนสารกำหนดปริมาณหมดก่อน และเปรียบเทียบการเกิดปฏิกิริยาแบบอัตราส่วนโมลกับสัดส่วนคงที่โดยมวล
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Card: Semi-Animated Limiting Reagent Pairing Chamber -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">1 สารกำหนดปริมาณ</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">กึ่งแอนิเมชันจับคู่อนุภาค: ตัวไหนหมดก่อน?</h2>
+              </div>
+              <span id="l4_animStatusBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fbece7] text-[#c24d2c]">
+                พร้อมทำปฏิกิริยา
+              </span>
+            </div>
+
+            <div class="mb-3">
+              <label for="l4_rxnSelect" class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกสมการปฏิกิริยาที่ต้องการทดลองจับคู่:</label>
+              <select id="l4_rxnSelect" class="select-warm w-full font-semibold">
+                <option value="0">อุปมาทำแซนด์วิช: 2 ขนมปัง + 1 แฮม → 1 แซนด์วิช</option>
+                <option value="1">ผลิตแอมโมเนีย: N₂ + 3H₂ → 2NH₃ (ใช้ N₂ 1 : H₂ 3 → เกิด NH₃ 2)</option>
+                <option value="2">ปฏิกิริยาเกิดน้ำ: 2H₂ + O₂ → 2H₂O (ใช้ H₂ 2 : O₂ 1 → เกิด H₂O 2)</option>
+                <option value="3">เผาไหม้มีเทน: CH₄ + 2O₂ → CO₂ + 2H₂O (ใช้ CH₄ 1 : O₂ 2 → เกิด CO₂ 1)</option>
+              </select>
+            </div>
+
+            <!-- Reactant Initial Count Adjusters -->
+            <div class="grid grid-cols-2 gap-3 mb-3 bg-[#faf8f4] p-3 rounded-xl border border-[#e4dfd5]">
+              <div>
+                <div class="flex justify-between text-xs font-bold text-[#1d232a] mb-1">
+                  <span id="l4_labelA">ขนมปัง (ใช้ครั้งละ 2)</span>
+                  <span id="l4_valA" class="font-mono-num text-[#c24d2c]">6</span>
+                </div>
+                <div class="flex gap-1.5">
+                  <button id="l4_subA" class="btn-outline-warm !py-1 !px-2.5 !text-xs flex-1">− ลด</button>
+                  <button id="l4_addA" class="btn-outline-warm !py-1 !px-2.5 !text-xs flex-1">+ เพิ่ม</button>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs font-bold text-[#1d232a] mb-1">
+                  <span id="l4_labelB">แฮม (ใช้ครั้งละ 1)</span>
+                  <span id="l4_valB" class="font-mono-num text-[#1f6f61]">2</span>
+                </div>
+                <div class="flex gap-1.5">
+                  <button id="l4_subB" class="btn-outline-warm !py-1 !px-2.5 !text-xs flex-1">− ลด</button>
+                  <button id="l4_addB" class="btn-outline-warm !py-1 !px-2.5 !text-xs flex-1">+ เพิ่ม</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Semi-Animated Canvas for Step-by-Step Pairing -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l4_pairingCanvas" width="470" height="255" class="w-full h-[250px]"></canvas>
+            </div>
+
+            <!-- Step-by-Step Animation Action Buttons -->
+            <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+              <button id="l4_btnStepPair" class="btn-terra !py-2 !px-3.5 !text-xs">
+                ⏭️ จับคู่ทำปฏิกิริยาทีละ 1 ชุด
+              </button>
+              <button id="l4_btnAutoPair" class="btn-teal !py-2 !px-3.5 !text-xs">
+                ▶️ เล่นแอนิเมชันจนจบ
+              </button>
+              <button id="l4_btnResetPair" class="btn-outline-warm !py-2 !px-3 !text-xs">
+                รีเซ็ตก่อนเริ่ม
+              </button>
+            </div>
+
+            <div id="l4_limitingExplain" class="mt-3 p-3 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
+            <b>กฎเหล็ก:</b> นำ <code>โมลเริ่มต้น ÷ เลขสัมประสิทธิ์หน้าสารนั้น</code> ตัวที่ได้ค่าน้อยที่สุดคือ <b>สารกำหนดปริมาณ (หมดก่อน)</b> เมื่อตัวนี้หมด ปฏิกิริยาจะหยุดทันที!
+          </div>
+        </div>
+
+        <!-- Right Card: Mole Ratio vs Mass Ratio (Law of Definite Proportions) -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">2 อัตราส่วนโมลและมวล</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">การเกิดปฏิกิริยาแบบอัตราส่วนโมล & สัดส่วนโดยมวล</h2>
+              </div>
+            </div>
+
+            <!-- Mode Switcher: Mole Ratio vs Mass Ratio -->
+            <div class="flex flex-wrap gap-2 mb-3">
+              <button data-l4-heatmode="mole_ratio" class="l4-heatmode-btn btn-outline-warm active-sub !py-1.5 !px-3 !text-xs">
+                1. อัตราส่วนโดยโมล & ปริมาตรแก๊ส (เลขสัมประสิทธิ์)
+              </button>
+              <button data-l4-heatmode="mass_ratio" class="l4-heatmode-btn btn-outline-warm !py-1.5 !px-3 !text-xs">
+                2. สัดส่วนคงที่โดยมวล (กฎของพรูสต์ · เทียบกรัม)
+              </button>
+            </div>
+
+            <!-- Dynamic Controls for Mole Ratio / Mass Ratio -->
+            <div id="l4_ratioControls" class="mb-3 bg-[#faf8f4] p-3 rounded-xl border border-[#e4dfd5]"></div>
+
+            <!-- Visual Canvas for Mole Ratio Boxes / Mass Ratio Balances -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l4_heatCanvas" width="470" height="245" class="w-full h-[240px]"></canvas>
+            </div>
+
+            <!-- Action Toolbar under Canvas -->
+            <div id="l4_heatToolbar" class="mt-3 flex flex-wrap items-center justify-center gap-2"></div>
+
+            <div id="l4_heatBreakdown" class="mt-3 p-3 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l4_heatFooter"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         STUDY SHEET VIEW (All 4 Parts from the 74-page PDF)
+         =================================================================== -->
+    <section id="sheetView" class="hidden space-y-6">
+      <div class="exp-card p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e4dfd5] pb-4 mb-5">
+          <div>
+            <div class="step-eyebrow text-[#c24d2c]">COMPLETE STUDY GUIDE · เคมีพี่สกาย</div>
+            <h2 class="text-2xl font-bold text-[#1d232a]">สรุปเนื้อหาละเอียด บทที่ 4 ปริมาณสารสัมพันธ์ (ครบทั้ง 4 ส่วน)</h2>
+            <p class="text-sm text-[#6e6a61]">สรุปสูตร เทคนิคคิดเร็ว กับดักข้อสอบ และตัวอย่างการคำนวณครบทุกหัวข้อจากชีท 74 หน้า</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button data-sheet-filter="all" class="sheet-filter-btn btn-terra !py-1.5 !px-3 !text-xs">ทั้งหมด</button>
+            <button data-sheet-filter="p1" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">ส่วนที่ 1 โมล</button>
+            <button data-sheet-filter="p2" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">ส่วนที่ 2 สูตรเคมี</button>
+            <button data-sheet-filter="p3" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">ส่วนที่ 3 สารละลาย</button>
+            <button data-sheet-filter="p4" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">ส่วนที่ 4 สมการเคมี</button>
+          </div>
+        </div>
+
+        <div id="studySheetContainer" class="space-y-6"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         QUIZ & A-LEVEL EXAM BANK VIEW
+         =================================================================== -->
+    <section id="quizView" class="hidden space-y-6">
+      <div class="exp-card p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e4dfd5] pb-4 mb-5">
+          <div>
+            <div class="step-eyebrow text-[#c24d2c]">โจทย์ฝึกหัดและข้อสอบ A-Level</div>
+            <h2 class="text-2xl font-bold text-[#1d232a]">คลังโจทย์ฝึกหัด & ข้อสอบจริง A-Level / 9 วิชาสามัญ</h2>
+            <p class="text-sm text-[#6e6a61]">คัดสรรโจทย์ครบทุกหัวข้อพร้อมเฉลยวิธีคิดทีละขั้นจากชีทเคมีพี่สกาย</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="quizCategorySelect" class="select-warm font-medium">
+              <option value="all">ทุกหัวข้อ (รวมโจทย์ทุกส่วน + A-Level)</option>
+              <option value="p1">ส่วนที่ 1: มวลอะตอม มวลโมเลกุล และโมล</option>
+              <option value="p2">ส่วนที่ 2: ร้อยละโดยมวล สูตรเอมพิริคัล & ไฮเดรต</option>
+              <option value="p3">ส่วนที่ 3: ความเข้มข้น การเจือจาง & คอลลิเกทีฟ</option>
+              <option value="p4">ส่วนที่ 4: สมการเคมี สารกำหนดปริมาณ & ผลได้ร้อยละ</option>
+              <option value="alevel">ข้อสอบจริง A-Level & โจทย์ท้าทายท้ายบท</option>
+            </select>
+            <div id="quizScoreBadge" class="px-3 py-1.5 rounded-lg bg-[#e6f3f0] text-[#1f6f61] font-mono-num text-xs font-semibold">
+              คะแนน: 0 / 0
+            </div>
+            <button id="btnResetQuiz" class="btn-outline-warm !py-1.5 !px-3 !text-xs">เริ่มทำใหม่</button>
+          </div>
+        </div>
+
+        <div id="quizListContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Constants Reference Modal -->
+  <div id="constModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="exp-card max-w-lg w-full p-6 relative">
+      <div class="flex items-center justify-between border-b border-[#e4dfd5] pb-3 mb-4">
+        <div>
+          <div class="step-eyebrow">ค่าคงที่ที่ใช้</div>
+          <h3 class="text-lg font-bold text-[#1d232a]">ค่าที่ใช้ตลอดบท (ถ้าโจทย์ไม่กำหนด)</h3>
+        </div>
+        <button id="btnCloseConstModal" class="text-[#6e6a61] hover:text-[#1d232a] text-xl font-bold px-2">×</button>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="font-bold text-[#c24d2c] mb-1">มวลอะตอมของธาตุที่พบบ่อย</div>
+          <div class="font-mono-num text-xs leading-relaxed text-[#1d232a]">
+            H = 1, C = 12, N = 14, O = 16, F = 19, Na = 23, Mg = 24, Al = 27, P = 31, S = 32, Cl = 35.5, K = 39, Ca = 40, Fe = 56, Cu = 63.5, Zn = 65, Br = 80, Kr = 84, Ag = 108, Ba = 137, Pb = 207
+          </div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="font-bold text-[#1f6f61] mb-1">ค่าคงที่สำคัญ</div>
+          <ul class="text-xs space-y-1.5 font-mono-num text-[#1d232a]">
+            <li>• 1 amu (u) = 1.66 × 10⁻²⁴ g = 1 / Nₐ g</li>
+            <li>• เลขอาโวกาโดร (Nₐ) = 6.02 × 10²³ อนุภาค/mol</li>
+            <li>• ปริมาตรแก๊ส 1 mol ที่ STP (0 °C, 1 atm) = 22.4 dm³ (L)</li>
+            <li>• น้ำบริสุทธิ์: ความหนาแน่น d = 1.0 g/cm³, Kb = 0.51 °C/m, Kf = 1.86 °C/m</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // DATA & STATE FOR VISUAL EXPERIMENT LABS
+    // =========================================================================
+    const MOLECULE_DATA = [
+      {
+        formula: 'H₂O', name: 'น้ำ (Water)', MW: 18.0,
+        atoms: [
+          { sym: 'H', count: 2, color: '#0284c7', radius: 9, mass: 1 },
+          { sym: 'O', count: 1, color: '#c24d2c', radius: 14, mass: 16 }
+        ],
+        shape: 'bent'
+      },
+      {
+        formula: 'NH₃', name: 'แอมโมเนีย (Ammonia)', MW: 17.0,
+        atoms: [
+          { sym: 'N', count: 1, color: '#4f46e5', radius: 14, mass: 14 },
+          { sym: 'H', count: 3, color: '#0284c7', radius: 8.5, mass: 1 }
+        ],
+        shape: 'trigonal'
+      },
+      {
+        formula: 'CO₂', name: 'คาร์บอนไดออกไซด์', MW: 44.0,
+        atoms: [
+          { sym: 'C', count: 1, color: '#334155', radius: 13, mass: 12 },
+          { sym: 'O', count: 2, color: '#c24d2c', radius: 12, mass: 16 }
+        ],
+        shape: 'linear'
+      },
+      {
+        formula: 'CH₄', name: 'แก๊สมีเทน (Methane)', MW: 16.0,
+        atoms: [
+          { sym: 'C', count: 1, color: '#334155', radius: 14, mass: 12 },
+          { sym: 'H', count: 4, color: '#1f6f61', radius: 8.5, mass: 1 }
+        ],
+        shape: 'tetra'
+      },
+      {
+        formula: 'H₂SO₄', name: 'กรดซัลฟิวริก', MW: 98.0,
+        atoms: [
+          { sym: 'H', count: 2, color: '#0284c7', radius: 8, mass: 1 },
+          { sym: 'S', count: 1, color: '#d97706', radius: 14, mass: 32 },
+          { sym: 'O', count: 4, color: '#c24d2c', radius: 10, mass: 16 }
+        ],
+        shape: 'sulfuric'
+      }
+    ];
+
+    const SOLUTE_DATA = [
+      {
+        formula: 'C₆H₁₂O₆', name: 'กลูโคส (ไม่แตกตัว)', MW: 180.0, i: 1,
+        ions: [{ label: 'C₆H₁₂O₆', color: '#c24d2c', count: 1 }],
+        desc: 'สารโคเวเลนต์ ละลายน้ำแล้วไม่แตกตัวเป็นไอออน (1 โมลโมเลกุล ให้ 1 โมลอนุภาค)'
+      },
+      {
+        formula: 'NaCl', name: 'โซเดียมคลอไรด์ (เกลือแกง)', MW: 58.5, i: 2,
+        ions: [
+          { label: 'Na⁺', color: '#c24d2c', count: 1 },
+          { label: 'Cl⁻', color: '#1f6f61', count: 1 }
+        ],
+        desc: 'สารไอออนิก แตกตัวในน้ำได้ 2 ไอออน (Na⁺ 1 ส่วน + Cl⁻ 1 ส่วน → ผลคอลลิเกทีฟคิดเป็น 2 เท่า!)'
+      },
+      {
+        formula: 'CaCl₂', name: 'แคลเซียมคลอไรด์', MW: 111.0, i: 3,
+        ions: [
+          { label: 'Ca²⁺', color: '#7c3aed', count: 1 },
+          { label: 'Cl⁻', color: '#1f6f61', count: 2 }
+        ],
+        desc: 'สารไอออนิก แตกตัวในน้ำได้ 3 ไอออน (Ca²⁺ 1 ส่วน + Cl⁻ 2 ส่วน → ผลคอลลิเกทีฟคิดเป็น 3 เท่า!)'
+      },
+      {
+        formula: '(NH₂)₂CO', name: 'ยูเรีย (ไม่แตกตัว)', MW: 60.0, i: 1,
+        ions: [{ label: 'Urea', color: '#d97706', count: 1 }],
+        desc: 'สารอินทรีย์ไม่แตกตัวในน้ำ (1 โมลโมเลกุล ให้ 1 โมลอนุภาคเท่ากับกลูโคส)'
+      }
+    ];
+
+    const PAIRING_REACTIONS = [
+      {
+        title: '2 ขนมปัง + 1 แฮม → 1 แซนด์วิช',
+        nameA: 'ขนมปัง', nameB: 'แฮม', nameP: 'แซนด์วิช',
+        a: 2, b: 1, p: 1,
+        colorA: '#d97706', colorB: '#e11d48', colorP: '#c24d2c',
+        unit: 'ชิ้น'
+      },
+      {
+        title: 'N₂ + 3H₂ → 2NH₃',
+        nameA: 'N₂', nameB: 'H₂', nameP: 'NH₃',
+        a: 1, b: 3, p: 2,
+        colorA: '#4f46e5', colorB: '#0284c7', colorP: '#1f6f61',
+        unit: 'mol'
+      },
+      {
+        title: '2H₂ + O₂ → 2H₂O',
+        nameA: 'H₂', nameB: 'O₂', nameP: 'H₂O',
+        a: 2, b: 1, p: 2,
+        colorA: '#0284c7', colorB: '#c24d2c', colorP: '#0d9488',
+        unit: 'mol'
+      },
+      {
+        title: 'CH₄ + 2O₂ → CO₂ + 2H₂O',
+        nameA: 'CH₄', nameB: 'O₂', nameP: 'CO₂',
+        a: 1, b: 2, p: 1,
+        colorA: '#334155', colorB: '#c24d2c', colorP: '#7c3aed',
+        unit: 'mol'
+      }
+    ];
+
+    const state = {
+      activeTab: 'lab1',
+
+      // Lab 1 state
+      lab1: {
+        molIdx: 0,
+        count: 3,          // 1 to 8 molecules/moles
+        isSplit: false,    // false = bonded molecules, true = separated into element boxes
+        bridgeMole: 0.50,  // 0.10 to 2.00 mol
+        liquidTrap: false  // test H2O(l) at 0°C trap
+      },
+
+      // Lab 2 state (Solvent + Solute & Colligative Properties)
+      lab2: {
+        soluteIdx: 0,
+        nSolute: 0.20,     // mol (0.00 to 1.00)
+        wSolvent: 500,     // g water (200 to 1000)
+        spoonAnim: 0       // > 0 when spoon animation is active
+      },
+
+      // Lab 3 state (Dilution, Aliquot Sampling, Mixing)
+      lab3: {
+        mode: 'dilute',    // 'dilute', 'aliquot', 'mix'
+        // 3.1 Dilution state
+        dilute_n: 0.40,    // mol solute (stays constant!)
+        dilute_V0: 200,    // initial cm3
+        dilute_V: 200,     // current cm3 (200 to 1000)
+        pourWaterAnim: 0,
+        // 3.2 Aliquot (scooping out sample) state
+        aliq_c: 2.00,      // M (mol/dm3)
+        aliq_Vstock: 1000, // cm3 initial stock
+        aliq_Vtake: 100,   // cm3 scooped out (50 to 400)
+        aliq_hasScooped: true,
+        scoopAnim: 0,
+        // 3.3 Mixing two beakers state
+        mix_c1: 1.00,
+        mix_v1: 200,
+        mix_c2: 2.50,
+        mix_v2: 300,
+        mix_isMixed: true,
+        mixAnim: 0
+      },
+
+      // Lab 4 state (Semi-Animated Limiting Reagent + Mole Ratio & Mass Ratio)
+      lab4: {
+        rxnIdx: 0,
+        countA: 6,
+        countB: 2,
+        completedSets: 0,    // number of completed reaction sets so far
+        animProgress: 0,     // 0 to 1 when a set is currently animating across the chamber
+        isAnimatingStep: false,
+        autoPlayTimer: null,
+
+        // Card 2: 'mole_ratio' or 'mass_ratio'
+        heatMode: 'mole_ratio',
+        // Sub-mode 1: Mole Ratio & Gas Volume Ratio
+        moleRxnIdx: 0,
+        moleScaleFactor: 1.0, // 0.5, 1.0, 1.5, 2.0, 3.0
+        moleReactAnim: 1.0,
+        // Sub-mode 2: Mass Ratio (Law of Definite Proportions)
+        massRxnIdx: 0,
+        massA: 14.0,          // g of element A
+        massB: 10.0,          // g of element B
+        massReactAnim: 1.0
+      },
+
+      quizCategory: 'all',
+      quizAnswers: {}
+    };
+
+    // Animated particles pool for canvases
+    const floaters = Array.from({ length: 65 }, (_, i) => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.009,
+      vy: (Math.random() - 0.5) * 0.009,
+      phase: Math.random() * Math.PI * 2
+    }));
+
+    // =========================================================================
+    // TAB NAVIGATION
+    // =========================================================================
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+      });
+
+      const views = ['view_lab1', 'view_lab2', 'view_lab3', 'view_lab4', 'sheetView', 'quizView'];
+      views.forEach(v => document.getElementById(v).classList.add('hidden'));
+
+      if (tabId === 'lab1') {
+        document.getElementById('view_lab1').classList.remove('hidden');
+        updateLab1UI();
+      } else if (tabId === 'lab2') {
+        document.getElementById('view_lab2').classList.remove('hidden');
+        updateLab2UI();
+      } else if (tabId === 'lab3') {
+        document.getElementById('view_lab3').classList.remove('hidden');
+        updateLab3UI();
+      } else if (tabId === 'lab4') {
+        document.getElementById('view_lab4').classList.remove('hidden');
+        updateLab4UI();
+      } else if (tabId === 'sheet') {
+        document.getElementById('sheetView').classList.remove('hidden');
+        renderStudySheet('all');
+      } else if (tabId === 'quiz') {
+        document.getElementById('quizView').classList.remove('hidden');
+        renderQuizList();
+      }
+    }
+
+    // =========================================================================
+    // LAB 1: MOLECULE & SUB-ATOM COUNTER + MOLE BRIDGE STATION
+    // =========================================================================
+    function updateLab1UI() {
+      const L = state.lab1;
+      const mol = MOLECULE_DATA[L.molIdx];
+      const totalAtomsPerMol = mol.atoms.reduce((acc, a) => acc + a.count, 0);
+      const totalAtoms = L.count * totalAtomsPerMol;
+
+      document.getElementById('l1_countLabel').textContent = `${L.count} โมเลกุล (หรือคิดเป็น ${L.count}.0 mol)`;
+      document.getElementById('l1_countSlider').value = L.count;
+
+      const splitBtn = document.getElementById('l1_btnSplitAtoms');
+      const badge = document.getElementById('l1_splitStateBadge');
+      if (L.isSplit) {
+        splitBtn.textContent = 'รวมอะตอมกลับเป็นโมเลกุล';
+        splitBtn.className = 'btn-teal !py-1.5 !px-3.5 !text-xs';
+        badge.textContent = 'สถานะ: แยกนับอะตอมย่อยแต่ละธาตุ';
+        badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e6f3f0] text-[#1f6f61]';
+      } else {
+        splitBtn.textContent = 'แยกพันธะเพื่อนับอะตอมย่อย';
+        splitBtn.className = 'btn-terra !py-1.5 !px-3.5 !text-xs';
+        badge.textContent = 'สถานะ: อยู่รวมกันเป็นโมเลกุล';
+        badge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#faf8f4] border border-[#e4dfd5] text-[#6e6a61]';
+      }
+
+      document.getElementById('l1_liveSummary').textContent =
+        `${mol.formula} ${L.count} โมเลกุล → รวมทั้งหมด ${totalAtoms} อะตอมย่อย (${L.count} mol มี ${(totalAtoms * 6.02).toFixed(2)}×10²³ อะตอม)`;
+
+      // Atom breakdown cards
+      const cardsHtml = mol.atoms.map(a => {
+        const cnt = a.count * L.count;
+        return `
+          <div class="p-3 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] flex items-center gap-2.5">
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs font-mono-num shrink-0" style="background:${a.color}">${a.sym}</span>
+            <div>
+              <div class="text-xs font-bold text-[#1d232a]">ธาตุ ${a.sym} (${a.count} ต่อโมเลกุล)</div>
+              <div class="text-xs font-mono-num text-[#c24d2c] font-semibold">${cnt} อะตอม (${cnt} mol)</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      const totalCard = `
+        <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6] flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-full bg-[#c24d2c] text-white font-bold text-xs font-mono-num flex items-center justify-center shrink-0">Σ</span>
+          <div>
+            <div class="text-xs font-bold text-[#1d232a]">อะตอมย่อยรวม</div>
+            <div class="text-xs font-mono-num text-[#c24d2c] font-bold">${totalAtoms} อะตอม (${totalAtoms} mol)</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('l1_atomBreakdownCards').innerHTML = cardsHtml + totalCard;
+
+      document.getElementById('l1_atomCaption').innerHTML =
+        `<b>หลักการนับอะตอมย่อย:</b> ใน 1 โมเลกุลของ <b>${mol.formula}</b> มีอะตอมรวม ${totalAtomsPerMol} อะตอม ดังนั้นถ้ามี <b>${L.count} mol</b> จะมีอะตอมรวม = ${L.count} × ${totalAtomsPerMol} = <b>${totalAtoms} mol อะตอม</b> (คูณ 6.02×10²³ ได้ <b>${(totalAtoms * 6.02).toFixed(2)}×10²³ อะตอม</b>)`;
+
+      // Update Mole Bridge SVG (Right Card)
+      drawLab1BridgeSvg();
+    }
+
+    function drawLab1BridgeSvg() {
+      const L = state.lab1;
+      const mol = MOLECULE_DATA[L.molIdx];
+      const n = L.bridgeMole;
+      const g = n * mol.MW;
+      const N_val = (n * 6.02).toFixed(2);
+      const isLiquidWater = L.liquidTrap;
+      const V_stp = n * 22.4;
+
+      const trapBtn = document.getElementById('l1_btnLiquidTrap');
+      if (isLiquidWater) {
+        trapBtn.className = 'btn-terra !py-1 !px-2.5 !text-xs';
+        trapBtn.textContent = 'กำลังแสดงกับดัก: น้ำเหลว H₂O(l) ที่ 0°C';
+      } else {
+        trapBtn.className = 'btn-outline-warm !py-1 !px-2.5 !text-xs';
+        trapBtn.textContent = 'ทดสอบกับดัก: น้ำเหลวที่ 0°C';
+      }
+
+      const dispFormula = isLiquidWater ? 'H₂O(l)' : `${mol.formula}(g)`;
+      const dispMW = isLiquidWater ? 18.0 : mol.MW;
+      const dispG = n * dispMW;
+
+      // Balloon / Cylinder radius scales with n
+      const balloonR = Math.min(44, 18 + Math.sqrt(n) * 20);
+
+      const svg = document.getElementById('l1_bridgeSvg');
+      svg.innerHTML = `
+        <!-- Connecting Bridge Arrows -->
+        <line x1="145" y1="105" x2="195" y2="105" stroke="#c24d2c" stroke-width="2.5" stroke-dasharray="4,3"/>
+        <text x="170" y="95" font-size="10" fill="#c24d2c" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">÷ MW</text>
+        <text x="170" y="122" font-size="10" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">× MW</text>
+
+        <line x1="305" y1="105" x2="355" y2="105" stroke="#1f6f61" stroke-width="2.5" stroke-dasharray="4,3"/>
+        <text x="330" y="95" font-size="10" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">× 22.4</text>
+        <text x="330" y="122" font-size="10" fill="#c24d2c" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">÷ 22.4</text>
+
+        <!-- STATION 1: Digital Balance (Mass g) -->
+        <g transform="translate(20, 25)">
+          <rect x="0" y="0" width="125" height="165" rx="12" fill="#ffffff" stroke="#e4dfd5" stroke-width="1.5"/>
+          <text x="62" y="22" font-size="11" fill="#6e6a61" text-anchor="middle" font-weight="600">1. ตาชั่งมวล (g)</text>
+          <!-- Sample Dish & Pile -->
+          <path d="M 32 95 L 92 95 L 82 103 L 42 103 Z" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5"/>
+          <ellipse cx="62" cy="92" rx="${Math.min(26, 8 + n * 10)}" ry="${Math.min(18, 5 + n * 7)}" fill="#c24d2c" opacity="0.85"/>
+          <!-- Scale Base & Digital LCD -->
+          <rect x="22" y="103" width="80" height="40" rx="6" fill="#334155"/>
+          <rect x="30" y="111" width="64" height="24" rx="4" fill="#d1fae5"/>
+          <text x="62" y="127" font-size="12" fill="#065f46" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${dispG.toFixed(1)} g</text>
+          <text x="62" y="156" font-size="10" fill="#6e6a61" text-anchor="middle" font-family="IBM Plex Mono">MW = ${dispMW}</text>
+        </g>
+
+        <!-- STATION 2: Central Mole Hub (n & N) -->
+        <g transform="translate(195, 18)">
+          <rect x="0" y="0" width="110" height="178" rx="14" fill="#fbece7" stroke="#c24d2c" stroke-width="2"/>
+          <text x="55" y="24" font-size="12" fill="#c24d2c" text-anchor="middle" font-weight="700">สะพานโมล (n)</text>
+          <circle cx="55" cy="72" r="32" fill="#c24d2c"/>
+          <text x="55" y="70" font-size="15" fill="#ffffff" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${n.toFixed(2)}</text>
+          <text x="55" y="86" font-size="11" fill="#fbece7" text-anchor="middle" font-family="IBM Plex Mono">mol</text>
+          <!-- Particle Count Box below -->
+          <rect x="8" y="116" width="94" height="50" rx="8" fill="#ffffff" stroke="#f3d1c6"/>
+          <text x="55" y="133" font-size="10" fill="#6e6a61" text-anchor="middle">จำนวนโมเลกุล (N)</text>
+          <text x="55" y="152" font-size="11" fill="#1d232a" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${N_val}×10²³</text>
+        </g>
+
+        <!-- STATION 3: STP Gas Volume (or Liquid Trap Alert!) -->
+        <g transform="translate(355, 25)">
+          <rect x="0" y="0" width="125" height="165" rx="12" fill="${isLiquidWater ? '#fef2f2' : '#ffffff'}" stroke="${isLiquidWater ? '#ef4444' : '#e4dfd5'}" stroke-width="1.5"/>
+          <text x="62" y="22" font-size="11" fill="${isLiquidWater ? '#b91c1c' : '#6e6a61'}" text-anchor="middle" font-weight="600">
+            ${isLiquidWater ? 'ของเหลวที่ 0°C' : '3. ปริมาตรแก๊ส STP'}
+          </text>
+          ${isLiquidWater ? `
+            <text x="62" y="68" font-size="24" text-anchor="middle"></text>
+            <text x="62" y="92" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="700">ห้ามคูณ 22.4!</text>
+            <text x="62" y="112" font-size="10" fill="#7f1d1d" text-anchor="middle">น้ำที่ 0°C ไม่ใช่แก๊ส</text>
+            <text x="62" y="132" font-size="11" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">V = ${dispG.toFixed(1)} cm³</text>
+            <text x="62" y="150" font-size="9.5" fill="#6e6a61" text-anchor="middle">(ใช้ d = 1.0 g/cm³)</text>
+          ` : `
+            <circle cx="62" cy="78" r="${balloonR}" fill="#e6f3f0" stroke="#1f6f61" stroke-width="2"/>
+            <path d="M 58 ${78 + balloonR} L 66 ${78 + balloonR} L 62 ${78 + balloonR + 8} Z" fill="#1f6f61"/>
+            <text x="62" y="82" font-size="11" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${V_stp.toFixed(1)} L</text>
+            <text x="62" y="148" font-size="11" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${V_stp.toFixed(2)} dm³</text>
+            <text x="62" y="160" font-size="9.5" fill="#6e6a61" text-anchor="middle">ที่ 0 °C, 1 atm</text>
+          `}
+        </g>
+      `;
+
+      document.getElementById('l1_bridgeSteps').innerHTML = isLiquidWater ? `
+        <div class="text-[#b91c1c] font-bold">กับดักข้อสอบ (หน้า 10 และข้อ 20): น้ำบริสุทธิ์ที่ 0 °C เป็นของเหลว ไม่ใช่แก๊ส!</div>
+        <div>• ห้ามใช้ <span class="font-mono-num">22.4 dm³/mol</span> เด็ดขาด! ต้องแปลงผ่านความหนาแน่นของน้ำ (<span class="font-mono-num">d = 1.0 g/cm³</span>)</div>
+        <div>• น้ำ <span class="font-mono-num">${n.toFixed(2)} mol</span> หนัก <span class="font-mono-num">${dispG.toFixed(1)} g</span> → จึงมีปริมาตรเท่ากับ <b><span class="font-mono-num">${dispG.toFixed(1)} cm³</span></b></div>
+      ` : `
+        <div><b class="text-[#c24d2c]">1) แปลงโมลเป็นมวล (g):</b> <span class="font-mono-num">g = n × MW = ${n.toFixed(2)} × ${dispMW} = <b>${dispG.toFixed(2)} g</b></span></div>
+        <div><b class="text-[#1d232a]">2) แปลงโมลเป็นจำนวนโมเลกุล (N):</b> <span class="font-mono-num">N = ${n.toFixed(2)} × 6.02×10²³ = <b>${N_val}×10²³ โมเลกุล</b></span></div>
+        <div><b class="text-[#1f6f61]">3) แปลงโมลเป็นปริมาตรแก๊สที่ STP:</b> <span class="font-mono-num">V = ${n.toFixed(2)} × 22.4 = <b>${V_stp.toFixed(2)} dm³</b> (ความหนาแน่น d = ${(dispMW / 22.4).toFixed(2)} g/dm³)</span></div>
+      `;
+
+      document.getElementById('l1_bridgeNote').textContent =
+        `ทุกโจทย์ในบทนี้: ไม่ว่าโจทย์จะให้หน่วยใดมา ให้หารกลับมาที่ "สะพานโมล (n)" ตรงกลางก่อนเสมอ แล้วจึงคูณต่อไปยังหน่วยที่โจทย์ถาม`;
+    }
+
+    function drawLab1Canvas() {
+      const canvas = document.getElementById('l1_atomCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab1;
+      const mol = MOLECULE_DATA[L.molIdx];
+
+      if (!L.isSplit) {
+        // Draw L.count intact molecules arranged neatly in a grid with gentle floating motion
+        const cols = L.count <= 4 ? 2 : 4;
+        const rows = Math.ceil(L.count / cols);
+        const cellW = W / cols;
+        const cellH = (H - 20) / rows;
+
+        for (let i = 0; i < L.count; i++) {
+          const r = Math.floor(i / cols);
+          const c = i % cols;
+          const fl = floaters[i];
+          const cx = cellW * (c + 0.5) + Math.sin(fl.phase) * 5;
+          const cy = 10 + cellH * (r + 0.5) + Math.cos(fl.phase) * 5;
+          drawSingleMolecule(ctx, cx, cy, mol);
+        }
+      } else {
+        // Split mode: Draw separated sorting boxes for each element!
+        const numElem = mol.atoms.length;
+        const boxW = (W - 24 - (numElem - 1) * 12) / numElem;
+        mol.atoms.forEach((a, idx) => {
+          const bx = 12 + idx * (boxW + 12);
+          const by = 16;
+          const bh = H - 32;
+
+          ctx.fillStyle = '#ffffff';
+          ctx.strokeStyle = a.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.roundRect(bx, by, boxW, bh, 12);
+          ctx.fill();
+          ctx.stroke();
+
+          // Header banner inside box
+          ctx.fillStyle = a.color;
+          ctx.font = 'bold 13px "IBM Plex Sans Thai", sans-serif';
+          ctx.textAlign = 'center';
+          const totalElemAtoms = a.count * L.count;
+          ctx.fillText(`ธาตุ ${a.sym}: ${totalElemAtoms} อะตอม (${totalElemAtoms} mol)`, bx + boxW / 2, by + 24);
+
+          // Draw individual separated atoms inside the box
+          const perRow = Math.max(3, Math.min(6, Math.ceil(Math.sqrt(totalElemAtoms))));
+          const spacingX = (boxW - 30) / perRow;
+          for (let k = 0; k < totalElemAtoms; k++) {
+            const rr = Math.floor(k / perRow);
+            const cc = k % perRow;
+            const ax = bx + 15 + spacingX * (cc + 0.5);
+            const ay = by + 54 + rr * 30;
+            ctx.beginPath();
+            ctx.arc(ax, Math.min(by + bh - 18, ay), a.radius, 0, Math.PI * 2);
+            ctx.fillStyle = a.color;
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+            ctx.fillText(a.sym, ax, Math.min(by + bh - 18, ay) + 3);
+          }
+        });
+      }
+    }
+
+    function drawSingleMolecule(ctx, cx, cy, mol) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      if (mol.shape === 'bent') {
+        // H2O: O center, 2 H at angles
+        const hPos = [[-22, 16], [22, 16]];
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 4;
+        hPos.forEach(([hx, hy]) => {
+          ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(hx, hy); ctx.stroke();
+        });
+        drawAtomCircle(ctx, 0, -4, 15, '#c24d2c', 'O');
+        hPos.forEach(([hx, hy]) => drawAtomCircle(ctx, hx, hy, 10, '#0284c7', 'H'));
+      } else if (mol.shape === 'trigonal') {
+        // NH3: N center, 3 H
+        const hPos = [[-24, 16], [0, 25], [24, 16]];
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 3.5;
+        hPos.forEach(([hx, hy]) => {
+          ctx.beginPath(); ctx.moveTo(0, -5); ctx.lineTo(hx, hy); ctx.stroke();
+        });
+        drawAtomCircle(ctx, 0, -5, 15, '#4f46e5', 'N');
+        hPos.forEach(([hx, hy]) => drawAtomCircle(ctx, hx, hy, 9.5, '#0284c7', 'H'));
+      } else if (mol.shape === 'linear') {
+        // CO2: O = C = O
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(-28, 0); ctx.lineTo(28, 0); ctx.stroke();
+        drawAtomCircle(ctx, -28, 0, 12, '#c24d2c', 'O');
+        drawAtomCircle(ctx, 28, 0, 12, '#c24d2c', 'O');
+        drawAtomCircle(ctx, 0, 0, 14, '#334155', 'C');
+      } else if (mol.shape === 'tetra') {
+        // CH4: C center, 4 H
+        const hPos = [[0, -24], [-24, 0], [24, 0], [0, 24]];
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 3.5;
+        hPos.forEach(([hx, hy]) => {
+          ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(hx, hy); ctx.stroke();
+        });
+        drawAtomCircle(ctx, 0, 0, 14, '#334155', 'C');
+        hPos.forEach(([hx, hy]) => drawAtomCircle(ctx, hx, hy, 9, '#1f6f61', 'H'));
+      } else {
+        // H2SO4
+        const oPos = [[0, -24], [0, 24], [-24, 0], [24, 0]];
+        const hPos = [[-38, 12], [38, 12]];
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 3;
+        oPos.forEach(([ox, oy]) => {
+          ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(ox, oy); ctx.stroke();
+        });
+        ctx.beginPath(); ctx.moveTo(-24, 0); ctx.lineTo(-38, 12); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(24, 0); ctx.lineTo(38, 12); ctx.stroke();
+        drawAtomCircle(ctx, 0, 0, 14, '#d97706', 'S');
+        oPos.forEach(([ox, oy]) => drawAtomCircle(ctx, ox, oy, 10, '#c24d2c', 'O'));
+        hPos.forEach(([hx, hy]) => drawAtomCircle(ctx, hx, hy, 8, '#0284c7', 'H'));
+      }
+      ctx.restore();
+    }
+
+    function drawAtomCircle(ctx, x, y, r, color, label) {
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `bold ${Math.max(8, Math.round(r * 0.75))}px "IBM Plex Mono", monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y + 3.5);
+    }
+
+    // =========================================================================
+    // LAB 2: SOLVENT + SOLUTE & COLLIGATIVE BOILING/FREEZING POINT
+    // =========================================================================
+    function updateLab2UI() {
+      const L = state.lab2;
+      const sol = SOLUTE_DATA[L.soluteIdx];
+      const gSolute = L.nSolute * sol.MW;
+      const wKg = L.wSolvent / 1000;
+      const totalMassSolution = L.wSolvent + gSolute;
+      // Approximate volume in dm3 (assuming density ~ 1.0 g/cm3 for dilute view)
+      const vSolutionDm3 = (L.wSolvent + gSolute * 0.6) / 1000;
+
+      const pctWW = totalMassSolution > 0 ? (gSolute / totalMassSolution) * 100 : 0;
+      const molarity = vSolutionDm3 > 0 ? L.nSolute / vSolutionDm3 : 0;
+      const molality = wKg > 0 ? L.nSolute / wKg : 0;
+      const effMolality = molality * sol.i;
+
+      const dTb = 0.51 * effMolality;
+      const dTf = 1.86 * effMolality;
+      const Tb = 100 + dTb;
+      const Tf = 0 - dTf;
+
+      document.getElementById('l2_soluteReadout').textContent = `${L.nSolute.toFixed(2)} mol (${gSolute.toFixed(1)} g)`;
+      document.getElementById('l2_solventReadout').textContent = `${L.wSolvent} g (${wKg.toFixed(2)} kg)`;
+      document.getElementById('l2_soluteSlider').value = L.nSolute;
+      document.getElementById('l2_solventSlider').value = L.wSolvent;
+
+      document.getElementById('l2_ionBadge').textContent =
+        sol.i === 1 ? 'ไม่แตกตัว (1 อนุภาค/โมเลกุล)' : `แตกตัวเป็นไอออน (${sol.i} ไอออน/สูตร)`;
+
+      // Denominator comparison cards
+      document.getElementById('l2_unitCards').innerHTML = `
+        <div class="p-3 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="text-[11px] font-mono-num text-[#6e6a61]">ร้อยละโดยมวล (% w/w)</div>
+          <div class="text-base font-bold font-mono-num text-[#1d232a] my-0.5">${pctWW.toFixed(1)}% w/w</div>
+          <div class="text-[11px] text-[#6e6a61]">ตัวหาร = <b>มวลสารละลายรวม</b> (${L.wSolvent} + ${gSolute.toFixed(1)} = ${totalMassSolution.toFixed(1)} g)</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="text-[11px] font-mono-num text-[#6e6a61]">โมลาริตี (mol/dm³ หรือ M)</div>
+          <div class="text-base font-bold font-mono-num text-[#1f6f61] my-0.5">${molarity.toFixed(2)} mol/dm³</div>
+          <div class="text-[11px] text-[#6e6a61]">ตัวหาร = <b>ปริมาตรสารละลาย</b> (≈ ${vSolutionDm3.toFixed(2)} dm³)</div>
+        </div>
+        <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
+          <div class="text-[11px] font-mono-num text-[#c24d2c] font-semibold">โมแลลิตี (mol/kg หรือ m)</div>
+          <div class="text-base font-bold font-mono-num text-[#c24d2c] my-0.5">${molality.toFixed(2)} mol/kg</div>
+          <div class="text-[11px] text-[#c24d2c]">ตัวหาร = <b>มวลน้ำตัวทำละลายอย่างเดียว!</b> (${wKg.toFixed(2)} kg)</div>
+        </div>
+      `;
+
+      document.getElementById('l2_beakerCaption').innerHTML = `<b>${sol.formula}:</b> ${sol.desc}`;
+
+      // Draw Thermometer & Liquid Phase Range SVG
+      const svg = document.getElementById('l2_thermoSvg');
+      const boilShiftPx = Math.min(65, dTb * 22);
+      const freezeShiftPx = Math.min(65, dTf * 12);
+
+      svg.innerHTML = `
+        <!-- Top Section: Dual Thermometers (Boiling vs Freezing) -->
+        <g transform="translate(20, 15)">
+          <rect x="0" y="0" width="210" height="125" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="16" y="24" font-size="12" fill="#c24d2c" font-weight="700">จุดเดือดของสารละลาย (Tb)</text>
+          <text x="16" y="54" font-size="22" fill="#c24d2c" font-family="IBM Plex Mono" font-weight="700">${Tb.toFixed(2)} °C</text>
+          <text x="16" y="76" font-size="11" fill="#6e6a61">น้ำบริสุทธิ์เดือดที่ 100.00 °C</text>
+          <text x="16" y="96" font-size="11" fill="#1d232a" font-family="IBM Plex Mono" font-weight="600">เพิ่มขึ้น ΔTb = +${dTb.toFixed(2)} °C</text>
+          <!-- Mini Mercury Thermometer -->
+          <rect x="172" y="18" width="14" height="80" rx="7" fill="#f1f5f9" stroke="#94a3b8"/>
+          <rect x="175" y="${75 - Math.min(52, dTb * 18)}" width="8" height="${25 + Math.min(52, dTb * 18)}" rx="4" fill="#c24d2c"/>
+          <circle cx="179" cy="98" r="11" fill="#c24d2c"/>
+        </g>
+
+        <g transform="translate(250, 15)">
+          <rect x="0" y="0" width="210" height="125" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="16" y="24" font-size="12" fill="#0284c7" font-weight="700">จุดเยือกแข็งของสารละลาย (Tf)</text>
+          <text x="16" y="54" font-size="22" fill="#0284c7" font-family="IBM Plex Mono" font-weight="700">${Tf.toFixed(2)} °C</text>
+          <text x="16" y="76" font-size="11" fill="#6e6a61">น้ำบริสุทธิ์แข็งตัวที่ 0.00 °C</text>
+          <text x="16" y="96" font-size="11" fill="#1d232a" font-family="IBM Plex Mono" font-weight="600">ลดลง ΔTf = −${dTf.toFixed(2)} °C</text>
+          <!-- Mini Cold Thermometer -->
+          <rect x="172" y="18" width="14" height="80" rx="7" fill="#f1f5f9" stroke="#94a3b8"/>
+          <rect x="175" y="${45 + Math.min(35, dTf * 6)}" width="8" height="${55 - Math.min(35, dTf * 6)}" rx="4" fill="#0284c7"/>
+          <circle cx="179" cy="98" r="11" fill="#0284c7"/>
+        </g>
+
+        <!-- Bottom Section: Phase Range Bar (Figure 4.19 in Sheet!) -->
+        <g transform="translate(20, 152)">
+          <rect x="0" y="0" width="440" height="86" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="220" y="20" font-size="11" fill="#1d232a" text-anchor="middle" font-weight="700">
+            แผนภาพช่วงสถานะของเหลว (ยิ่งเข้มข้น ช่วงของเหลวยิ่งกว้างออกทั้งสองด้าน)
+          </text>
+          <!-- Base Temperature Axis -->
+          <line x1="35" y1="50" x2="405" y2="50" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
+          <!-- Pure water liquid range (130 to 310) -->
+          <line x1="130" y1="50" x2="310" y2="50" stroke="#94a3b8" stroke-width="6"/>
+          <!-- Solution expanded liquid range -->
+          <line x1="${130 - freezeShiftPx}" y1="50" x2="${310 + boilShiftPx}" y2="50" stroke="#1f6f61" stroke-width="6"/>
+
+          <!-- Pure water ticks -->
+          <line x1="130" y1="40" x2="130" y2="60" stroke="#64748b" stroke-width="2"/>
+          <text x="130" y="75" font-size="10" fill="#64748b" text-anchor="middle" font-family="IBM Plex Mono">0°C (น้ำ)</text>
+
+          <line x1="310" y1="40" x2="310" y2="60" stroke="#64748b" stroke-width="2"/>
+          <text x="310" y="75" font-size="10" fill="#64748b" text-anchor="middle" font-family="IBM Plex Mono">100°C (น้ำ)</text>
+
+          <!-- Solution ticks -->
+          <circle cx="${130 - freezeShiftPx}" cy="50" r="6" fill="#0284c7" stroke="#fff" stroke-width="1.5"/>
+          <text x="${Math.max(42, 130 - freezeShiftPx - 12)}" y="36" font-size="10" fill="#0284c7" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">Tf ${Tf.toFixed(1)}°C</text>
+
+          <circle cx="${310 + boilShiftPx}" cy="50" r="6" fill="#c24d2c" stroke="#fff" stroke-width="1.5"/>
+          <text x="${Math.min(398, 310 + boilShiftPx + 12)}" y="36" font-size="10" fill="#c24d2c" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">Tb ${Tb.toFixed(1)}°C</text>
+        </g>
+      `;
+
+      document.getElementById('l2_colligativeSteps').innerHTML = `
+        <div><b class="text-[#1d232a]">1) ความเข้มข้นโมแลล (m):</b> <span class="font-mono-num">m = n(ตัวละลาย) ÷ W(ตัวทำละลาย kg) = ${L.nSolute.toFixed(2)} ÷ ${wKg.toFixed(2)} = <b>${molality.toFixed(2)} mol/kg</b></span></div>
+        <div><b class="text-[#1f6f61]">2) ความเข้มข้นอนุภาครวม (${sol.formula} แตกตัว ${sol.i} ส่วน):</b> <span class="font-mono-num">m(รวมอนุภาค) = ${molality.toFixed(2)} × ${sol.i} = <b>${effMolality.toFixed(2)} mol/kg</b></span></div>
+        <div><b class="text-[#c24d2c]">3) จุดเดือด & จุดเยือกแข็งใหม่:</b> <span class="font-mono-num">ΔTb = 0.51 × ${effMolality.toFixed(2)} = <b>+${dTb.toFixed(2)} °C</b> (เดือดที่ <b>${Tb.toFixed(2)} °C</b>) | ΔTf = 1.86 × ${effMolality.toFixed(2)} = <b>${dTf.toFixed(2)} °C</b> (แข็งตัวที่ <b>${Tf.toFixed(2)} °C</b>)</span></div>
+      `;
+    }
+
+    function drawLab2BeakerCanvas() {
+      const canvas = document.getElementById('l2_beakerCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab2;
+      const sol = SOLUTE_DATA[L.soluteIdx];
+
+      const bx = 115, bw = 230, bTop = 28, bBot = 228;
+      const waterFrac = 0.42 + (L.wSolvent / 1000) * 0.45;
+      const liqH = (bBot - bTop) * waterFrac;
+      const liqY = bBot - liqH;
+
+      // Water solvent background
+      ctx.fillStyle = '#e0f2fe';
+      ctx.fillRect(bx + 3, liqY, bw - 6, liqH - 3);
+
+      // Draw pale blue water solvent molecules (background)
+      const waterDots = Math.round(L.wSolvent / 25);
+      for (let i = 0; i < waterDots; i++) {
+        const fl = floaters[i % floaters.length];
+        const px = bx + 14 + fl.x * (bw - 28);
+        const py = liqY + 12 + fl.y * (liqH - 22);
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fillStyle = '#bae6fd';
+        ctx.fill();
+      }
+
+      // Draw Solute particles (ions or intact molecules)
+      const baseSoluteCount = Math.round(L.nSolute * 20);
+      let particleIdx = 0;
+      sol.ions.forEach(ionGroup => {
+        const groupTotal = baseSoluteCount * ionGroup.count;
+        for (let k = 0; k < groupTotal; k++) {
+          const fl = floaters[(particleIdx + 17) % floaters.length];
+          particleIdx++;
+          const px = bx + 18 + fl.x * (bw - 36);
+          const py = liqY + 14 + fl.y * (liqH - 28);
+          ctx.beginPath();
+          ctx.arc(px, py, 6.5, 0, Math.PI * 2);
+          ctx.fillStyle = ionGroup.color;
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 7.5px "IBM Plex Mono", monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(ionGroup.label.slice(0, 3), px, py + 2.5);
+        }
+      });
+
+      // Spoon animation when user clicks "ตักเติมตัวถูกละลาย"
+      if (L.spoonAnim > 0) {
+        L.spoonAnim = Math.max(0, L.spoonAnim - 0.04);
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(bx + bw / 2 - 40, 6, 65, 6);
+        ctx.beginPath();
+        ctx.arc(bx + bw / 2 + 25, 10, 12, 0, Math.PI);
+        ctx.fill();
+        // Falling solute grains
+        for (let s = 0; s < 5; s++) {
+          const fy = 18 + (1 - L.spoonAnim) * (liqY - 15) + s * 6;
+          ctx.beginPath();
+          ctx.arc(bx + bw / 2 + 20 + (s - 2) * 5, Math.min(liqY + 10, fy), 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#c24d2c';
+          ctx.fill();
+        }
+      }
+
+      // Beaker outline & graduations
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(bx, bTop);
+      ctx.lineTo(bx, bBot);
+      ctx.lineTo(bx + bw, bBot);
+      ctx.lineTo(bx + bw, bTop);
+      ctx.stroke();
+
+      // Labels on side of beaker
+      ctx.fillStyle = '#0369a1';
+      ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('● เม็ดสีฟ้าอ่อน = โมเลกุลน้ำ (ตัวทำละลาย)', 12, 245);
+      ctx.fillStyle = '#c24d2c';
+      ctx.fillText(`● เม็ดสีเข้ม = อนุภาค ${sol.formula} (ตัวถูกละลาย)`, 245, 245);
+    }
+
+    // =========================================================================
+    // LAB 3: DILUTION, ALIQUOT SAMPLING & MIXING SOLUTIONS
+    // =========================================================================
+    function updateLab3UI() {
+      const L = state.lab3;
+      document.querySelectorAll('.l3-mode-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-l3-mode') === L.mode);
+      });
+
+      const eyebrow = document.getElementById('l3_stageEyebrow');
+      const title = document.getElementById('l3_stageTitle');
+      const badge = document.getElementById('l3_stageBadge');
+      const toolbar = document.getElementById('l3_actionToolbar');
+      const caption = document.getElementById('l3_stageCaption');
+      const rTitle = document.getElementById('l3_rightTitle');
+      const rControls = document.getElementById('l3_rightControls');
+      const rBreakdown = document.getElementById('l3_rightBreakdown');
+      const tipBox = document.getElementById('l3_examTipBox');
+
+      if (L.mode === 'dilute') {
+        const c1 = L.dilute_n / (L.dilute_V0 / 1000);
+        const c2 = L.dilute_n / (L.dilute_V / 1000);
+        const waterAdded = L.dilute_V - L.dilute_V0;
+
+        eyebrow.textContent = 'STATION 01 / DILUTION LAB (การเจือจาง)';
+        title.textContent = 'กดเติมน้ำกลั่น: ปริมาตรเพิ่มขึ้น ความเข้มข้นลดลง แต่โมลเท่าเดิม!';
+        badge.textContent = 'c₁V₁ = c₂V₂ (n คงที่)';
+
+        toolbar.innerHTML = `
+          <button id="l3_btnPour100" class="btn-teal">กดเติมน้ำกลั่น +100 cm³</button>
+          <button id="l3_btnPourDouble" class="btn-terra">เติมน้ำให้ปริมาตรเป็น 2 เท่า</button>
+          <button id="l3_btnResetDilute" class="btn-outline-warm">ย้อนกลับก่อนเติมน้ำ (${L.dilute_V0} cm³)</button>
+        `;
+
+        rTitle.textContent = 'ปรับสารละลายเริ่มต้นก่อนเจือจาง';
+        rControls.innerHTML = `
+          <div>
+            <div class="flex justify-between text-xs font-semibold">
+              <span>จำนวนโมลตัวละลายในบีกเกอร์ (n คงที่)</span>
+              <span class="font-mono-num text-[#c24d2c] font-bold">${L.dilute_n.toFixed(2)} mol</span>
+            </div>
+            <input type="range" id="l3_sl_dn" class="exp-slider" min="0.10" max="0.80" step="0.05" value="${L.dilute_n}">
+          </div>
+          <div>
+            <div class="flex justify-between text-xs font-semibold">
+              <span>ปริมาตรสารละลายรวมขณะนี้ (V₂)</span>
+              <span class="font-mono-num text-[#1f6f61] font-bold">${L.dilute_V} cm³ (เติมน้ำไป ${waterAdded} cm³)</span>
+            </div>
+            <input type="range" id="l3_sl_dv" class="exp-slider" min="200" max="1000" step="50" value="${L.dilute_V}">
+          </div>
+        `;
+
+        rBreakdown.innerHTML = `
+          <div class="p-3 rounded-xl bg-white border border-[#e4dfd5]">
+            <div class="font-bold text-[#6e6a61] text-xs">สถานะเริ่มต้น (ก่อนเติมน้ำ):</div>
+            <div class="font-mono-num text-sm mt-0.5">V₁ = <b>${L.dilute_V0} cm³</b> · ความเข้มข้น c₁ = <b>${c1.toFixed(2)} mol/dm³</b> · โมล n = <b>${L.dilute_n.toFixed(2)} mol</b></div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
+            <div class="font-bold text-[#c24d2c] text-xs">หลังเติมน้ำอีก ${waterAdded} cm³ (ปริมาตรรวม V₂ = ${L.dilute_V} cm³):</div>
+            <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">c₂ = c₁V₁ ÷ V₂ = (${c1.toFixed(2)} × ${L.dilute_V0}) ÷ ${L.dilute_V} = <b>${c2.toFixed(2)} mol/dm³</b></div>
+            <div class="text-xs text-[#1d232a] mt-1">✓ จำนวนเม็ดตัวละลายในบีกเกอร์ยังคงเท่ากับ <b>${L.dilute_n.toFixed(2)} mol</b> เท่าเดิม!</div>
+          </div>
+        `;
+
+        caption.innerHTML = `สังเกตในบีกเกอร์: เมื่อกด <b>"กดเติมน้ำกลั่น"</b> ระดับน้ำจะสูงขึ้น สีของสารละลายจะจางลง แต่จำนวนเม็ดสีส้ม (โมลตัวละลาย) ในบีกเกอร์มีจำนวนเม็ดเท่าเดิมเป๊ะ!`;
+        tipBox.innerHTML = `<b>กับดักข้อสอบเจือจาง (เช่น ข้อ 72):</b> ในสูตร <code>c₁V₁ = c₂V₂</code> ตัวแปร <b>V₂ คือปริมาตรรวมสุดท้าย</b> ดังนั้นถ้าโจทย์ถามว่า <i>"ต้องเติมน้ำอีกกี่ cm³"</i> ต้องนำ <b>V₂ − V₁ = ${L.dilute_V} − ${L.dilute_V0} = ${waterAdded} cm³</b>`;
+
+        document.getElementById('l3_btnPour100').addEventListener('click', () => {
+          L.dilute_V = Math.min(1000, L.dilute_V + 100);
+          L.pourWaterAnim = 1.0;
+          updateLab3UI();
+        });
+        document.getElementById('l3_btnPourDouble').addEventListener('click', () => {
+          L.dilute_V = Math.min(1000, L.dilute_V * 2);
+          L.pourWaterAnim = 1.0;
+          updateLab3UI();
+        });
+        document.getElementById('l3_btnResetDilute').addEventListener('click', () => {
+          L.dilute_V = L.dilute_V0;
+          updateLab3UI();
+        });
+        document.getElementById('l3_sl_dn').addEventListener('input', e => {
+          L.dilute_n = parseFloat(e.target.value);
+          updateLab3UI();
+        });
+        document.getElementById('l3_sl_dv').addEventListener('input', e => {
+          L.dilute_V = parseInt(e.target.value, 10);
+          updateLab3UI();
+        });
+
+      } else if (L.mode === 'aliquot') {
+        const nStock = L.aliq_c * (L.aliq_Vstock / 1000);
+        const nTake = L.aliq_c * (L.aliq_Vtake / 1000);
+        const nRemain = nStock - nTake;
+
+        eyebrow.textContent = 'STATION 02 / ALIQUOT SAMPLING (การตักแบ่งสารละลาย)';
+        title.textContent = 'ตักแบ่งสารละลายออกมา: ความเข้มข้นเท่าเดิมเป๊ะ แต่จำนวนโมลลดลง!';
+        badge.textContent = 'c(ที่ตักมา) = c(ขวดเดิม)';
+
+        toolbar.innerHTML = `
+          <button id="l3_btnScoop100" class="btn-terra">ตักแบ่งออกมา 100 cm³</button>
+          <button id="l3_btnScoop200" class="btn-teal">ตักแบ่งออกมา 250 cm³</button>
+          <button id="l3_btnScoop50" class="btn-outline-warm">ตักแบ่งออกมา 50 cm³</button>
+        `;
+
+        rTitle.textContent = 'ปรับความเข้มข้นขวดแม่และปริมาตรที่ตักแบ่ง';
+        rControls.innerHTML = `
+          <div>
+            <div class="flex justify-between text-xs font-semibold">
+              <span>ความเข้มข้นของสารละลายขวดเดิม (c)</span>
+              <span class="font-mono-num text-[#c24d2c] font-bold">${L.aliq_c.toFixed(2)} mol/dm³ (M)</span>
+            </div>
+            <input type="range" id="l3_sl_ac" class="exp-slider" min="0.50" max="4.00" step="0.25" value="${L.aliq_c}">
+          </div>
+          <div>
+            <div class="flex justify-between text-xs font-semibold">
+              <span>ปริมาตรที่ตักแบ่งใส่บีกเกอร์เล็ก (V ที่แบ่งมา)</span>
+              <span class="font-mono-num text-[#1f6f61] font-bold">${L.aliq_Vtake} cm³ (${(L.aliq_Vtake / 1000).toFixed(2)} dm³)</span>
+            </div>
+            <input type="range" id="l3_sl_av" class="exp-slider" min="50" max="400" step="50" value="${L.aliq_Vtake}">
+          </div>
+        `;
+
+        rBreakdown.innerHTML = `
+          <div class="p-3 rounded-xl bg-white border border-[#e4dfd5]">
+            <div class="font-bold text-[#6e6a61] text-xs">1) บีกเกอร์ใหญ่ต้นทาง (${L.aliq_Vstock} cm³):</div>
+            <div class="font-mono-num text-sm mt-0.5">ความเข้มข้น = <b>${L.aliq_c.toFixed(2)} M</b> · มีตัวละลายรวม = ${L.aliq_c.toFixed(2)} × 1.0 = <b>${nStock.toFixed(2)} mol</b></div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
+            <div class="font-bold text-[#c24d2c] text-xs">2) บีกเกอร์เล็กที่ตักแบ่งออกมา (${L.aliq_Vtake} cm³):</div>
+            <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">ความเข้มข้น = <b>${L.aliq_c.toFixed(2)} M เท่าเดิม!</b> (สีความเข้มเท่ากันเป๊ะ)</div>
+            <div class="font-mono-num text-xs text-[#1d232a] mt-1">แต่มีโมลตัวละลายติดมาเพียง n = c × V = ${L.aliq_c.toFixed(2)} × ${(L.aliq_Vtake / 1000).toFixed(2)} = <b>${nTake.toFixed(3)} mol</b> (เหลือในบีกเกอร์ใหญ่ ${nRemain.toFixed(3)} mol)</div>
+          </div>
+        `;
+
+        caption.innerHTML = `เปรียบเทียบกับชีวิตจริง: เหมือนตักน้ำหวานจากเหยือกใหญ่ใส่แก้วเล็ก <b>"ความหวาน (ความเข้มข้น c) ในแก้วเล็กเท่ากับเหยือกใหญ่เป๊ะ"</b> แต่ปริมาณน้ำตาล (จำนวนโมล n) ในแก้วเล็กมีน้อยกว่าตามสัดส่วนปริมาตรที่ตักมา`;
+        tipBox.innerHTML = `<b>ตรงกับโจทย์ข้อ 74 (หน้า 37):</b> สารละลายที่ตักแบ่งออกมาจะมี <b>ความเข้มข้น (mol/dm³) เท่ากับสารละลายก่อนแบ่งเสมอ</b> จึงคำนวณหาโมลตัวละลายในส่วนที่แบ่งมาได้จาก <code>n = c × V(ที่แบ่งเป็น dm³)</code>`;
+
+        document.getElementById('l3_btnScoop100').addEventListener('click', () => { L.aliq_Vtake = 100; L.scoopAnim = 1.0; updateLab3UI(); });
+        document.getElementById('l3_btnScoop200').addEventListener('click', () => { L.aliq_Vtake = 250; L.scoopAnim = 1.0; updateLab3UI(); });
+        document.getElementById('l3_btnScoop50').addEventListener('click', () => { L.aliq_Vtake = 50; L.scoopAnim = 1.0; updateLab3UI(); });
+        document.getElementById('l3_sl_ac').addEventListener('input', e => { L.aliq_c = parseFloat(e.target.value); updateLab3UI(); });
+        document.getElementById('l3_sl_av').addEventListener('input', e => { L.aliq_Vtake = parseInt(e.target.value, 10); L.scoopAnim = 1.0; updateLab3UI(); });
+
+      } else {
+        // Mode: Mixing 2 Beakers
+        const n1 = L.mix_c1 * (L.mix_v1 / 1000);
+        const n2 = L.mix_c2 * (L.mix_v2 / 1000);
+        const vTotal = L.mix_v1 + L.mix_v2;
+        const nTotal = n1 + n2;
+        const cFinal = nTotal / (vTotal / 1000);
+
+        eyebrow.textContent = 'STATION 03 / SOLUTION MIXING (การเทผสมสารละลาย)';
+        title.textContent = 'กดเทบีกเกอร์ที่ 1 และ 2 ผสมกัน: โมลรวมกัน และปริมาตรรวมกัน';
+        badge.textContent = 'c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)';
+
+        toolbar.innerHTML = `
+          <button id="l3_btnPourMix" class="btn-terra">กดเทผสมรวมกัน!</button>
+          <button id="l3_btnUnmix" class="btn-outline-warm">แยกกลับเป็น 2 บีกเกอร์ก่อนผสม</button>
+        `;
+
+        rTitle.textContent = 'ตั้งค่าบีกเกอร์ใบที่ 1 และใบที่ 2';
+        rControls.innerHTML = `
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <div class="text-xs font-bold text-[#c24d2c]">บีกเกอร์ 1: c₁ = ${L.mix_c1.toFixed(1)} M</div>
+              <input type="range" id="l3_sl_mc1" class="exp-slider" min="0.5" max="3.0" step="0.5" value="${L.mix_c1}">
+              <div class="text-xs font-bold text-[#c24d2c] mt-1">ปริมาตร V₁ = ${L.mix_v1} cm³</div>
+              <input type="range" id="l3_sl_mv1" class="exp-slider" min="100" max="400" step="50" value="${L.mix_v1}">
+            </div>
+            <div>
+              <div class="text-xs font-bold text-[#1f6f61]">บีกเกอร์ 2: c₂ = ${L.mix_c2.toFixed(1)} M</div>
+              <input type="range" id="l3_sl_mc2" class="exp-slider" min="0.5" max="3.0" step="0.5" value="${L.mix_c2}">
+              <div class="text-xs font-bold text-[#1f6f61] mt-1">ปริมาตร V₂ = ${L.mix_v2} cm³</div>
+              <input type="range" id="l3_sl_mv2" class="exp-slider" min="100" max="400" step="50" value="${L.mix_v2}">
+            </div>
+          </div>
+        `;
+
+        rBreakdown.innerHTML = `
+          <div class="p-3 rounded-xl bg-white border border-[#e4dfd5]">
+            <div class="font-bold text-[#1d232a] text-xs">ขั้นที่ 1 หาโมลตัวละลายจากแต่ละบีกเกอร์:</div>
+            <div class="font-mono-num text-xs mt-1">• บีกเกอร์ 1: n₁ = ${L.mix_c1.toFixed(1)} × ${(L.mix_v1 / 1000).toFixed(2)} = <b>${n1.toFixed(2)} mol</b></div>
+            <div class="font-mono-num text-xs">• บีกเกอร์ 2: n₂ = ${L.mix_c2.toFixed(1)} × ${(L.mix_v2 / 1000).toFixed(2)} = <b>${n2.toFixed(2)} mol</b></div>
+          </div>
+          <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
+            <div class="font-bold text-[#c24d2c] text-xs">ขั้นที่ 2 รวมโมลและหารด้วยปริมาตรรวม (${vTotal} cm³):</div>
+            <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">c(ผสม) = (${n1.toFixed(2)} + ${n2.toFixed(2)}) ÷ ${(vTotal / 1000).toFixed(2)} = <b>${cFinal.toFixed(2)} mol/dm³</b></div>
+          </div>
+        `;
+
+        caption.innerHTML = `เมื่อกด <b>"กดเทผสมรวมกัน!"</b> เม็ดตัวละลายจากทั้งสองบีกเกอร์จะไหลมารวมกันในบีกเกอร์ใบกลาง ความเข้มข้นหลังผสม (${cFinal.toFixed(2)} M) จะอยู่ระหว่างความเข้มข้นของบีกเกอร์ทั้งสองเสมอ`;
+        tipBox.innerHTML = `<b>ทริกคิดเร็ว:</b> สามารถแทนค่าหน่วย cm³ ลงในสูตร <code>c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)</code> ได้เลยโดยไม่ต้องแปลงเป็น dm³ เพราะหน่วยปริมาตรตัวเศษกับตัวส่วนจะตัดกันเอง!`;
+
+        document.getElementById('l3_btnPourMix').addEventListener('click', () => {
+          L.mix_isMixed = true;
+          L.mixAnim = 1.0;
+          updateLab3UI();
+        });
+        document.getElementById('l3_btnUnmix').addEventListener('click', () => {
+          L.mix_isMixed = false;
+          L.mixAnim = 0;
+          updateLab3UI();
+        });
+        document.getElementById('l3_sl_mc1').addEventListener('input', e => { L.mix_c1 = parseFloat(e.target.value); updateLab3UI(); });
+        document.getElementById('l3_sl_mv1').addEventListener('input', e => { L.mix_v1 = parseInt(e.target.value, 10); updateLab3UI(); });
+        document.getElementById('l3_sl_mc2').addEventListener('input', e => { L.mix_c2 = parseFloat(e.target.value); updateLab3UI(); });
+        document.getElementById('l3_sl_mv2').addEventListener('input', e => { L.mix_v2 = parseInt(e.target.value, 10); updateLab3UI(); });
+      }
+    }
+
+    function drawLab3Canvas() {
+      const canvas = document.getElementById('l3_labCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab3;
+
+      if (L.mode === 'dilute') {
+        const bx = 175, bw = 190, bTop = 55, bBot = 265;
+        const fracV = Math.max(0.20, Math.min(0.95, L.dilute_V / 1000));
+        const liqH = (bBot - bTop) * fracV;
+        const liqY = bBot - liqH;
+        const c = L.dilute_n / (L.dilute_V / 1000);
+
+        // Pouring water pitcher animation at top right
+        if (L.pourWaterAnim > 0) {
+          L.pourWaterAnim = Math.max(0, L.pourWaterAnim - 0.03);
+          // Water stream
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(bx + bw / 2 - 4, 20, 8, liqY - 20);
+          // Pitcher spout
+          ctx.fillStyle = '#0284c7';
+          ctx.beginPath();
+          ctx.roundRect(bx + bw / 2 - 20, 4, 48, 22, 6);
+          ctx.fill();
+        }
+
+        // Solution color opacity scales with concentration c!
+        const alpha = Math.min(0.55, Math.max(0.08, c * 0.22));
+        ctx.fillStyle = '#c24d2c';
+        ctx.globalAlpha = alpha;
+        ctx.fillRect(bx + 3, liqY, bw - 6, liqH - 3);
+        ctx.globalAlpha = 1.0;
+
+        // Constant number of solute particles (depends ONLY on dilute_n!)
+        const numDots = Math.round(L.dilute_n * 35);
+        for (let i = 0; i < numDots; i++) {
+          const fl = floaters[i % floaters.length];
+          const px = bx + 14 + fl.x * (bw - 28);
+          const py = liqY + 10 + fl.y * Math.max(12, liqH - 20);
+          ctx.beginPath();
+          ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#c24d2c';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // Beaker walls & volume ticks
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(bx, bTop); ctx.lineTo(bx, bBot); ctx.lineTo(bx + bw, bBot); ctx.lineTo(bx + bw, bTop);
+        ctx.stroke();
+
+        // Readout labels next to beaker
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(`V = ${L.dilute_V} cm³`, bx + bw + 14, liqY + 6);
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillText(`c = ${c.toFixed(2)} M`, bx + bw + 14, liqY + 24);
+        ctx.fillStyle = '#1f6f61';
+        ctx.fillText(`อนุภาค = ${numDots} เม็ดคงที่!`, bx + bw + 14, liqY + 42);
+
+      } else if (L.mode === 'aliquot') {
+        // Left: Stock Beaker (1000 cm3) | Middle: Ladle/Pipette transfer | Right: Small Scooped Beaker
+        const c = L.aliq_c;
+        const alpha = Math.min(0.55, Math.max(0.12, c * 0.16));
+
+        // 1) Stock Beaker (Left)
+        const b1x = 55, b1w = 165, b1Top = 55, b1Bot = 255;
+        const remFrac = (L.aliq_Vstock - L.aliq_Vtake) / 1000;
+        const liq1H = (b1Bot - b1Top) * remFrac;
+        const liq1Y = b1Bot - liq1H;
+
+        ctx.fillStyle = '#c24d2c';
+        ctx.globalAlpha = alpha;
+        ctx.fillRect(b1x + 3, liq1Y, b1w - 6, liq1H - 3);
+        ctx.globalAlpha = 1.0;
+
+        const dots1 = Math.round(c * remFrac * 14);
+        for (let i = 0; i < dots1; i++) {
+          const fl = floaters[i % floaters.length];
+          ctx.beginPath();
+          ctx.arc(b1x + 12 + fl.x * (b1w - 24), liq1Y + 8 + fl.y * (liq1H - 16), 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#c24d2c';
+          ctx.fill();
+        }
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(b1x, b1Top); ctx.lineTo(b1x, b1Bot); ctx.lineTo(b1x + b1w, b1Bot); ctx.lineTo(b1x + b1w, b1Top);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 12px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`บีกเกอร์เดิม (เหลือ ${L.aliq_Vstock - L.aliq_Vtake} cm³)`, b1x + b1w / 2, 278);
+        ctx.fillStyle = '#c24d2c';
+        ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+        ctx.fillText(`ความเข้มข้น = ${c.toFixed(2)} M`, b1x + b1w / 2, 42);
+
+        // Curved transfer arrow & pipette icon in center
+        ctx.strokeStyle = '#1f6f61';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([5, 3]);
+        ctx.beginPath();
+        ctx.moveTo(b1x + b1w + 12, 110);
+        ctx.quadraticCurveTo(285, 45, 345, 110);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#1f6f61';
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText(`ตักแบ่งมา ${L.aliq_Vtake} cm³`, 285, 65);
+
+        // 2) Small Scooped Beaker (Right) - SAME COLOR OPACITY & PARTICLE DENSITY!
+        const b2x = 355, b2w = 130, b2Top = 105, b2Bot = 255;
+        const takeFrac = Math.min(0.92, (L.aliq_Vtake / 450));
+        const liq2H = (b2Bot - b2Top) * takeFrac;
+        const liq2Y = b2Bot - liq2H;
+
+        ctx.fillStyle = '#c24d2c';
+        ctx.globalAlpha = alpha; // EXACT SAME SHADE!
+        ctx.fillRect(b2x + 3, liq2Y, b2w - 6, liq2H - 3);
+        ctx.globalAlpha = 1.0;
+
+        const dots2 = Math.max(2, Math.round(c * (L.aliq_Vtake / 1000) * 14));
+        for (let i = 0; i < dots2; i++) {
+          const fl = floaters[(i + 25) % floaters.length];
+          ctx.beginPath();
+          ctx.arc(b2x + 12 + fl.x * (b2w - 24), liq2Y + 8 + fl.y * Math.max(8, liq2H - 16), 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#c24d2c';
+          ctx.fill();
+        }
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(b2x, b2Top); ctx.lineTo(b2x, b2Bot); ctx.lineTo(b2x + b2w, b2Bot); ctx.lineTo(b2x + b2w, b2Top);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 12px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText(`ส่วนที่ตักมา (${L.aliq_Vtake} cm³)`, b2x + b2w / 2, 278);
+        ctx.fillStyle = '#c24d2c';
+        ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+        ctx.fillText(`ความเข้มข้น = ${c.toFixed(2)} M เท่ากัน!`, b2x + b2w / 2, 92);
+
+      } else {
+        // Mode: Mixing 2 Beakers into a Central Combined Beaker
+        const n1 = L.mix_c1 * (L.mix_v1 / 1000);
+        const n2 = L.mix_c2 * (L.mix_v2 / 1000);
+        const vTotal = L.mix_v1 + L.mix_v2;
+        const cFinal = (n1 + n2) / (vTotal / 1000);
+
+        if (L.mixAnim > 0) L.mixAnim = Math.max(0, L.mixAnim - 0.03);
+
+        // Top Left Beaker 1
+        drawMiniBeaker(ctx, 35, 35, 110, 125, L.mix_v1 / 450, L.mix_c1, '#c24d2c', `บีกเกอร์ 1 (${L.mix_v1} cm³)`, `${L.mix_c1.toFixed(1)} M`);
+        // Top Right Beaker 2
+        drawMiniBeaker(ctx, 395, 35, 110, 125, L.mix_v2 / 450, L.mix_c2, '#1f6f61', `บีกเกอร์ 2 (${L.mix_v2} cm³)`, `${L.mix_c2.toFixed(1)} M`);
+
+        // Pouring arrows toward center mixed beaker
+        ctx.strokeStyle = '#c24d2c';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(150, 95); ctx.lineTo(195, 145); ctx.stroke();
+        ctx.strokeStyle = '#1f6f61';
+        ctx.beginPath(); ctx.moveTo(390, 95); ctx.lineTo(345, 145); ctx.stroke();
+
+        // Center Combined Beaker
+        const mbx = 195, mbw = 150, mbTop = 95, mbBot = 260;
+        if (L.mix_isMixed) {
+          const fracTotal = Math.min(0.92, vTotal / 850);
+          const liqH = (mbBot - mbTop) * fracTotal;
+          const liqY = mbBot - liqH;
+          const alpha = Math.min(0.5, Math.max(0.12, cFinal * 0.16));
+
+          ctx.fillStyle = '#b45309';
+          ctx.globalAlpha = alpha;
+          ctx.fillRect(mbx + 3, liqY, mbw - 6, liqH - 3);
+          ctx.globalAlpha = 1.0;
+
+          const dots1 = Math.round(n1 * 18);
+          const dots2 = Math.round(n2 * 18);
+          for (let i = 0; i < dots1 + dots2; i++) {
+            const fl = floaters[i % floaters.length];
+            ctx.beginPath();
+            ctx.arc(mbx + 12 + fl.x * (mbw - 24), liqY + 8 + fl.y * (liqH - 16), 4, 0, Math.PI * 2);
+            ctx.fillStyle = i < dots1 ? '#c24d2c' : '#1f6f61';
+            ctx.fill();
+          }
+        }
+
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(mbx, mbTop); ctx.lineTo(mbx, mbBot); ctx.lineTo(mbx + mbw, mbBot); ctx.lineTo(mbx + mbw, mbTop);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 12px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(L.mix_isMixed ? `บีกเกอร์ผสมรวม (${vTotal} cm³) → c = ${cFinal.toFixed(2)} M` : 'กด "เทผสมรวมกัน" เพื่อเทลงบีกเกอร์กลาง', 270, 282);
+      }
+    }
+
+    function drawMiniBeaker(ctx, x, y, w, h, frac, c, color, label1, label2) {
+      const liqH = h * Math.max(0.2, Math.min(0.9, frac));
+      const liqY = y + h - liqH;
+      ctx.fillStyle = color;
+      ctx.globalAlpha = Math.min(0.5, Math.max(0.1, c * 0.16));
+      ctx.fillRect(x + 2, liqY, w - 4, liqH - 2);
+      ctx.globalAlpha = 1.0;
+
+      const dots = Math.max(3, Math.round(c * frac * 14));
+      for (let i = 0; i < dots; i++) {
+        const fl = floaters[(i + 11) % floaters.length];
+        ctx.beginPath();
+        ctx.arc(x + 10 + fl.x * (w - 20), liqY + 6 + fl.y * Math.max(8, liqH - 12), 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y);
+      ctx.stroke();
+
+      ctx.fillStyle = '#1d232a';
+      ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label1, x + w / 2, y + h + 18);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+      ctx.fillText(label2, x + w / 2, y - 6);
+    }
+
+    // =========================================================================
+    // LAB 4: SEMI-ANIMATED LIMITING REAGENT + MOLE RATIO & MASS RATIO LAB
+    // =========================================================================
+    const MOLE_RATIO_REACTIONS = [
+      {
+        eq: '2H₂(g) + O₂(g) → 2H₂O(g)',
+        A: 'H₂', B: 'O₂', P: 'H₂O',
+        a: 2, b: 1, p: 2,
+        mwA: 2.0, mwB: 32.0, mwP: 18.0,
+        colorA: '#0284c7', colorB: '#c24d2c', colorP: '#1f6f61',
+        note: 'อัตราส่วนโมล H₂ : O₂ : H₂O = 2 : 1 : 2 (เท่ากับอัตราส่วนปริมาตรแก๊ส) แต่คิดเป็นอัตราส่วนมวล = 4 g : 32 g : 36 g (1 : 8 : 9)'
+      },
+      {
+        eq: 'N₂(g) + 3H₂(g) → 2NH₃(g)',
+        A: 'N₂', B: 'H₂', P: 'NH₃',
+        a: 1, b: 3, p: 2,
+        mwA: 28.0, mwB: 2.0, mwP: 17.0,
+        colorA: '#4f46e5', colorB: '#0284c7', colorP: '#1f6f61',
+        note: 'อัตราส่วนโมล N₂ : H₂ : NH₃ = 1 : 3 : 2 แต่คิดเป็นอัตราส่วนมวล = 28 g : 6 g : 34 g (มวลรวมก่อน = หลัง = 34 g)'
+      },
+      {
+        eq: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(g)',
+        A: 'CH₄', B: 'O₂', P: 'CO₂ + 2H₂O',
+        a: 1, b: 2, p: 3,
+        mwA: 16.0, mwB: 32.0, mwP: 80.0 / 3,
+        colorA: '#334155', colorB: '#c24d2c', colorP: '#7c3aed',
+        note: 'CH₄ 1 mol (16 g) ทำปฏิกิกิริยาพอดีกับ O₂ 2 mol (64 g) ได้ผลิตภัณฑ์รวม 80 g พอดี'
+      }
+    ];
+
+    const MASS_RATIO_REACTIONS = [
+      {
+        title: 'Fe + S → FeS (สัดส่วนโดยมวล Fe : S = 7 : 4)',
+        A: 'Fe (เหล็ก)', B: 'S (กำมะถัน)', P: 'FeS',
+        rA: 7, rB: 4,
+        defaultA: 14.0, defaultB: 10.0,
+        colorA: '#475569', colorB: '#eab308', colorP: '#c24d2c',
+        refSource: 'ตรงกับโจทย์ข้อ 90 หน้า 45'
+      },
+      {
+        title: '2H₂ + O₂ → 2H₂O (สัดส่วนโดยมวล H : O = 1 : 8)',
+        A: 'H (ไฮโดรเจน)', B: 'O (ออกซิเจน)', P: 'H₂O (น้ำ)',
+        rA: 1, rB: 8,
+        defaultA: 6.0, defaultB: 48.0,
+        colorA: '#0284c7', colorB: '#c24d2c', colorP: '#1f6f61',
+        refSource: 'ตรงกับรูปที่ 4.22 หน้า 44'
+      },
+      {
+        title: '2Mg + O₂ → 2MgO (สัดส่วนโดยมวล Mg : O = 3 : 2)',
+        A: 'Mg (แมกนีเซียม)', B: 'O (ออกซิเจน)', P: 'MgO',
+        rA: 3, rB: 2,
+        defaultA: 9.0, defaultB: 4.0,
+        colorA: '#64748b', colorB: '#c24d2c', colorP: '#0d9488',
+        refSource: 'ตรงกับโจทย์ข้อ 89 และ 94 หน้า 45–46'
+      },
+      {
+        title: 'C + O₂ → CO₂ (สัดส่วนโดยมวล C : O = 3 : 8)',
+        A: 'C (คาร์บอน)', B: 'O (ออกซิเจน)', P: 'CO₂',
+        rA: 3, rB: 8,
+        defaultA: 15.0, defaultB: 40.0,
+        colorA: '#1e293b', colorB: '#c24d2c', colorP: '#7c3aed',
+        refSource: 'ตรงกับตัวอย่างการคำนวณ 1 หน้า 44'
+      }
+    ];
+
+    function stopLab4AutoPlay() {
+      if (state.lab4.autoPlayTimer) {
+        clearInterval(state.lab4.autoPlayTimer);
+        state.lab4.autoPlayTimer = null;
+      }
+    }
+
+    function triggerSinglePairingStep() {
+      const L = state.lab4;
+      const rxn = PAIRING_REACTIONS[L.rxnIdx];
+      const maxSets = Math.min(Math.floor(L.countA / rxn.a), Math.floor(L.countB / rxn.b));
+
+      if (L.isAnimatingStep) return;
+      if (L.completedSets >= maxSets) {
+        stopLab4AutoPlay();
+        updateLab4UI();
+        return;
+      }
+
+      L.isAnimatingStep = true;
+      L.animProgress = 0.0;
+      updateLab4UI();
+    }
+
+    function updateLab4UI() {
+      const L = state.lab4;
+      const rxn = PAIRING_REACTIONS[L.rxnIdx];
+
+      document.getElementById('l4_labelA').textContent = `${rxn.nameA} (ใช้ครั้งละ ${rxn.a})`;
+      document.getElementById('l4_labelB').textContent = `${rxn.nameB} (ใช้ครั้งละ ${rxn.b})`;
+      document.getElementById('l4_valA').textContent = `${L.countA} ${rxn.unit}`;
+      document.getElementById('l4_valB').textContent = `${L.countB} ${rxn.unit}`;
+
+      const setsFromA = Math.floor(L.countA / rxn.a);
+      const setsFromB = Math.floor(L.countB / rxn.b);
+      const maxSets = Math.min(setsFromA, setsFromB);
+      if (L.completedSets > maxSets) L.completedSets = maxSets;
+
+      const usedA = L.completedSets * rxn.a;
+      const usedB = L.completedSets * rxn.b;
+      const remA = L.countA - usedA;
+      const remB = L.countB - usedB;
+      const prodNow = L.completedSets * rxn.p;
+      const maxProd = maxSets * rxn.p;
+
+      const ratioA = L.countA / rxn.a;
+      const ratioB = L.countB / rxn.b;
+      const limName = Math.abs(ratioA - ratioB) < 1e-5
+        ? 'หมดพอดีทั้งคู่'
+        : (ratioA < ratioB ? rxn.nameA : rxn.nameB);
+
+      const statusBadge = document.getElementById('l4_animStatusBadge');
+      if (L.isAnimatingStep) {
+        statusBadge.textContent = `กำลังจับคู่ชุดที่ ${L.completedSets + 1} / ${maxSets}...`;
+        statusBadge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fbece7] text-[#c24d2c]';
+      } else if (L.completedSets >= maxSets && maxSets > 0) {
+        statusBadge.textContent = `จบปฏิกิริยา (${limName} หมด!)`;
+        statusBadge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e6f3f0] text-[#1f6f61]';
+      } else {
+        statusBadge.textContent = `จับคู่แล้ว ${L.completedSets} / ${maxSets} ชุด`;
+        statusBadge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#faf8f4] border border-[#e4dfd5] text-[#6e6a61]';
+      }
+
+      document.getElementById('l4_limitingExplain').innerHTML = `
+        <div><b class="text-[#c24d2c]">ขั้นที่ 1 เทียบ โมล ÷ เลขสัมประสิทธิ์:</b> <span class="font-mono-num">${rxn.nameA} = ${L.countA} ÷ ${rxn.a} = <b>${ratioA.toFixed(2)}</b>  |  ${rxn.nameB} = ${L.countB} ÷ ${rxn.b} = <b>${ratioB.toFixed(2)}</b></span></div>
+        <div><b class="text-[#1f6f61]">ขั้นที่ 2 ตัวที่กำหนดปริมาณ:</b> <b>${limName}</b> (จับคู่เกิดปฏิกิริยาได้สูงสุด <b>${maxSets} ชุด</b> → ได้ ${rxn.nameP} รวม <b>${maxProd} ${rxn.unit}</b>)</div>
+        <div><b class="text-[#1d232a]">สถานะปัจจุบัน (ทำปฏิกิริยาไปแล้ว ${L.completedSets} ชุด):</b> เกิด ${rxn.nameP} = <b>${prodNow} ${rxn.unit}</b> · คงเหลือ ${rxn.nameA} = <b>${remA}</b>, คงเหลือ ${rxn.nameB} = <b>${remB}</b></div>
+      `;
+
+      // Card 2: Mole Ratio vs Mass Ratio
+      document.querySelectorAll('.l4-heatmode-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-l4-heatmode') === L.heatMode);
+      });
+
+      const ratioControls = document.getElementById('l4_ratioControls');
+      const heatToolbar = document.getElementById('l4_heatToolbar');
+      const heatBreakdown = document.getElementById('l4_heatBreakdown');
+      const heatFooter = document.getElementById('l4_heatFooter');
+
+      if (L.heatMode === 'mole_ratio') {
+        const mr = MOLE_RATIO_REACTIONS[L.moleRxnIdx];
+        const k = L.moleScaleFactor;
+        const nA = mr.a * k;
+        const nB = mr.b * k;
+        const nP = mr.p * k;
+        const gA = nA * mr.mwA;
+        const gB = nB * mr.mwB;
+        const gTotal = gA + gB;
+
+        ratioControls.innerHTML = `
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+            <div>
+              <label class="block text-xs font-bold text-[#1d232a] mb-1">เลือกสมการเคมี:</label>
+              <select id="l4_moleRxnSelect" class="select-warm w-full font-semibold">
+                ${MOLE_RATIO_REACTIONS.map((r, i) => `<option value="${i}" ${L.moleRxnIdx === i ? 'selected' : ''}>${r.eq}</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-bold text-[#1d232a] mb-1">
+                <span>คูณจำนวนเท่าของสมการ (k)</span>
+                <span class="font-mono-num text-[#c24d2c]">× ${k.toFixed(1)} เท่า</span>
+              </div>
+              <input type="range" id="l4_moleFactorSlider" class="exp-slider" min="0.5" max="3.0" step="0.5" value="${k}">
+            </div>
+          </div>
+        `;
+
+        heatToolbar.innerHTML = `
+          <button id="l4_btnReplayMoleAnim" class="btn-terra !py-1.5 !px-3.5 !text-xs">กดทำปฏิกิริยาเทียบอัตราส่วนโมล</button>
+          <button id="l4_btnSetFactor1" class="btn-outline-warm !py-1.5 !px-3 !text-xs">ตั้งค่าตามเลขหน้าสมการ (×1.0)</button>
+          <button id="l4_btnSetFactor2" class="btn-outline-warm !py-1.5 !px-3 !text-xs">เพิ่มเป็น 2 เท่า (×2.0)</button>
+        `;
+
+        heatBreakdown.innerHTML = `
+          <div><b class="text-[#1f6f61]">อัตราส่วนโดยโมล (และปริมาตรแก๊สที่ T, P เดียวกัน):</b> <span class="font-mono-num">${mr.A} : ${mr.B} : ผลิตภัณฑ์ = <b>${mr.a} : ${mr.b} : ${mr.p}</b> → เมื่อคูณ ${k.toFixed(1)} เท่า ใช้ <b>${nA.toFixed(1)} mol : ${nB.toFixed(1)} mol → ได้ ${nP.toFixed(1)} mol</b></span></div>
+          <div><b class="text-[#c24d2c]">แปลงเป็นมวล (g = n × MW):</b> <span class="font-mono-num">ใช้ ${mr.A} = <b>${gA.toFixed(1)} g</b> + ${mr.B} = <b>${gB.toFixed(1)} g</b> → ได้ผลิตภัณฑ์รวม = <b>${gTotal.toFixed(1)} g</b> (มวลรวมก่อน = หลังเสมอ!)</span></div>
+          <div class="text-[#6e6a61]">${mr.note}</div>
+        `;
+        heatFooter.innerHTML = `<b>ข้อควรระวัง:</b> เลขสัมประสิทธิ์หน้าสมการบอก <b>อัตราส่วนโดยโมล</b> (และอัตราส่วนปริมาตรแก๊ส) เท่านั้น ไม่ใช่อัตราส่วนโดยมวล!`;
+
+        document.getElementById('l4_moleRxnSelect').addEventListener('change', e => {
+          L.moleRxnIdx = parseInt(e.target.value, 10);
+          L.moleReactAnim = 0.0;
+          updateLab4UI();
+        });
+        document.getElementById('l4_moleFactorSlider').addEventListener('input', e => {
+          L.moleScaleFactor = parseFloat(e.target.value);
+          updateLab4UI();
+        });
+        document.getElementById('l4_btnReplayMoleAnim').addEventListener('click', () => {
+          L.moleReactAnim = 0.0;
+        });
+        document.getElementById('l4_btnSetFactor1').addEventListener('click', () => {
+          L.moleScaleFactor = 1.0;
+          L.moleReactAnim = 0.0;
+          updateLab4UI();
+        });
+        document.getElementById('l4_btnSetFactor2').addEventListener('click', () => {
+          L.moleScaleFactor = 2.0;
+          L.moleReactAnim = 0.0;
+          updateLab4UI();
+        });
+
+      } else {
+        // Sub-mode 2: Mass Ratio (Law of Definite Proportions)
+        const mr = MASS_RATIO_REACTIONS[L.massRxnIdx];
+        const unitA = L.massA / mr.rA;
+        const unitB = L.massB / mr.rB;
+        const limitingUnit = Math.min(unitA, unitB);
+        const usedMassA = limitingUnit * mr.rA;
+        const usedMassB = limitingUnit * mr.rB;
+        const prodMass = usedMassA + usedMassB;
+        const remMassA = Math.max(0, L.massA - usedMassA);
+        const remMassB = Math.max(0, L.massB - usedMassB);
+
+        const statusMass = Math.abs(unitA - unitB) < 1e-4
+          ? 'รวมตัวกันหมดพอดีตามสัดส่วนคงที่ (ไม่เหลือสารใดเลย)'
+          : unitA < unitB
+            ? `${mr.A} หมดก่อน! เหลือ ${mr.B} = ${remMassB.toFixed(1)} g`
+            : `${mr.B} หมดก่อน! เหลือ ${mr.A} = ${remMassA.toFixed(1)} g`;
+
+        ratioControls.innerHTML = `
+          <div class="mb-2.5">
+            <label class="block text-xs font-bold text-[#1d232a] mb-1">เลือกปฏิกิริยาสัดส่วนคงที่โดยมวล (${mr.refSource}):</label>
+            <select id="l4_massRxnSelect" class="select-warm w-full font-semibold">
+              ${MASS_RATIO_REACTIONS.map((r, i) => `<option value="${i}" ${L.massRxnIdx === i ? 'selected' : ''}>${r.title}</option>`).join('')}
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <div class="flex justify-between text-xs font-bold text-[#1d232a]">
+                <span>มวล ${mr.A}</span>
+                <span class="font-mono-num text-[#c24d2c]">${L.massA.toFixed(1)} g</span>
+              </div>
+              <input type="range" id="l4_sl_massA" class="exp-slider" min="1" max="30" step="1" value="${L.massA}">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs font-bold text-[#1d232a]">
+                <span>มวล ${mr.B}</span>
+                <span class="font-mono-num text-[#1f6f61]">${L.massB.toFixed(1)} g</span>
+              </div>
+              <input type="range" id="l4_sl_massB" class="exp-slider" min="1" max="48" step="1" value="${L.massB}">
+            </div>
+          </div>
+        `;
+
+        heatToolbar.innerHTML = `
+          <button id="l4_btnReplayMassAnim" class="btn-terra !py-1.5 !px-3.5 !text-xs">กดทำปฏิกิริยาตามสัดส่วนโดยมวล</button>
+          <button id="l4_btnExactMassRatio" class="btn-teal !py-1.5 !px-3 !text-xs">ตั้งมวลให้พอดีตามสัดส่วน (${mr.rA} : ${mr.rB})</button>
+        `;
+
+        heatBreakdown.innerHTML = `
+          <div><b class="text-[#1d232a]">1) กฎสัดส่วนคงที่โดยมวล:</b> <span class="font-mono-num">${mr.A} : ${mr.B} ต้องรวมตัวกันในอัตราส่วนมวล <b>${mr.rA} : ${mr.rB}</b> เสมอ</span></div>
+          <div><b class="text-[#c24d2c]">2) เทียบสัดส่วนมวลที่ใช้จริง:</b> <span class="font-mono-num">ใช้ ${mr.A} ไป <b>${usedMassA.toFixed(1)} g</b> + ใช้ ${mr.B} ไป <b>${usedMassB.toFixed(1)} g</b> → เกิด <b>${mr.P} = ${prodMass.toFixed(1)} g</b></span></div>
+          <div><b class="text-[#1f6f61]">3) สารที่เหลือ:</b> <b>${statusMass}</b></div>
+        `;
+        heatFooter.innerHTML = `<b>กฎสัดส่วนคงที่ (Joseph Proust):</b> สารประกอบชนิดเดียวกันจะมีอัตราส่วนโดยมวลของธาตุองค์ประกอบคงที่เสมอ ไม่ว่าจะเตรียมด้วยวิธีใด`;
+
+        document.getElementById('l4_massRxnSelect').addEventListener('change', e => {
+          const idx = parseInt(e.target.value, 10);
+          L.massRxnIdx = idx;
+          L.massA = MASS_RATIO_REACTIONS[idx].defaultA;
+          L.massB = MASS_RATIO_REACTIONS[idx].defaultB;
+          L.massReactAnim = 0.0;
+          updateLab4UI();
+        });
+        document.getElementById('l4_sl_massA').addEventListener('input', e => {
+          L.massA = parseFloat(e.target.value);
+          updateLab4UI();
+        });
+        document.getElementById('l4_sl_massB').addEventListener('input', e => {
+          L.massB = parseFloat(e.target.value);
+          updateLab4UI();
+        });
+        document.getElementById('l4_btnReplayMassAnim').addEventListener('click', () => {
+          L.massReactAnim = 0.0;
+        });
+        document.getElementById('l4_btnExactMassRatio').addEventListener('click', () => {
+          L.massA = mr.rA * 2;
+          L.massB = mr.rB * 2;
+          L.massReactAnim = 0.0;
+          updateLab4UI();
+        });
+      }
+    }
+
+    function drawLab4Canvases() {
+      drawLab4PairingCanvas();
+      drawLab4RatioCanvas();
+    }
+
+    function drawLab4PairingCanvas() {
+      const canvas = document.getElementById('l4_pairingCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab4;
+      const rxn = PAIRING_REACTIONS[L.rxnIdx];
+      const maxSets = Math.min(Math.floor(L.countA / rxn.a), Math.floor(L.countB / rxn.b));
+
+      // Advance step animation if active
+      if (L.isAnimatingStep) {
+        L.animProgress += 0.032;
+        if (L.animProgress >= 1.0) {
+          L.animProgress = 0.0;
+          L.isAnimatingStep = false;
+          L.completedSets = Math.min(maxSets, L.completedSets + 1);
+          updateLab4UI();
+        }
+      }
+
+      const usedA = L.completedSets * rxn.a;
+      const usedB = L.completedSets * rxn.b;
+      const activeA = L.isAnimatingStep ? rxn.a : 0;
+      const activeB = L.isAnimatingStep ? rxn.b : 0;
+
+      // 1) Left Box: Remaining Reactants waiting to react
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#e4dfd5';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(8, 8, 158, 238, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#1d232a';
+      ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('1. สารตั้งต้นที่มีอยู่', 16, 26);
+
+      // Reactant A waiting
+      const waitingA = Math.max(0, L.countA - usedA - activeA);
+      ctx.fillStyle = rxn.colorA;
+      ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+      ctx.fillText(`${rxn.nameA}: เหลือ ${waitingA} (ใช้ชุดละ ${rxn.a})`, 16, 44);
+
+      for (let i = 0; i < L.countA; i++) {
+        const col = i % 4;
+        const row = Math.floor(i / 4);
+        const sx = 28 + col * 34;
+        const sy = 64 + row * 28;
+        const isAlreadyUsed = i < usedA;
+        const isCurrentlyFlying = L.isAnimatingStep && i >= usedA && i < usedA + activeA;
+
+        if (!isAlreadyUsed && !isCurrentlyFlying) {
+          drawParticleToken(ctx, sx, sy, 11, rxn.colorA, rxn.nameA.slice(0, 3), 1.0);
+        } else if (isAlreadyUsed) {
+          drawParticleToken(ctx, sx, sy, 10, '#cbd5e1', '✓', 0.35);
+        }
+      }
+
+      // Divider inside left box
+      ctx.strokeStyle = '#f0ece3';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(16, 134); ctx.lineTo(156, 134); ctx.stroke();
+
+      // Reactant B waiting
+      const waitingB = Math.max(0, L.countB - usedB - activeB);
+      ctx.fillStyle = rxn.colorB;
+      ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`${rxn.nameB}: เหลือ ${waitingB} (ใช้ชุดละ ${rxn.b})`, 16, 150);
+
+      for (let i = 0; i < L.countB; i++) {
+        const col = i % 4;
+        const row = Math.floor(i / 4);
+        const sx = 28 + col * 34;
+        const sy = 170 + row * 28;
+        const isAlreadyUsed = i < usedB;
+        const isCurrentlyFlying = L.isAnimatingStep && i >= usedB && i < usedB + activeB;
+
+        if (!isAlreadyUsed && !isCurrentlyFlying) {
+          drawParticleToken(ctx, sx, sy, 11, rxn.colorB, rxn.nameB.slice(0, 3), 1.0);
+        } else if (isAlreadyUsed) {
+          drawParticleToken(ctx, sx, sy, 10, '#cbd5e1', '✓', 0.35);
+        }
+      }
+
+      // 2) Center Box: Reaction Collision Zone (กึ่งแอนิเมชันจับคู่!)
+      const czX = 176, czW = 114, czY = 8, czH = 238;
+      ctx.fillStyle = L.isAnimatingStep ? '#fff7ed' : '#faf8f4';
+      ctx.strokeStyle = L.isAnimatingStep ? '#c24d2c' : '#d2cbc0';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5, 3]);
+      ctx.beginPath();
+      ctx.roundRect(czX, czY, czW, czH, 12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#6e6a61';
+      ctx.font = 'bold 10.5px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('2. ห้องจับคู่ปฏิกิริยา', czX + czW / 2, 26);
+      ctx.fillStyle = '#c24d2c';
+      ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+      ctx.fillText(`${rxn.a} ${rxn.nameA} + ${rxn.b} ${rxn.nameB}`, czX + czW / 2, 42);
+
+      const centerRx = czX + czW / 2;
+      const centerRy = 128;
+
+      if (L.isAnimatingStep) {
+        const p = L.animProgress;
+        if (p < 0.55) {
+          // Phase 1: A and B particles fly from left box into the collision center!
+          const t = p / 0.55;
+          for (let k = 0; k < rxn.a; k++) {
+            const startX = 95, startY = 80 + k * 18;
+            const targetX = centerRx - 14 + (k - (rxn.a - 1) / 2) * 16;
+            const targetY = centerRy - 12;
+            const curX = startX + (targetX - startX) * t;
+            const curY = startY + (targetY - startY) * t;
+            drawParticleToken(ctx, curX, curY, 11, rxn.colorA, rxn.nameA.slice(0, 3), 1.0);
+          }
+          for (let k = 0; k < rxn.b; k++) {
+            const startX = 95, startY = 185 + k * 18;
+            const targetX = centerRx + 10 + (k - (rxn.b - 1) / 2) * 16;
+            const targetY = centerRy + 12;
+            const curX = startX + (targetX - startX) * t;
+            const curY = startY + (targetY - startY) * t;
+            drawParticleToken(ctx, curX, curY, 11, rxn.colorB, rxn.nameB.slice(0, 3), 1.0);
+          }
+        } else {
+          // Phase 2: Flash glow in center & product P glides into right box!
+          const t = (p - 0.55) / 0.45;
+          if (t < 0.4) {
+            ctx.beginPath();
+            ctx.arc(centerRx, centerRy, 26 * (1 - t), 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(249, 115, 22, 0.35)';
+            ctx.fill();
+          }
+          for (let k = 0; k < rxn.p; k++) {
+            const targetX = 345 + (k * 32);
+            const targetY = 85;
+            const curX = centerRx + (targetX - centerRx) * t;
+            const curY = centerRy + (targetY - centerRy) * t;
+            drawProductToken(ctx, curX, curY, rxn.colorP, rxn.nameP.slice(0, 4));
+          }
+        }
+      } else {
+        // Static status inside center zone
+        if (L.completedSets >= maxSets && maxSets > 0) {
+          ctx.fillStyle = '#c24d2c';
+          ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+          ctx.fillText('หยุดเกิดปฏิกิริยา!', centerRx, centerRy - 12);
+          ctx.fillStyle = '#1d232a';
+          ctx.font = '10px "IBM Plex Sans Thai", sans-serif';
+          const whoOut = waitingA < rxn.a && waitingB < rxn.b
+            ? 'หมดพอดีทั้งคู่!'
+            : (waitingA < rxn.a ? `เพราะ ${rxn.nameA} หมดก่อน` : `เพราะ ${rxn.nameB} หมดก่อน`);
+          ctx.fillText(whoOut, centerRx, centerRy + 6);
+          ctx.fillStyle = '#1f6f61';
+          ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+          ctx.fillText(`(ทำได้ ${maxSets} ชุด)`, centerRx, centerRy + 24);
+        } else {
+          ctx.fillStyle = '#948f84';
+          ctx.font = '10.5px "IBM Plex Sans Thai", sans-serif';
+          ctx.fillText('กดปุ่ม "⏭️ จับคู่ทีละ 1 ชุด"', centerRx, centerRy - 4);
+          ctx.fillText('เพื่อดูอนุภาคชนกัน', centerRx, centerRy + 14);
+        }
+      }
+
+      // 3) Right Top Box: Formed Products
+      const rxBox = 300, rwBox = 162;
+      ctx.fillStyle = '#e6f3f0';
+      ctx.strokeStyle = '#1f6f61';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(rxBox, 8, rwBox, 122, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      const prodNow = L.completedSets * rxn.p;
+      ctx.fillStyle = '#1f6f61';
+      ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(`3. ผลิตภัณฑ์ (${prodNow} ${rxn.unit})`, rxBox + 10, 26);
+
+      for (let i = 0; i < prodNow; i++) {
+        const col = i % 4;
+        const row = Math.floor(i / 4);
+        const px = rxBox + 24 + col * 36;
+        const py = 52 + row * 32;
+        drawProductToken(ctx, px, py, rxn.colorP, rxn.nameP.slice(0, 4));
+      }
+
+      // 4) Right Bottom Box: Leftover Excess Reactants summary
+      ctx.fillStyle = '#fbece7';
+      ctx.strokeStyle = '#c24d2c';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(rxBox, 138, rwBox, 108, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#c24d2c';
+      ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('4. สารที่เหลือ (Excess)', rxBox + 10, 156);
+
+      if (L.completedSets >= maxSets) {
+        let eIdx = 0;
+        for (let i = 0; i < waitingA; i++) {
+          const px = rxBox + 22 + (eIdx % 4) * 34;
+          const py = 180 + Math.floor(eIdx / 4) * 28;
+          eIdx++;
+          drawParticleToken(ctx, px, py, 10.5, rxn.colorA, rxn.nameA.slice(0, 3), 1.0);
+        }
+        for (let i = 0; i < waitingB; i++) {
+          const px = rxBox + 22 + (eIdx % 4) * 34;
+          const py = 180 + Math.floor(eIdx / 4) * 28;
+          eIdx++;
+          drawParticleToken(ctx, px, py, 10.5, rxn.colorB, rxn.nameB.slice(0, 3), 1.0);
+        }
+        if (eIdx === 0) {
+          ctx.fillStyle = '#1f6f61';
+          ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('✓ ไม่เหลือสารตกค้างเลย!', rxBox + rwBox / 2, 198);
+        }
+      } else {
+        ctx.fillStyle = '#6e6a61';
+        ctx.font = '10.5px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('รอดูสารที่เหลือเมื่อจบปฏิกิริยา', rxBox + rwBox / 2, 195);
+      }
+    }
+
+    function drawParticleToken(ctx, x, y, r, color, text, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 8px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, x, y + 3);
+      ctx.restore();
+    }
+
+    function drawProductToken(ctx, x, y, color, text) {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(x - 14, y - 11, 28, 22, 6);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 8px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(text, x, y + 3);
+      ctx.restore();
+    }
+
+    function drawLab4RatioCanvas() {
+      const canvas = document.getElementById('l4_heatCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab4;
+
+      if (L.heatMode === 'mole_ratio') {
+        if (L.moleReactAnim < 1.0) L.moleReactAnim = Math.min(1.0, L.moleReactAnim + 0.03);
+        const mr = MOLE_RATIO_REACTIONS[L.moleRxnIdx];
+        const k = L.moleScaleFactor;
+        const nA = mr.a * k;
+        const nB = mr.b * k;
+        const nP = mr.p * k;
+        const gA = nA * mr.mwA;
+        const gB = nB * mr.mwB;
+        const gTotal = gA + gB;
+
+        // Draw 3 Visual Columns: Reactant A Box | Reactant B Box | Product Box
+        drawMoleMassColumn(ctx, 18, 16, 126, 212, mr.A, nA, gA, mr.colorA, `เลขหน้า = ${mr.a}`);
+        // Plus sign
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 20px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('+', 158, 120);
+
+        drawMoleMassColumn(ctx, 172, 16, 126, 212, mr.B, nB, gB, mr.colorB, `เลขหน้า = ${mr.b}`);
+
+        // Arrow
+        ctx.fillStyle = '#c24d2c';
+        ctx.font = 'bold 20px "IBM Plex Mono", monospace';
+        ctx.fillText('→', 313, 120);
+
+        drawMoleMassColumn(ctx, 328, 16, 126, 212, mr.P, nP, gTotal, mr.colorP, `รวม = ${mr.p} ส่วน`);
+
+      } else {
+        // Sub-mode 2: Mass Ratio (Law of Definite Proportions)
+        if (L.massReactAnim < 1.0) L.massReactAnim = Math.min(1.0, L.massReactAnim + 0.03);
+        const mr = MASS_RATIO_REACTIONS[L.massRxnIdx];
+        const unitA = L.massA / mr.rA;
+        const unitB = L.massB / mr.rB;
+        const limUnit = Math.min(unitA, unitB);
+        const usedA = limUnit * mr.rA;
+        const usedB = limUnit * mr.rB;
+        const prodMass = usedA + usedB;
+        const remA = Math.max(0, L.massA - usedA);
+        const remB = Math.max(0, L.massB - usedB);
+
+        // Left: Reactant Scales (Mass A and Mass B)
+        drawMassScaleBox(ctx, 14, 16, 125, 212, mr.A, L.massA, usedA, mr.colorA, `สัดส่วน = ${mr.rA}`);
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 18px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('+', 150, 120);
+
+        drawMassScaleBox(ctx, 162, 16, 125, 212, mr.B, L.massB, usedB, mr.colorB, `สัดส่วน = ${mr.rB}`);
+        ctx.fillStyle = '#c24d2c';
+        ctx.font = 'bold 18px "IBM Plex Mono", monospace';
+        ctx.fillText('→', 299, 120);
+
+        // Right: Product Mass + Leftover Mass Box
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#1f6f61';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(312, 16, 144, 212, 12);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#1f6f61';
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`ผลลัพธ์หลังปฏิกิริยา`, 384, 36);
+
+        // Product bar (composed of usedA + usedB)
+        ctx.fillStyle = '#e6f3f0';
+        ctx.strokeStyle = '#1f6f61';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(324, 48, 120, 88, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#1f6f61';
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText(`เกิด ${mr.P}`, 384, 68);
+        ctx.font = 'bold 16px "IBM Plex Mono", monospace';
+        ctx.fillText(`${prodMass.toFixed(1)} g`, 384, 92);
+        ctx.fillStyle = '#6e6a61';
+        ctx.font = '10px "IBM Plex Mono", monospace';
+        ctx.fillText(`(${usedA.toFixed(1)} + ${usedB.toFixed(1)} g)`, 384, 112);
+
+        // Leftover bar below
+        ctx.fillStyle = '#fbece7';
+        ctx.strokeStyle = '#c24d2c';
+        ctx.beginPath();
+        ctx.roundRect(324, 146, 120, 70, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#c24d2c';
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText('สารที่เหลือ (กรัม)', 384, 166);
+        ctx.font = 'bold 11.5px "IBM Plex Mono", monospace';
+        if (remA < 0.05 && remB < 0.05) {
+          ctx.fillStyle = '#1f6f61';
+          ctx.fillText('ไม่เหลือสารใดเลย!', 384, 192);
+        } else if (remA >= remB) {
+          ctx.fillText(`เหลือ ${mr.A.split(' ')[0]} ${remA.toFixed(1)} g`, 384, 192);
+        } else {
+          ctx.fillText(`เหลือ ${mr.B.split(' ')[0]} ${remB.toFixed(1)} g`, 384, 192);
+        }
+      }
+    }
+
+    function drawMoleMassColumn(ctx, x, y, w, h, title, moles, grams, color, badgeText) {
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#e4dfd5';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, x + w / 2, y + 22);
+
+      ctx.fillStyle = '#6e6a61';
+      ctx.font = '10px "IBM Plex Mono", monospace';
+      ctx.fillText(badgeText, x + w / 2, y + 38);
+
+      // Visual Mole / Gas Volume blocks
+      const numBlocks = Math.min(9, Math.max(1, Math.round(moles)));
+      for (let i = 0; i < numBlocks; i++) {
+        const bx = x + 18 + (i % 3) * 32;
+        const by = y + 50 + Math.floor(i / 3) * 26;
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.85;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, 26, 20, 5);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+      }
+
+      // Mole badge
+      ctx.fillStyle = '#faf8f4';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(x + 10, y + 134, w - 20, 32, 6);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+      ctx.fillText(`${moles.toFixed(1)} mol`, x + w / 2, y + 154);
+
+      // Mass scale readout at bottom
+      ctx.fillStyle = '#334155';
+      ctx.beginPath();
+      ctx.roundRect(x + 10, y + 174, w - 20, 28, 6);
+      ctx.fill();
+      ctx.fillStyle = '#a7f3d0';
+      ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+      ctx.fillText(`${grams.toFixed(1)} g`, x + w / 2, y + 193);
+    }
+
+    function drawMassScaleBox(ctx, x, y, w, h, title, totalG, usedG, color, ratioLabel) {
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#e4dfd5';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11.5px "IBM Plex Sans Thai", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, x + w / 2, y + 22);
+
+      ctx.fillStyle = '#6e6a61';
+      ctx.font = '10px "IBM Plex Mono", monospace';
+      ctx.fillText(ratioLabel, x + w / 2, y + 38);
+
+      // Visual Mass Bar (shows used portion vs leftover portion)
+      const barX = x + 22, barW = w - 44, barBot = y + 152, maxH = 95;
+      const totalH = Math.min(maxH, Math.max(18, (totalG / 48) * maxH));
+      const usedH = totalG > 0 ? totalH * (usedG / totalG) : 0;
+      const remH = totalH - usedH;
+
+      // Leftover portion at top of bar (faded)
+      if (remH > 0.5) {
+        ctx.fillStyle = color;
+        ctx.globalAlpha = 0.28;
+        ctx.fillRect(barX, barBot - totalH, barW, remH);
+        ctx.globalAlpha = 1.0;
+      }
+      // Used portion at bottom of bar (solid)
+      ctx.fillStyle = color;
+      ctx.fillRect(barX, barBot - usedH, barW, usedH);
+
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(barX, barBot - totalH, barW, totalH);
+
+      // Digital Scale Base
+      ctx.fillStyle = '#334155';
+      ctx.beginPath();
+      ctx.roundRect(x + 10, y + 162, w - 20, 40, 6);
+      ctx.fill();
+      ctx.fillStyle = '#d1fae5';
+      ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+      ctx.fillText(`มี ${totalG.toFixed(1)} g`, x + w / 2, y + 178);
+      ctx.fillStyle = '#fde047';
+      ctx.font = '10px "IBM Plex Mono", monospace';
+      ctx.fillText(`(ใช้ไป ${usedG.toFixed(1)} g)`, x + w / 2, y + 194);
+    }
+
+    // =========================================================================
+    // STUDY SHEET & QUIZ DATA (Preserved & Complete)
+    // =========================================================================
+    const STUDY_SECTIONS = [
+      {
+        part: 'p1',
+        badge: 'ส่วนที่ 1 · หน้า 2–18',
+        title: '1. มวลอะตอม มวลโมเลกุล และสะพานโมล (Mole Bridge)',
+        summary: 'หัวใจสำคัญที่สุดของบทนี้คือ "แปลงทุกอย่างเป็นโมลก่อน แล้วจึงคิดต่อ"',
+        cards: [
+          {
+            heading: '1.1 มวลอะตอม & มวลอะตอมเฉลี่ยจากไอโซโทป',
+            formulas: [
+              '1 amu (u) = 1/12 มวลของ C-12 หนึ่งอะตอม = 1.66 × 10⁻²⁴ g',
+              'มวล 1 อะตอม (g) = มวลอะตอม × 1.66 × 10⁻²⁴ g',
+              'มวลอะตอมเฉลี่ย = Σ (มวลไอโซโทป × ร้อยละในธรรมชาติ) ÷ 100'
+            ],
+            tips: [
+              'มวลอะตอมเป็นค่าเปรียบเทียบ จึงไม่มีหน่วย',
+              'ทริกไอโซโทป: ค่าเฉลี่ยจะเอียงเข้าหาไอโซโทปที่มี % ในธรรมชาติมากกว่าเสมอ เช่น Cl-35 (75%) กับ Cl-37 (25%) ได้มวลเฉลี่ย 35.5'
+            ]
+          },
+          {
+            heading: '1.2–1.3 สะพานโมล การนับอนุภาคย่อย และความหนาแน่นแก๊สที่ STP',
+            formulas: [
+              'n = g ÷ MW = N ÷ (6.02 × 10²³) = V(แก๊สที่ STP) ÷ 22.4',
+              'ความหนาแน่นแก๊สที่ STP : d = MW ÷ 22.4 (หน่วย g/dm³)',
+              'จำนวนอะตอมย่อย = n × จำนวนอะตอมนั้นใน 1 โมเลกุล × 6.02 × 10²³'
+            ],
+            tips: [
+              'กับดักข้อสอบ: 22.4 dm³ ใช้ได้เฉพาะแก๊สที่ STP เท่านั้น! น้ำ (H₂O) ที่ 0 °C เป็นของเหลว ห้ามใช้ 22.4 เด็ดขาด'
+            ]
+          }
+        ]
+      },
+      {
+        part: 'p2',
+        badge: 'ส่วนที่ 2 · หน้า 19–24',
+        title: '2. การคำนวณเกี่ยวกับสูตรเคมี การเผาไหม้ และสารไฮเดรต',
+        summary: 'เชื่อมโยงอัตราส่วนมวลของธาตุเข้ากับอัตราส่วนจำนวนโมลอะตอมในสูตรเอมพิริคัลและสูตรโมเลกุล',
+        cards: [
+          {
+            heading: '2.1–2.2 ร้อยละโดยมวล & เทคนิค 4 ขั้นหาสูตรเอมพิริคัล/สูตรโมเลกุล',
+            formulas: [
+              '% ของธาตุ A โดยมวล = (จำนวนอะตอม A × มวลอะตอม A ÷ มวลสูตร) × 100',
+              'ขั้นที่ 1–3: เปลี่ยน % เป็นกรัม → หารด้วยมวลอะตอม → หารด้วยค่าน้อยสุด',
+              'ขั้นที่ 4: สูตรโมเลกุล = (สูตรเอมพิริคัล)ₙ โดย n = มวลโมเลกุล ÷ มวลสูตรเอมพิริคัล'
+            ],
+            tips: [
+              'ถ้าหารค่าน้อยสุดแล้วได้ .5 ให้คูณ 2 | ได้ .33 หรือ .67 ให้คูณ 3 | ได้ .25 หรือ .75 ให้คูณ 4'
+            ]
+          },
+          {
+            heading: '2.2.1–2.2.2 การวิเคราะห์จากการเผาไหม้ & สูตรของสารไฮเดรต',
+            formulas: [
+              'เผาไหม้สาร C, H, O : มวล C = มวล CO₂ × (12/44) · มวล H = มวล H₂O × (2/18)',
+              'มวล O ในสารตัวอย่าง = มวลสารตัวอย่างเริ่มต้น − (มวล C + มวล H)',
+              'สารไฮเดรต (Salt·xH₂O) : x = โมลน้ำที่ระเหยไป ÷ โมลเกลือแห้งที่เหลือ'
+            ],
+            tips: [
+              'เมื่อเผาสารไฮเดรต มวลที่หายไปคือมวลของน้ำ (H₂O) ที่ระเหยออกไป'
+            ]
+          }
+        ]
+      },
+      {
+        part: 'p3',
+        badge: 'ส่วนที่ 3 · หน้า 25–41',
+        title: '3. สารละลาย การเปลี่ยนหน่วย การเจือจาง และสมบัติคอลลิเกทีฟ',
+        summary: 'ระวัง "ตัวหาร" ของแต่ละหน่วยความเข้มข้น และยึดหลักโมลตัวละลายคงที่เมื่อเติมน้ำเจือจาง',
+        cards: [
+          {
+            heading: '3.1 หน่วยความเข้มข้น & สูตรลัดเปลี่ยนหน่วย',
+            formulas: [
+              'โมลาริตี (c หรือ M, mol/dm³) = โมลตัวละลาย (n) ÷ ปริมาตรสารละลาย (dm³)',
+              'โมแลลิตี (m, mol/kg) = โมลตัวละลาย (n) ÷ มวลตัวทำละลาย (kg)',
+              '% w/w → c : c = (% w/w × d × 10) ÷ MW  |  % w/v → c : c = (% w/v × 10) ÷ MW'
+            ],
+            tips: [
+              'น้ำตาล 30 g ละลายในน้ำ 120 g → มวลสารละลายรวมคือ 150 g ดังนั้น % w/w = (30/150)×100 = 20%'
+            ]
+          },
+          {
+            heading: '3.2–3.3 การเจือจาง การตักแบ่ง การผสม และสมบัติคอลลิเกทีฟ',
+            formulas: [
+              'การเจือจาง : c₁V₁ = c₂V₂  |  การตักแบ่ง : ความเข้มข้น c เท่าเดิม แต่ n = c × V(ที่ตักมา)',
+              'การผสมสารละลาย : c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)',
+              'สมบัติคอลลิเกทีฟ : ΔTb = Kb × m  และ  ΔTf = Kf × m'
+            ],
+            tips: [
+              'สารอิเล็กโทรไลต์ที่แตกตัวเป็นไอออน (เช่น NaCl แตกตัวได้ 2 ไอออน) จะให้ผลคอลลิเกทีฟมากกว่าสารไม่แตกตัวตามจำนวนอนุภาค'
+            ]
+          }
+        ]
+      },
+      {
+        part: 'p4',
+        badge: 'ส่วนที่ 4 · หน้า 42–71',
+        title: '4. สมการเคมี กฎพื้นฐาน สารกำหนดปริมาณ และผลได้ร้อยละ',
+        summary: 'ดุลสมการให้ถูกต้อง แล้วเทียบทุกสารด้วย "โมล ÷ เลขสัมประสิทธิ์"',
+        cards: [
+          {
+            heading: '4.1–4.4 กฎทรงมวล กฎสัดส่วนคงที่ กฎเกย์-ลูสแซก และการดุลสมการ',
+            formulas: [
+              'กฎทรงมวล : มวลรวมของสารก่อนเกิดปฏิกิริยา = มวลรวมหลังเกิดปฏิกิริยา',
+              'กฎเกย์-ลูสแซก & อาโวกาโดร (ที่ T, P เดียวกัน) : อัตราส่วนปริมาตรแก๊ส = อัตราส่วนโมล = เลขสัมประสิทธิ์'
+            ],
+            tips: [
+              'ถ้าระบบเปิดมีแก๊สหนีออกไป มวลที่ชั่งบนตาชั่งจะลดลงเท่ากับมวลแก๊สที่หนีไปพอดี (ไม่ขัดกับกฎทรงมวล)'
+            ]
+          },
+          {
+            heading: '4.5–4.8 สารกำหนดปริมาณ (Limiting Reagent) & ผลได้ร้อยละ',
+            formulas: [
+              'สมการ aA + bB → pP : n(A)/a = n(B)/b = n(P)/p',
+              'สารกำหนดปริมาณ : นำ (โมลเริ่มต้น ÷ เลขสัมประสิทธิ์) ตัวที่ได้ค่าน้อยที่สุดคือตัวหมดก่อน!',
+              'ผลได้ร้อยละ (%Yield) = (ผลได้จริง ÷ ผลได้ตามทฤษฎี) × 100'
+            ],
+            tips: [
+              'ผลิตภัณฑ์ตามทฤษฎีและปริมาณสารตั้งต้นอีกตัวที่ใช้ไป ต้องคำนวณเทียบจากสารกำหนดปริมาณเท่านั้น'
+            ]
+          }
+        ]
+      }
+    ];
+
+    const QUIZ_BANK = [
+      {
+        id: 'Q2', cat: 'p1', source: 'ข้อที่ 2 · หน้า 4',
+        q: 'ธาตุ X 1 อะตอมมีมวล 6.64×10⁻²³ g มวลอะตอมของ X เท่ากับเท่าใด',
+        choices: ['4', '24', '40', '64'], ans: 2,
+        exp: 'มวลอะตอม = (6.64×10⁻²³) ÷ (1.66×10⁻²⁴) = 40'
+      },
+      {
+        id: 'Q12', cat: 'p1', source: 'ข้อที่ 12 หน้า 8',
+        q: 'สารไฮเดรต Na₂CO₃·xH₂O มีมวลสูตร 286 ค่า x เท่ากับเท่าใด (Na=23, C=12, O=16, H=1)',
+        choices: ['5', '7', '10', '12'], ans: 2,
+        exp: 'มวลสูตร Na₂CO₃ = 106 → มวลของ xH₂O = 286 − 106 = 180 → 18x = 180 → x = 10'
+      },
+      {
+        id: 'Q37', cat: 'alevel', source: 'ข้อที่ 37 (9 วิชาสามัญ 61) · หน้า 18',
+        q: 'จำนวนโมลของกำมะถัน (S) ในข้อใดมากที่สุด (As₂S₃ = 246, FeS₂ = 120)',
+        choices: ['H₂S ที่มีกำมะถัน 2.408×10²³ อะตอม', 'As₂S₃ 0.4 mol', 'SO₂ 11.2 dm³ ที่ STP', 'FeS₂ 18 g'], ans: 1,
+        exp: 'ก) 0.40 mol | ข) As₂S₃ 0.4 mol มี S = 0.4 × 3 = 1.2 mol | ค) 0.50 mol | ง) 0.30 mol ดังนั้น ข) มากที่สุด'
+      },
+      {
+        id: 'Q49', cat: 'p2', source: 'ข้อที่ 49 หน้า 23',
+        q: 'เผา MgSO₄·xH₂O หนัก 4.92 g จนได้ MgSO₄ 2.40 g ค่า x เท่ากับเท่าใด (MgSO₄ = 120, H₂O = 18)',
+        choices: ['3', '5', '6', '7'], ans: 3,
+        exp: 'มวลน้ำ = 4.92 − 2.40 = 2.52 g → n(MgSO₄) = 2.40/120 = 0.020 mol, n(H₂O) = 2.52/18 = 0.140 mol → x = 0.140/0.020 = 7'
+      },
+      {
+        id: 'Q57', cat: 'p3', source: 'ข้อที่ 57 หน้า 30',
+        q: 'กรด HCl เข้มข้น 36.5% w/w ความหนาแน่น 1.20 g/cm³ มีความเข้มข้นกี่ mol/dm³ (MW = 36.5)',
+        choices: ['6.0', '10', '12', '14'], ans: 2,
+        exp: 'ใช้สูตร c = (% × d × 10) ÷ MW = (36.5 × 1.20 × 10) ÷ 36.5 = 12.0 mol/dm³'
+      },
+      {
+        id: 'Q72', cat: 'p3', source: 'ข้อที่ 72 หน้า 36',
+        q: 'สารละลาย NaCl 0.40 mol/dm³ 100 cm³ ต้องเติมน้ำอีกกี่ cm³ จึงได้ความเข้มข้น 0.10 mol/dm³',
+        choices: ['100', '200', '300', '400'], ans: 2,
+        exp: 'จาก c₁V₁ = c₂V₂ → 0.40 × 100 = 0.10 × V₂ → V₂ = 400 cm³ ดังนั้นต้องเติมน้ำอีก = 400 − 100 = 300 cm³'
+      },
+      {
+        id: 'Q74', cat: 'p3', source: 'ข้อที่ 74 หน้า 37',
+        q: 'สารละลาย 5.0 mol/dm³ ปริมาตร 1.0 dm³ เติมน้ำจนได้ 4.0 dm³ แล้วแบ่งมา 100 cm³ สารละลายที่แบ่งมามีตัวละลายกี่โมล',
+        choices: ['0.050', '0.125', '0.50', '1.25'], ans: 1,
+        exp: 'หลังเติมน้ำจนได้ 4.0 dm³ ความเข้มข้น c₂ = (5.0 × 1.0) ÷ 4.0 = 1.25 mol/dm³ เมื่อตักแบ่งมา 100 cm³ (0.100 dm³) ความเข้มข้นยังคงเป็น 1.25 M เท่าเดิม → โมลในส่วนที่แบ่งมา = 1.25 × 0.100 = 0.125 mol'
+      },
+      {
+        id: 'Q81', cat: 'p3', source: 'ข้อที่ 81 หน้า 41',
+        q: 'สารละลายในน้ำเข้มข้น 0.10 mol/kg เท่ากัน สารละลายของสารใดมีจุดเดือดสูงที่สุด',
+        choices: ['NaCl', 'กลูโคส', 'ยูเรีย', 'CaCl₂'], ans: 3,
+        exp: 'CaCl₂ แตกตัวให้ 3 ไอออน (Ca²⁺ และ 2Cl⁻) มีจำนวนอนุภาคมากที่สุด จึงมีจุดเดือดสูงที่สุด'
+      },
+      {
+        id: 'Q87', cat: 'p4', source: 'ข้อที่ 87 หน้า 43',
+        q: 'เผาหินปูน CaCO₃ 10.0 g ในเบ้าเปิดจนสลายตัวหมด (CaCO₃ → CaO + CO₂) มวลที่ชั่งได้หลังเผาเป็นเท่าใด และขัดกับกฎทรงมวลหรือไม่',
+        choices: ['10.0 g ไม่ขัด', '4.4 g ไม่ขัด', '5.6 g ขัดกับกฎทรงมวล', '5.6 g ไม่ขัด เพราะ CO₂ 4.4 g ออกจากระบบไป'], ans: 3,
+        exp: 'CaCO₃ 10.0 g (0.10 mol) สลายตัวให้ของแข็ง CaO 0.10 mol (5.6 g) และแก๊ส CO₂ 0.10 mol (4.4 g) ซึ่งหนีออกนอกเบ้าเปิด จึงชั่งของแข็งได้ 5.6 g และไม่ขัดกับกฎทรงมวล'
+      },
+      {
+        id: 'Q126', cat: 'p4', source: 'ข้อที่ 126 หน้า 61',
+        q: 'เผาไหม้ CH₄ 8.0 g ในแก๊ส O₂ 48 g ตามสมการ CH₄ + 2O₂ → CO₂ + 2H₂O ได้ CO₂ กี่กรัม และเหลือ O₂ กี่กรัม',
+        choices: ['CO₂ 33 g เหลือ O₂ 8 g', 'CO₂ 44 g ไม่เหลือ O₂', 'CO₂ 22 g เหลือ O₂ 16 g', 'CO₂ 22 g เหลือ O₂ 32 g'], ans: 2,
+        exp: 'n(CH₄) = 8.0/16 = 0.50 mol (หาร 1 = 0.50); n(O₂) = 48/32 = 1.50 mol (หาร 2 = 0.75) → CH₄ หมดก่อน! เกิด CO₂ 0.50 mol (22 g) และใช้ O₂ ไป 1.00 mol (32 g) เหลือ O₂ = 48 − 32 = 16 g'
+      },
+      {
+        id: 'Q136', cat: 'alevel', source: 'ข้อที่ 136 (9 วิชาสามัญ 64) · หน้า 65',
+        q: 'ใส่ Zn 19.5 g ลงในสารละลาย AgNO₃ 0.400 mol/dm³ 1.00 dm³ ได้ Ag 17.28 g จากสมการ Zn + 2AgNO₃ → 2Ag + Zn(NO₃)₂ ผลได้ร้อยละของ Ag เท่าใด (Zn=65, Ag=108)',
+        choices: ['20.0', '26.7', '40.0', '53.3'], ans: 2,
+        exp: 'n(Zn) = 0.300 mol, n(AgNO₃) = 0.400 mol (หาร 2 = 0.200 → AgNO₃ หมดก่อน) เกิด Ag ทฤษฎี = 0.400 mol × 108 = 43.2 g → %Yield = (17.28 / 43.2) × 100 = 40.0%'
+      }
+    ];
+
+    function renderStudySheet(filterPart) {
+      document.querySelectorAll('.sheet-filter-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-sheet-filter') === filterPart;
+        btn.className = `sheet-filter-btn ${isMatch ? 'btn-terra' : 'btn-outline-warm'} !py-1.5 !px-3 !text-xs`;
+      });
+
+      const container = document.getElementById('studySheetContainer');
+      const sections = filterPart === 'all' ? STUDY_SECTIONS : STUDY_SECTIONS.filter(s => s.part === filterPart);
+
+      container.innerHTML = sections.map(sec => `
+        <div class="p-5 rounded-2xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="inline-block px-2.5 py-0.5 rounded-md bg-[#fbece7] text-[#c24d2c] font-mono-num text-xs font-semibold mb-1.5">${sec.badge}</div>
+          <h3 class="text-lg sm:text-xl font-bold text-[#1d232a]">${sec.title}</h3>
+          <p class="text-xs sm:text-sm text-[#6e6a61] mb-4">${sec.summary}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${sec.cards.map(c => `
+              <div class="bg-white p-4 rounded-xl border border-[#e4dfd5] flex flex-col justify-between">
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base text-[#1d232a] mb-2.5">${c.heading}</h4>
+                  <div class="space-y-1.5 mb-3">
+                    ${c.formulas.map(f => `
+                      <div class="text-xs font-mono-num bg-[#faf8f4] px-3 py-1.5 rounded border-l-2 border-[#c24d2c] text-[#1d232a]">${f}</div>
+                    `).join('')}
+                  </div>
+                </div>
+                <div class="border-t border-[#f0ece3] pt-2.5 space-y-1">
+                  ${c.tips.map(t => `<p class="text-xs text-[#6e6a61]">${t}</p>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderQuizList() {
+      const cat = state.quizCategory;
+      const filtered = cat === 'all' ? QUIZ_BANK : QUIZ_BANK.filter(q => q.cat === cat);
+      const container = document.getElementById('quizListContainer');
+
+      let correctCount = 0, answeredCount = 0;
+      QUIZ_BANK.forEach(q => {
+        if (state.quizAnswers[q.id] !== undefined) {
+          answeredCount++;
+          if (state.quizAnswers[q.id] === q.ans) correctCount++;
+        }
+      });
+      document.getElementById('quizScoreBadge').textContent = `คะแนน: ${correctCount} / ${answeredCount} (ทั้งหมด ${QUIZ_BANK.length} ข้อ)`;
+
+      const thaiChoices = ['ก', 'ข', 'ค', 'ง'];
+      container.innerHTML = filtered.map((item, idx) => {
+        const picked = state.quizAnswers[item.id];
+        const isAnswered = picked !== undefined;
+        return `
+          <div class="p-5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded bg-[#fbece7] text-[#c24d2c] font-mono-num text-xs font-bold">${item.source}</span>
+              ${isAnswered ? (
+                picked === item.ans
+                  ? '<span class="text-xs font-bold text-[#1f6f61]">✓ ตอบถูกต้อง</span>'
+                  : '<span class="text-xs font-bold text-[#c24d2c]">✗ ยังไม่ถูก ดูวิธีคิดด้านล่าง</span>'
+              ) : '<span class="text-xs text-[#948f84]">เลือกคำตอบเพื่อตรวจทันที</span>'}
+            </div>
+            <p class="font-semibold text-sm sm:text-base text-[#1d232a] mb-3">${idx + 1}. ${item.q}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${item.choices.map((ch, cIdx) => {
+                let btnStyle = 'bg-white border-[#d2cbc0] text-[#1d232a] hover:bg-[#f5f2eb]';
+                if (isAnswered) {
+                  if (cIdx === item.ans) btnStyle = 'bg-[#e6f3f0] border-[#1f6f61] text-[#1f6f61] font-bold';
+                  else if (cIdx === picked) btnStyle = 'bg-[#fbece7] border-[#c24d2c] text-[#c24d2c]';
+                }
+                return `
+                  <button data-qid="${item.id}" data-cidx="${cIdx}" class="quiz-choice-btn text-left px-3.5 py-2.5 rounded-lg border text-xs sm:text-sm transition ${btnStyle}">
+                    <span class="font-bold mr-1.5">${thaiChoices[cIdx]}.</span> ${ch}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            ${isAnswered ? `
+              <div class="mt-3 p-3 rounded-lg bg-white border border-[#e4dfd5] text-xs text-[#1d232a]">
+                <span class="font-bold text-[#1f6f61]">เฉลยวิธีคิด:</span> ${item.exp}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.quizAnswers[btn.getAttribute('data-qid')] = parseInt(btn.getAttribute('data-cidx'), 10);
+          renderQuizList();
+        });
+      });
+    }
+
+    // =========================================================================
+    // MAIN ANIMATION LOOP FOR ALL VISUAL CANVASES
+    // =========================================================================
+    function animateVisualLabs() {
+      floaters.forEach(f => {
+        f.x += f.vx;
+        f.y += f.vy;
+        f.phase += 0.04;
+        if (f.x < 0.05 || f.x > 0.95) f.vx *= -1;
+        if (f.y < 0.06 || f.y > 0.94) f.vy *= -1;
+      });
+
+      if (state.activeTab === 'lab1') drawLab1Canvas();
+      else if (state.activeTab === 'lab2') drawLab2BeakerCanvas();
+      else if (state.activeTab === 'lab3') drawLab3Canvas();
+      else if (state.activeTab === 'lab4') drawLab4Canvases();
+
+      requestAnimationFrame(animateVisualLabs);
+    }
+
+    // =========================================================================
+    // WIRE ALL EVENT LISTENERS ON LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Top navigation
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+
+      // Lab 1 controls
+      document.getElementById('l1_molSelect').addEventListener('change', e => {
+        state.lab1.molIdx = parseInt(e.target.value, 10);
+        updateLab1UI();
+      });
+      document.getElementById('l1_countSlider').addEventListener('input', e => {
+        state.lab1.count = parseInt(e.target.value, 10);
+        updateLab1UI();
+      });
+      document.getElementById('l1_btnAddMol').addEventListener('click', () => {
+        state.lab1.count = Math.min(8, state.lab1.count + 1);
+        updateLab1UI();
+      });
+      document.getElementById('l1_btnSubMol').addEventListener('click', () => {
+        state.lab1.count = Math.max(1, state.lab1.count - 1);
+        updateLab1UI();
+      });
+      document.getElementById('l1_btnSplitAtoms').addEventListener('click', () => {
+        state.lab1.isSplit = !state.lab1.isSplit;
+        updateLab1UI();
+      });
+      document.getElementById('l1_bridgeMoleSlider').addEventListener('input', e => {
+        state.lab1.bridgeMole = parseFloat(e.target.value);
+        drawLab1BridgeSvg();
+      });
+      document.querySelectorAll('.l1-preset-n').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab1.bridgeMole = parseFloat(btn.getAttribute('data-l1-n'));
+          document.getElementById('l1_bridgeMoleSlider').value = state.lab1.bridgeMole;
+          drawLab1BridgeSvg();
+        });
+      });
+      document.getElementById('l1_btnLiquidTrap').addEventListener('click', () => {
+        state.lab1.liquidTrap = !state.lab1.liquidTrap;
+        drawLab1BridgeSvg();
+      });
+
+      // Lab 2 controls
+      document.getElementById('l2_soluteSelect').addEventListener('change', e => {
+        state.lab2.soluteIdx = parseInt(e.target.value, 10);
+        updateLab2UI();
+      });
+      document.getElementById('l2_btnSpoonSolute').addEventListener('click', () => {
+        state.lab2.nSolute = Math.min(1.0, +(state.lab2.nSolute + 0.10).toFixed(2));
+        state.lab2.spoonAnim = 1.0;
+        updateLab2UI();
+      });
+      document.getElementById('l2_btnAddWater').addEventListener('click', () => {
+        state.lab2.wSolvent = Math.min(1000, state.lab2.wSolvent + 100);
+        updateLab2UI();
+      });
+      document.getElementById('l2_btnReset').addEventListener('click', () => {
+        state.lab2.nSolute = 0.20;
+        state.lab2.wSolvent = 500;
+        updateLab2UI();
+      });
+      document.getElementById('l2_soluteSlider').addEventListener('input', e => {
+        state.lab2.nSolute = parseFloat(e.target.value);
+        updateLab2UI();
+      });
+      document.getElementById('l2_solventSlider').addEventListener('input', e => {
+        state.lab2.wSolvent = parseInt(e.target.value, 10);
+        updateLab2UI();
+      });
+
+      // Lab 3 controls
+      document.querySelectorAll('.l3-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab3.mode = btn.getAttribute('data-l3-mode');
+          updateLab3UI();
+        });
+      });
+      document.getElementById('l3_btnResetMode').addEventListener('click', () => {
+        state.lab3.dilute_n = 0.40;
+        state.lab3.dilute_V = 200;
+        state.lab3.aliq_c = 2.00;
+        state.lab3.aliq_Vtake = 100;
+        state.lab3.mix_c1 = 1.00;
+        state.lab3.mix_v1 = 200;
+        state.lab3.mix_c2 = 2.50;
+        state.lab3.mix_v2 = 300;
+        state.lab3.mix_isMixed = true;
+        updateLab3UI();
+      });
+
+      // Lab 4 controls (Semi-animated Limiting Reagent + Mole/Mass Ratio)
+      document.getElementById('l4_rxnSelect').addEventListener('change', e => {
+        stopLab4AutoPlay();
+        state.lab4.rxnIdx = parseInt(e.target.value, 10);
+        state.lab4.completedSets = 0;
+        state.lab4.isAnimatingStep = false;
+        updateLab4UI();
+      });
+      document.getElementById('l4_addA').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        state.lab4.countA = Math.min(12, state.lab4.countA + 1);
+        updateLab4UI();
+      });
+      document.getElementById('l4_subA').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        state.lab4.countA = Math.max(1, state.lab4.countA - 1);
+        updateLab4UI();
+      });
+      document.getElementById('l4_addB').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        state.lab4.countB = Math.min(12, state.lab4.countB + 1);
+        updateLab4UI();
+      });
+      document.getElementById('l4_subB').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        state.lab4.countB = Math.max(1, state.lab4.countB - 1);
+        updateLab4UI();
+      });
+      document.getElementById('l4_btnStepPair').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        triggerSinglePairingStep();
+      });
+      document.getElementById('l4_btnAutoPair').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        const L = state.lab4;
+        const rxn = PAIRING_REACTIONS[L.rxnIdx];
+        const maxSets = Math.min(Math.floor(L.countA / rxn.a), Math.floor(L.countB / rxn.b));
+        if (L.completedSets >= maxSets) {
+          L.completedSets = 0;
+        }
+        triggerSinglePairingStep();
+        L.autoPlayTimer = setInterval(() => {
+          const curRxn = PAIRING_REACTIONS[L.rxnIdx];
+          const curMax = Math.min(Math.floor(L.countA / curRxn.a), Math.floor(L.countB / curRxn.b));
+          if (!L.isAnimatingStep) {
+            if (L.completedSets < curMax) {
+              triggerSinglePairingStep();
+            } else {
+              stopLab4AutoPlay();
+            }
+          }
+        }, 200);
+      });
+      document.getElementById('l4_btnResetPair').addEventListener('click', () => {
+        stopLab4AutoPlay();
+        state.lab4.completedSets = 0;
+        state.lab4.isAnimatingStep = false;
+        state.lab4.animProgress = 0;
+        updateLab4UI();
+      });
+      document.querySelectorAll('.l4-heatmode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab4.heatMode = btn.getAttribute('data-l4-heatmode');
+          state.lab4.moleReactAnim = 0.0;
+          state.lab4.massReactAnim = 0.0;
+          updateLab4UI();
+        });
+      });
+
+      // Study Sheet filters
+      document.querySelectorAll('.sheet-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => renderStudySheet(btn.getAttribute('data-sheet-filter')));
+      });
+
+      // Quiz controls
+      document.getElementById('quizCategorySelect').addEventListener('change', e => {
+        state.quizCategory = e.target.value;
+        renderQuizList();
+      });
+      document.getElementById('btnResetQuiz').addEventListener('click', () => {
+        state.quizAnswers = {};
+        renderQuizList();
+      });
+
+      // Constants Modal
+      const constModal = document.getElementById('constModal');
+      document.getElementById('btnOpenConstModal').addEventListener('click', () => constModal.classList.remove('hidden'));
+      document.getElementById('btnOpenConstDesktop').addEventListener('click', () => constModal.classList.remove('hidden'));
+      document.getElementById('btnCloseConstModal').addEventListener('click', () => constModal.classList.add('hidden'));
+      constModal.addEventListener('click', e => {
+        if (e.target === constModal) constModal.classList.add('hidden');
+      });
+
+      // Initialize all views
+      updateLab1UI();
+      updateLab2UI();
+      updateLab3UI();
+      updateLab4UI();
+      requestAnimationFrame(animateVisualLabs);
+    });
+  </script>
+<script>/* ChemLab: #lab2 opens that tab; ?from=N-P (opened from the e-book) turns the e-book link into a way back to page P */
+addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
+</body>
+</html>

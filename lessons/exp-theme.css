@@ -1,0 +1,51 @@
+/* ChemLab theme for the chapter lab pages that came from EXPERIMENT/ (atom.html, stoich.html).
+   Loaded after the page's own styles: same tokens, type, selection colour and header as the rest of the site. */
+:root{
+  --bg-page:#f4f1ea;--bg-card:#fffdf8;--bg-subtle:#f8f4ec;--border-warm:#e3dccd;--border-strong:#d2cbc0;
+  --text-main:#1d2433;--text-muted:#5e6678;--text-light:#7a8296;
+  --accent-terra:#c4432b;--accent-terra-hover:#a93a24;--accent-terra-soft:#fbece7;--accent-teal:#1f6f61;--accent-teal-soft:#e6f3f0;
+  --accent:#ff6b4a;--line:#e3dccd;--surface:#fffdf8;--ink:#1d2433;--soft:#46506a;--muted:#6b7487;--coral:#c4432b;
+  --font-head:Mitr,"IBM Plex Sans Thai",sans-serif;--font-body:"IBM Plex Sans Thai",sans-serif;--font-mono:"JetBrains Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.2,.7,.2,1);color-scheme:light;
+}
+body{background:var(--bg-page);font-family:var(--font-body)}
+h1,h2,h3,h4{font-family:var(--font-head);font-weight:500;letter-spacing:0}
+.font-mono-num,.font-mono{font-family:var(--font-mono)}
+
+/* type: two weights, sentence case, no tracked labels */
+.font-bold,.font-extrabold,.font-black{font-weight:600}
+h1.font-bold,h2.font-bold,h3.font-bold{font-weight:500}
+.uppercase{text-transform:none}
+.tracking-wide,.tracking-wider,.tracking-widest,.step-eyebrow{letter-spacing:0}
+.step-eyebrow{text-transform:none;font-family:var(--font-body);font-size:12px;color:var(--text-light)}
+
+/* surfaces: card radius 16, controls 8–10, neutral shadows only */
+.rounded-3xl,.rounded-2xl{border-radius:16px}
+.rounded-xl{border-radius:12px}
+.exp-card{border-radius:16px;box-shadow:0 1px 2px rgba(29,36,51,.06)}
+.shadow-sm,.shadow,.shadow-md,.shadow-lg,.shadow-xl{box-shadow:0 1px 2px rgba(29,36,51,.08)}
+.btn-terra,.btn-teal{box-shadow:none;font-weight:500}
+*{transition-timing-function:var(--ease)}
+
+/* tabs: the site's selection, a coral outline on a card, not a filled pill */
+.tab-pill{font-weight:500;border-radius:10px}
+.tab-pill.active{background:var(--bg-card);color:var(--text-main);border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+
+/* header: brand on the left like every ChemLab page, chapter title, quiet links */
+.lab-brand{display:inline-flex;align-items:center;gap:12px;color:var(--ink);text-decoration:none;font:500 18px var(--font-head);white-space:nowrap}
+.lab-brand .tile{position:relative;display:inline-grid;place-items:center;width:38px;height:38px;border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:6px;background:var(--surface);font:500 16px var(--font-head);box-shadow:0 1px 2px rgba(29,36,51,.08)}
+.lab-brand .tile small{position:absolute;top:2px;left:4px;font:500 9px var(--font-mono);color:var(--coral)}
+.lab-brand .long{color:var(--muted);font-weight:400}
+.lab-chapter{display:block;font:500 15px var(--font-head);color:var(--ink)}
+.lab-links{display:flex;flex-wrap:wrap;gap:8px}
+.lab-links a{display:inline-flex;align-items:center;min-height:36px;padding:4px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:500 14px var(--font-body);text-decoration:none}
+.lab-links a:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+:is(a,button,select,input):focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* header in two rows: brand, chapter and links on top; the experiment tabs below */
+body > header > div{flex-direction:row!important;flex-wrap:wrap;align-items:center!important;gap:12px 16px}
+body > header > div > div:first-child{flex:1 1 auto;min-width:0;justify-content:flex-start;gap:16px}
+body > header > div > div:first-child > div{gap:16px!important;flex-wrap:wrap}
+.lab-chapter{white-space:nowrap;padding-left:16px;border-left:1px solid var(--line)}
+body > header nav{flex:1 1 100%;padding-bottom:4px}
+@media (max-width:640px){.lab-brand .long,.lab-chapter{display:none}.lab-links a{min-height:32px;font-size:13px}}

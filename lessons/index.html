@@ -1,0 +1,47 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องทดลอง ChemLab</title>
+<meta name="description" content="ห้องทดลองเคมีแบบโต้ตอบ เรียงตามบทเรียน ม.4 ถึง ม.6">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+*{box-sizing:border-box}body{margin:0;font:16px/1.65 var(--font-body)}
+header,main{max-width:1100px;margin:auto;padding:24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line)}
+h1{font:500 clamp(28px,4vw,40px)/1.3 var(--font-head);margin:24px 0 8px}
+.lead{color:var(--muted);margin:0 0 32px;max-width:40rem}
+.chapter{display:grid;grid-template-columns:72px minmax(0,1fr);gap:20px;padding:24px 0;border-top:1px solid var(--line)}
+.chapter .tile{position:relative;display:grid;place-items:center;width:64px;height:64px;border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line));border-radius:8px;background:var(--surface);font:500 22px var(--font-head);color:var(--ink)}
+.chapter .tile small{position:absolute;top:3px;left:5px;font:500 10px var(--font-mono);color:var(--coral)}
+.chapter h2{font:500 20px var(--font-head);margin:0 0 4px}
+.chapter h2 a{color:var(--ink);text-decoration:none}.chapter h2 a:hover{text-decoration:underline;text-underline-offset:4px}
+.chapter p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.exps{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.exps a{display:inline-flex;align-items:center;min-height:36px;padding:4px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:400 14px var(--font-body);text-decoration:none}
+.exps a:hover{border-color:color-mix(in srgb,var(--ink) 25%,var(--line))}
+.soon{color:var(--muted);font-size:14px;padding:24px 0;border-top:1px solid var(--line)}
+@media (max-width:600px){.chapter{grid-template-columns:48px minmax(0,1fr);gap:14px}.chapter .tile{width:48px;height:48px;font-size:18px}}
+</style></head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="../ebook/shelf.html">อ่าน e-book</a></header>
+<main>
+<h1>ห้องทดลอง</h1>
+<p class="lead">ลองปรับค่าแล้วดูผลเปลี่ยนตรงหน้า เรียงตามบทของชีทสรุป กดชื่อบทเพื่อเข้าห้องทดลองบทนั้น หรือกดการทดลองที่อยากลองได้เลย</p>
+
+<section class="chapter"><span class="tile" aria-hidden="true"><small>2</small>At</span><div>
+<h2><a href="atom.html">บทที่ 2 อะตอมและตารางธาตุ</a></h2><p>แบบจำลองอะตอม การจัดเรียงอิเล็กตรอน แนวโน้มตารางธาตุ และสีเปลวไฟ</p>
+<ul class="exps"><li><a href="atom.html#lab1">แบบจำลองอะตอมและการทดลอง</a></li><li><a href="atom.html#lab2">จัดเรียงอิเล็กตรอน</a></li><li><a href="atom.html#lab3">ตารางธาตุและค่า IE</a></li><li><a href="atom.html#lab4">เปลวไฟ แฮโลเจน และรังสี</a></li></ul></div></section>
+
+<section class="chapter"><span class="tile" aria-hidden="true"><small>3</small>Bd</span><div>
+<h2><a href="bonds.html">บทที่ 3 พันธะเคมี</a></h2><p>ให้และรับอิเล็กตรอน ใช้อิเล็กตรอนร่วมกัน รูปร่างโมเลกุลแบบ VSEPR และแรงระหว่างโมเลกุล</p>
+<ul class="exps"><li><a href="bonds.html#ionic">พันธะไอออนิก</a></li><li><a href="bonds.html#covalent">พันธะโคเวเลนต์</a></li><li><a href="bonds.html#shape">รูปร่างโมเลกุลและ VSEPR</a></li><li><a href="bonds.html#forces">แรงระหว่างโมเลกุล</a></li></ul></div></section>
+
+<section class="chapter"><span class="tile" aria-hidden="true"><small>4</small>Mo</span><div>
+<h2><a href="stoich.html">บทที่ 4 ปริมาณสารสัมพันธ์</a></h2><p>นับโมล สะพานโมล ความเข้มข้น การเจือจาง และสารกำหนดปริมาณ</p>
+<ul class="exps"><li><a href="stoich.html#lab1">นับโมลและอะตอม</a></li><li><a href="stoich.html#lab2">สารละลายและจุดเดือด</a></li><li><a href="stoich.html#lab3">เจือจางและผสม</a></li><li><a href="stoich.html#lab4">ปฏิกิริยาและสารกำหนดปริมาณ</a></li></ul></div></section>
+
+<section class="chapter"><span class="tile" aria-hidden="true"><small>5</small>Gs</span><div>
+<h2><a href="boyle.html">บทที่ 5 แก๊ส</a></h2><p>กฎของแก๊ส ทฤษฎีจลน์ การแพร่ ความดันย่อย และการเปิดวาล์ว</p>
+<ul class="exps"><li><a href="boyle.html#boyle">กฎของบอยล์</a></li><li><a href="boyle.html#charles">กฎของชาร์ล</a></li><li><a href="boyle.html#gay">กฎของเกย์-ลูสแซก</a></li><li><a href="boyle.html#combined">กฎรวมแก๊ส</a></li><li><a href="boyle.html#ideal">กฎแก๊สอุดมคติ</a></li><li><a href="gas-mixtures.html#motion">การแพร่และพลังงานจลน์</a></li><li><a href="gas-mixtures.html#dalton">ความดันย่อย</a></li><li><a href="gas-mixtures.html#valve">เปิดวาล์วรวมแก๊ส</a></li></ul></div></section>
+
+<p class="soon">บทอื่นกำลังทยอยเพิ่ม</p>
+</main></body></html>

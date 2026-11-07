@@ -1,0 +1,29 @@
+/* VSEPR explorer inside the shape tab */
+.vsepr{margin:40px 0 8px;padding-top:32px;border-top:1px solid var(--line)}
+.vsepr .families{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.vsepr .families button{min-height:40px;padding:8px 14px;font-size:14px}
+.vsepr .families button[aria-current=true]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.vsepr .bench{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:24px;align-items:start}
+.vsepr svg{display:block;width:100%;max-width:420px;margin:auto;touch-action:none;cursor:grab}
+.vsepr svg:active{cursor:grabbing}
+.vsepr svg:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:12px}
+.vsepr svg text{font:500 16px var(--font-number);text-anchor:middle;dominant-baseline:central;fill:var(--ink);pointer-events:none}
+.vsepr svg .a{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.vsepr svg .x{fill:var(--surface);stroke:var(--teal);stroke-width:2}
+.vsepr svg .bond{stroke:var(--ink);stroke-width:4;stroke-linecap:round}
+.vsepr svg .lobe ellipse{fill:color-mix(in srgb,var(--accent) 22%,transparent);stroke:var(--coral);stroke-width:1.5}
+.vsepr svg .lobe circle{fill:var(--coral)}
+.vsepr svg .push{stroke:var(--coral);stroke-dasharray:3 5;stroke-linecap:round;opacity:.55}
+.vsepr svg .push.w1{stroke-width:1;stroke:var(--muted)}
+.vsepr svg .push.w2{stroke-width:2.5}
+.vsepr svg .push.w3{stroke-width:4.5;opacity:.75}
+.vsepr .formula{font:500 28px var(--font-number);margin:0 0 8px}
+.vsepr dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0 0 16px;font-size:14px}
+.vsepr dt{color:var(--muted)}
+.vsepr dd{margin:0;font-weight:500}
+.vsepr .acts{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.vsepr .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--muted);margin:8px 0 0}
+.vsepr .legend i{display:inline-block;width:22px;height:0;border-top:2px dashed var(--muted);vertical-align:middle;margin-right:6px}
+.vsepr .legend .l2{border-top:3px dashed var(--coral)}
+.vsepr .legend .l3{border-top:5px dashed var(--coral)}
+@media (max-width:760px){.vsepr .bench{grid-template-columns:minmax(0,1fr)}}

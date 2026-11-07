@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ห้องทดลองบทที่ 2 อะตอมและตารางธาตุ ChemLab</title>
+  <link rel="stylesheet" href="exp-tailwind.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f5f2eb;
+      --bg-card: #ffffff;
+      --bg-subtle: #faf8f4;
+      --border-warm: #e4dfd5;
+      --border-strong: #d2cbc0;
+      --text-main: #1d232a;
+      --text-muted: #6e6a61;
+      --text-light: #948f84;
+      --accent-terra: #c24d2c;
+      --accent-terra-hover: #a93f21;
+      --accent-terra-soft: #fbece7;
+      --accent-teal: #1f6f61;
+      --accent-teal-soft: #e6f3f0;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    input[type="range"].exp-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #e5e0d6;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+      margin: 8px 0 4px 0;
+    }
+
+    input[type="range"].exp-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-terra);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+    }
+
+    input[type="range"].exp-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+      background: var(--accent-terra-hover);
+    }
+
+    input[type="range"].exp-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-terra);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    .exp-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-warm);
+      border-radius: 16px;
+      box-shadow: 0 2px 6px rgba(29, 35, 42, 0.025);
+    }
+
+    .formula-sidebar {
+      border-left: 3px solid var(--accent-terra);
+      padding-left: 16px;
+    }
+
+    .btn-terra {
+      background-color: var(--accent-terra);
+      color: #ffffff;
+      border: 1px solid var(--accent-terra);
+      border-radius: 10px;
+      padding: 8px 15px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-terra:hover {
+      background-color: var(--accent-terra-hover);
+    }
+
+    .btn-teal {
+      background-color: var(--accent-teal);
+      color: #ffffff;
+      border: 1px solid var(--accent-teal);
+      border-radius: 10px;
+      padding: 8px 15px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-teal:hover {
+      background-color: #18584d;
+    }
+
+    .btn-outline-warm {
+      background-color: #ffffff;
+      color: var(--text-main);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 7px 13px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .btn-outline-warm:hover {
+      background-color: var(--bg-subtle);
+      border-color: #b8b0a2;
+    }
+
+    .btn-outline-warm.active-sub {
+      background-color: var(--accent-terra-soft);
+      border-color: var(--accent-terra);
+      color: var(--accent-terra);
+      font-weight: 700;
+    }
+
+    .tab-pill {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .tab-pill.active {
+      background-color: var(--accent-terra);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(194, 77, 44, 0.22);
+    }
+
+    .tab-pill:not(.active) {
+      background-color: #ffffff;
+      color: var(--text-muted);
+      border-color: var(--border-warm);
+    }
+
+    .tab-pill:not(.active):hover {
+      color: var(--text-main);
+      background-color: var(--bg-subtle);
+    }
+
+    .step-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .select-warm {
+      background-color: #faf8f4;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.86rem;
+      color: var(--text-main);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .orbital-box {
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid #948f84;
+      border-radius: 6px;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+  <link rel="stylesheet" href="exp-theme.css">
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- Top Navigation Header -->
+  <header class="sticky top-0 z-30 bg-[#f5f2eb]/95 backdrop-blur border-b border-[#e4dfd5]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a class="lab-brand" href="../index.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 2 อะตอมและตารางธาตุ</span>
+        </div>
+        <button id="btnOpenRefModal" class="md:hidden btn-outline-warm !py-1.5 !px-3 !text-xs">สรุปค่าคงที่</button>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="lab-links"><a href="../ebook/shelf.html#read=2">อ่าน e-book บทที่ 2</a><a href="../index.html#ch=2">ทำโจทย์บทที่ 2</a></div>
+      <nav class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" aria-label="เลือกห้องทดลอง">
+        <button data-tab="lab1" class="tab-pill active">01 แบบจำลอง & การทดลอง</button>
+        <button data-tab="lab2" class="tab-pill">02 จัดเรียงอิเล็กตรอน</button>
+        <button data-tab="lab3" class="tab-pill">03 ตารางธาตุ & ค่า IE</button>
+        <button data-tab="lab4" class="tab-pill">04 เปลวไฟ · แฮโลเจน · รังสี</button>
+        <button data-tab="sheet" class="tab-pill">ชีทสรุปเนื้อหา</button>
+        <button data-tab="quiz" class="tab-pill">โจทย์ฝึกหัด & สอวน.</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
+
+    <!-- ===================================================================
+         LAB 1: วิวัฒนาการแบบจำลองอะตอม 5 ยุค & ห้องทดลองของนักวิทยาศาสตร์แต่ละคน
+         =================================================================== -->
+    <section id="view_lab1" class="space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 1 · แบบจำลองอะตอมและการค้นพบอนุภาคมูลฐาน</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            กว่าจะรู้หน้าตาของอะตอม นักวิทยาศาสตร์แต่ละคนทดลองอย่างไร?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            สำรวจแบบจำลองอะตอมทั้ง 5 ยุค แล้วลงมือปรับสนามไฟฟ้า-สนามแม่เหล็ก ยิงอนุภาคแอลฟา และลอยหยดน้ำมันในชุดทดลองจริง
+          </p>
+        </div>
+        <button id="btnOpenRefDesktop" class="hidden md:inline-flex btn-outline-warm !py-1.5 !px-3 !text-xs">
+          ตารางอนุภาคมูลฐาน & ค่าคงที่
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Card 01 (Left): 5 Atomic Models Interactive Explorer (including Bohr Spectrum & Cloud Orbitals) -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">1 วิวัฒนาการแบบจำลองอะตอม</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">วิวัฒนาการแบบจำลองอะตอม 5 ยุค</h2>
+              </div>
+              <span id="l1_modelYearBadge" class="px-2.5 py-1 rounded-full text-xs font-mono-num font-semibold bg-[#fbece7] text-[#c24d2c]">
+                พ.ศ. 2351
+              </span>
+            </div>
+
+            <!-- 5 Model Selector Pills -->
+            <div class="grid grid-cols-5 gap-1.5 mb-3">
+              <button data-model="dalton" class="l1-model-btn btn-outline-warm active-sub !py-1.5 !px-1 !text-xs">1. ดอลตัน</button>
+              <button data-model="thomson" class="l1-model-btn btn-outline-warm !py-1.5 !px-1 !text-xs">2. ทอมสัน</button>
+              <button data-model="rutherford" class="l1-model-btn btn-outline-warm !py-1.5 !px-1 !text-xs">3. รัทเทอร์ฟอร์ด</button>
+              <button data-model="bohr" class="l1-model-btn btn-outline-warm !py-1.5 !px-1 !text-xs">4. โบร์</button>
+              <button data-model="cloud" class="l1-model-btn btn-outline-warm !py-1.5 !px-1 !text-xs">5. กลุ่มหมอก</button>
+            </div>
+
+            <!-- Interactive Canvas for Atomic Model -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l1_modelCanvas" width="460" height="255" class="w-full h-[250px]"></canvas>
+            </div>
+
+            <!-- Dynamic Interactive Controls for Active Model (e.g., Bohr shell jump / Cloud orbital shape) -->
+            <div id="l1_modelControls" class="mt-3 flex flex-wrap items-center justify-center gap-2"></div>
+
+            <!-- Model Key Points Box -->
+            <div id="l1_modelInfoBox" class="mt-3 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+          </div>
+
+          <div id="l1_modelFooter" class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]"></div>
+        </div>
+
+        <!-- Card 02 (Right): Classic Scientist Experiments Simulator -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">2 การทดลองของนักวิทยาศาสตร์</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">ชุดการทดลองจริงของนักวิทยาศาสตร์แต่ละคน</h2>
+              </div>
+              <span id="l1_expParticleBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e6f3f0] text-[#1f6f61]">
+                ค้นพบ: อิเล็กตรอน (e⁻)
+              </span>
+            </div>
+
+            <!-- Scientist Experiment Selector -->
+            <div class="mb-3">
+              <label for="l1_expSelect" class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกการทดลองของนักวิทยาศาสตร์:</label>
+              <select id="l1_expSelect" class="select-warm w-full font-semibold">
+                <option value="thomson">1. ทอมสัน — หลอดรังสีแคโทด & การวัดค่าประจุต่อมวล (e/m)</option>
+                <option value="goldstein">2. โกลด์สไตน์ — หลอดแคโทดเจาะรู (รังสีบวก / รังสีแคแนล)</option>
+                <option value="millikan">3. มิลลิแกน — การทดลองหยดน้ำมัน (หาประจุ e = 1.6×10⁻¹⁹ C)</option>
+                <option value="rutherford">4. รัทเทอร์ฟอร์ด — ยิงอนุภาคแอลฟา (α) ใส่แผ่นทองคำบาง</option>
+                <option value="chadwick">5. โบเท-เบเกอร์ & แชดวิก — ยิงแอลฟาใส่เบริลเลียม (ค้นพบนิวตรอน)</option>
+              </select>
+            </div>
+
+            <!-- Interactive Apparatus Canvas -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l1_expCanvas" width="460" height="255" class="w-full h-[250px]"></canvas>
+            </div>
+
+            <!-- Interactive Experiment Controls Toolbar -->
+            <div id="l1_expControls" class="mt-3 flex flex-wrap items-center justify-center gap-2"></div>
+
+            <!-- Experiment Observations & Conclusions -->
+            <div id="l1_expInfoBox" class="mt-3 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+          </div>
+
+          <div id="l1_expFooter" class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 2: สัญลักษณ์นิวเคลียร์ & การจัดเรียงอิเล็กตรอนครบ 3 รูปแบบ (หลัก, ย่อย, ออร์บิทัล)
+         =================================================================== -->
+    <section id="view_lab2" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 1.4 – 1.6.3 · สัญลักษณ์นิวเคลียร์ และการจัดเรียงอิเล็กตรอน 3 รูปแบบ</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            จัดเรียงอิเล็กตรอนในระดับพลังงานหลัก · ย่อย · ออร์บิทัล อย่างไรให้ไม่โดนหลอก?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            เลือกธาตุหรือไอออน ดูวงโคจร K L M N แผนภาพลูกศรทแยงมุม การบรรจุในออร์บิทัลตามกฎของฮุนด์ และข้อยกเว้น Cr / Cu
+          </p>
+        </div>
+      </div>
+
+      <!-- Top Element & Ion Charge Selector Card -->
+      <div class="exp-card p-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+          <div class="lg:col-span-5">
+            <label for="l2_elemSelect" class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกธาตุที่ต้องการจัดเรียงอิเล็กตรอน (หรือคลิกปุ่มลัดธาตุออกสอบบ่อย):</label>
+            <select id="l2_elemSelect" class="select-warm w-full font-semibold"></select>
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <button data-quick-z="19" data-quick-q="0" class="l2-quick-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">₁₉K (2,8,8,1)</button>
+              <button data-quick-z="24" data-quick-q="0" class="l2-quick-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">₂₄Cr (บรรจุครึ่ง)</button>
+              <button data-quick-z="29" data-quick-q="0" class="l2-quick-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">₂₉Cu (บรรจุเต็ม)</button>
+              <button data-quick-z="26" data-quick-q="2" class="l2-quick-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">₂₆Fe²⁺ (ดึง 4s ก่อน)</button>
+              <button data-quick-z="26" data-quick-q="3" class="l2-quick-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">₂₆Fe³⁺ (3d⁵)</button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-4">
+            <div class="flex justify-between text-xs font-semibold text-[#1d232a] mb-1">
+              <span>ปรับเลขอะตอม (Z = จำนวนโปรตอน)</span>
+              <span id="l2_zReadout" class="font-mono-num text-[#c24d2c] font-bold">Z = 19</span>
+            </div>
+            <input type="range" id="l2_zSlider" class="exp-slider" min="1" max="36" step="1" value="19">
+            <div class="flex justify-between text-[11px] font-mono-num text-[#6e6a61]">
+              <span>Z = 1 (H)</span>
+              <span>Z = 18 (Ar)</span>
+              <span>Z = 36 (Kr)</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-3">
+            <div class="text-xs font-semibold text-[#1d232a] mb-1.5">ปรับประจุไอออน (เสีย / รับ e⁻):</div>
+            <div class="flex flex-wrap gap-1">
+              <button data-q="-2" class="l2-q-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">2−</button>
+              <button data-q="-1" class="l2-q-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">1−</button>
+              <button data-q="0" class="l2-q-btn btn-outline-warm active-sub !py-1 !px-2.5 !text-xs font-mono-num">0 (กลาง)</button>
+              <button data-q="1" class="l2-q-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">1+</button>
+              <button data-q="2" class="l2-q-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">2+</button>
+              <button data-q="3" class="l2-q-btn btn-outline-warm !py-1 !px-2.5 !text-xs font-mono-num">3+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Main Visual Cards for Electron Configuration -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Card: Nuclear Symbol + Main Energy Level Shells (K L M N) -->
+        <div class="lg:col-span-5 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="step-eyebrow mb-1">01 / NUCLEAR SYMBOL & SHELLS (K L M N)</div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#1d232a] mb-3">สัญลักษณ์นิวเคลียร์ & ระดับพลังงานหลัก</h2>
+
+            <!-- Nuclear Symbol & p, n, e Readout Banner -->
+            <div id="l2_nuclearBanner" class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] flex items-center justify-between gap-3 mb-3"></div>
+
+            <!-- Concentric Shells Visual Canvas -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l2_shellCanvas" width="380" height="250" class="w-full h-[245px]"></canvas>
+            </div>
+
+            <!-- Main Shell Numbers & Group/Period Decoder -->
+            <div id="l2_mainShellSummary" class="mt-3 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
+            <b>ความจุสูงสุดแต่ละชั้น (2n²):</b> K = 2 · L = 8 · M = 18 N = 32 O = 50 (โดยชั้นนอกสุดมีเวเลนซ์อิเล็กตรอนได้ไม่เกิน 8 ตัวเสมอ)
+          </div>
+        </div>
+
+        <!-- Right Card: Sublevels (s, p, d, f), Diagonal Rule & Orbital Box Diagram -->
+        <div class="lg:col-span-7 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-start justify-between gap-2 mb-3">
+              <div>
+                <div class="step-eyebrow">2 ระดับพลังงานย่อยและแผนภาพออร์บิทัล</div>
+                <h2 class="text-lg sm:text-xl font-bold text-[#1d232a]">ระดับพลังงานย่อย (s, p, d, f) & การบรรจุในออร์บิทัล</h2>
+              </div>
+              <span id="l2_unpairedBadge" class="px-2.5 py-1 rounded-full text-xs font-mono-num font-bold bg-[#e6f3f0] text-[#1f6f61]">
+                อิเล็กตรอนเดี่ยว: 1 ตัว
+              </span>
+            </div>
+
+            <!-- Sublevel Configuration Display Bar -->
+            <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] mb-3">
+              <div class="text-xs text-[#6e6a61] mb-1">การจัดเรียงในระดับพลังงานย่อย (แบบเต็ม และแบบย่อแก๊สเฉื่อย):</div>
+              <div id="l2_sublevelFullText" class="font-mono-num text-sm sm:text-base font-bold text-[#1d232a] break-words"></div>
+              <div id="l2_sublevelNobleText" class="font-mono-num text-xs sm:text-sm font-semibold text-[#c24d2c] mt-1"></div>
+            </div>
+
+            <!-- Visual Orbital Boxes (1s through 4p) -->
+            <div class="p-4 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] mb-3">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-[#1d232a]">แผนภาพกล่องออร์บิทัล (ใส่เดี่ยวให้ครบตามกฎของฮุนด์ก่อนจับคู่):</span>
+                <span class="text-[11px] font-mono-num text-[#6e6a61]">↑ = สปินขึ้น, ↓ = สปินลง</span>
+              </div>
+              <div id="l2_orbitalBoxesContainer" class="flex flex-wrap gap-3 items-end"></div>
+            </div>
+
+            <!-- Aufbau Diagonal Diagram SVG + Ion Trap Warning -->
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+              <div class="sm:col-span-5 bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2">
+                <svg id="l2_aufbauSvg" viewBox="0 0 210 155" class="w-full h-auto select-none"></svg>
+              </div>
+              <div id="l2_rulesExplainBox" class="sm:col-span-7 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+            </div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
+            <b>3 กฎเหล็กออร์บิทัล:</b> <b>1) เอาฟบาว</b> บรรจุพลังงานต่ำสุดก่อน (4s ก่อน 3d) · <b>2) เพาลี</b> ออร์บิทัลละไม่เกิน 2 ตัวหมุนสวนทางกัน · <b>3) ฮุนด์</b> ใส่เดี่ยวให้ครบทุกออร์บิทัลในระดับย่อยเดียวกันก่อนจับคู่
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 3: ตารางธาตุ แนวโน้มขนาดอะตอม/ไอออน & การดึงอิเล็กตรอนทีละตัว (ค่า IE)
+         =================================================================== -->
+    <section id="view_lab3" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 2.1 – 2.2 · ตารางธาตุ ขนาดอะตอม/ไอออน พลังงานไอออไนเซชัน (IE) และเลขออกซิเดชัน</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            แนวโน้มตารางธาตุ ขนาดไอออน และจุดกระโดดใหญ่ของค่า IE บอกอะไรเรา?
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            เปรียบเทียบขนาดอะตอมและไอออน (Isoelectronic) ทดลองดึงอิเล็กตรอนออกทีละตัวเพื่อหาหมู่ธาตุจากค่า IE และฝึกคำนวณเลขออกซิเดชัน
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Card: Periodic Trends & Atomic / Isoelectronic Ion Radius Comparator -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="step-eyebrow mb-1">1 ขนาดอะตอมและไอออน</div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#1d232a] mb-3">เปรียบเทียบขนาดอะตอม & ขนาดไอออน (Isoelectronic)</h2>
+
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <button data-l3-radmode="period_group" class="l3-radmode-btn btn-outline-warm active-sub !py-1.5 !px-3 !text-xs">
+                แนวโน้มขนาดอะตอม vs EN, IE, EA
+              </button>
+              <button data-l3-radmode="isoelectronic" class="l3-radmode-btn btn-outline-warm !py-1.5 !px-3 !text-xs">
+                เทียบขนาดไอออนที่ e⁻ เท่ากัน (Isoelectronic)
+              </button>
+              <button data-l3-radmode="same_elem" class="l3-radmode-btn btn-outline-warm !py-1.5 !px-3 !text-xs">
+                อะตอมกลาง vs ไอออนบวก/ลบ
+              </button>
+            </div>
+
+            <!-- Visual SVG for Radius & Trends Comparison -->
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-3">
+              <svg id="l3_radiusSvg" viewBox="0 0 470 250" class="w-full h-auto select-none"></svg>
+            </div>
+
+            <div id="l3_radiusExplain" class="mt-3 p-3.5 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1.5"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
+            <b>จำสั้นๆ:</b> <b>"ยิ่งอะตอมเล็ก ยิ่งดึงอิเล็กตรอนเก่ง"</b> ดังนั้น <b>EN, IE₁, EA</b> จะเพิ่มขึ้นจากซ้ายไปขวา และจากล่างขึ้นบน (ตรงข้ามกับขนาดอะตอมเป๊ะ!) โดย <b>F</b> มีค่า EN สูงที่สุดในตารางธาตุ
+          </div>
+        </div>
+
+        <!-- Right Card: Successive Ionization Energy (IE1, IE2, IE3...) & Oxidation Number Calculator -->
+        <div class="lg:col-span-6 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="step-eyebrow mb-1">2 พลังงานไอออไนเซชันและเลขออกซิเดชัน</div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#1d232a] mb-3">ดึงอิเล็กตรอนทีละตัว (ค่า IE) & เลขออกซิเดชัน</h2>
+
+            <div class="flex flex-wrap gap-2 mb-3">
+              <button data-l3-rightmode="ie_pull" class="l3-rightmode-btn btn-outline-warm active-sub !py-1.5 !px-3 !text-xs">
+                ทดลองดึง e⁻ ทีละตัว (หาหมู่จากจุดกระโดดค่า IE)
+              </button>
+              <button data-l3-rightmode="ox_num" class="l3-rightmode-btn btn-outline-warm !py-1.5 !px-3 !text-xs">
+                เครื่องถอดรหัสเลขออกซิเดชันทีละขั้น
+              </button>
+            </div>
+
+            <div id="l3_rightInteractiveArea"></div>
+          </div>
+
+          <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l3_rightFooter">
+            <b>สมการ IE ต้องเป็นสถานะแก๊สเสมอ</b> และดึงทีละ 1 ตัว เช่น IE₂ คือ <code>X⁺(g) → X²⁺(g) + e⁻</code> (ถ้าค่า IE กระโดดพุ่งสูงมากระหว่าง IE₃ ไป IE₄ แปลว่ามีเวเลนซ์ 3 ตัว = อยู่หมู่ IIIA!)
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         LAB 4: ห้องทดลองสีเปลวไฟ · การแทนที่แฮโลเจนใน CCl4 · สีแทรนซิชัน · กัมมันตรังสี
+         =================================================================== -->
+    <section id="view_lab4" class="hidden space-y-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fbece7] text-[#c24d2c] text-xs font-semibold mb-2">
+            <span>ส่วนที่ 2.3 – 2.5 · สมบัติตามหมู่ แฮโลเจน สีแทรนซิชัน และธาตุกัมมันตรังสี</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-bold text-[#1d232a] tracking-tight">
+            เผาดูสีเปลวไฟ · เขย่าแฮโลเจนใน CCl₄ · เทียบสีแทรนซิชัน & ครึ่งชีวิตกัมมันตรังสี
+          </h1>
+          <p class="text-[#6e6a61] text-sm sm:text-base mt-1">
+            รวมการทดลองเคมีเชิงภาพของธาตุแต่ละหมู่และนิวเคลียร์ที่ออกสอบบ่อยที่สุด กดเลือกสถานีเพื่อทำการทดลองได้เลย
+          </p>
+        </div>
+      </div>
+
+      <!-- 4 Sub-Lab Selector Buttons -->
+      <div class="exp-card p-4 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap gap-2">
+          <button data-l4-station="flame" class="l4-station-btn btn-outline-warm active-sub">
+            1. สีเปลวไฟโลหะ IA/IIA & ปฏิกิริยากับน้ำ
+          </button>
+          <button data-l4-station="halogen" class="l4-station-btn btn-outline-warm">
+            2. แฮโลเจนแย่งชิง e⁻ ในชั้น CCl₄ & AgNO₃
+          </button>
+          <button data-l4-station="transition" class="l4-station-btn btn-outline-warm">
+            3. สีของไอออนธาตุแทรนซิชัน (3d)
+          </button>
+          <button data-l4-station="nuclear" class="l4-station-btn btn-outline-warm">
+            4. กัมมันตรังสี (α, β⁻, γ) & ครึ่งชีวิต (T½)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Interactive Visual Canvas (7 cols) -->
+        <div class="lg:col-span-7 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <div id="l4_eyebrow" class="step-eyebrow">สถานีที่ 1 เปลวไฟและโลหะแอลคาไล</div>
+                <h2 id="l4_title" class="text-lg sm:text-xl font-bold text-[#1d232a]">การทดสอบสีเปลวไฟของไอออนโลหะ</h2>
+              </div>
+              <span id="l4_badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fbece7] text-[#c24d2c]">
+                หมู่ IA / IIA / Cu²⁺
+              </span>
+            </div>
+
+            <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-2 flex items-center justify-center">
+              <canvas id="l4_mainCanvas" width="520" height="280" class="w-full h-[275px]"></canvas>
+            </div>
+
+            <div id="l4_controlsBar" class="mt-3.5 flex flex-wrap items-center justify-center gap-2"></div>
+          </div>
+
+          <div id="l4_caption" class="mt-4 pt-3 border-t border-[#f0ece3] text-xs text-[#6e6a61]"></div>
+        </div>
+
+        <!-- Right Interactive Details & Breakdown (5 cols) -->
+        <div class="lg:col-span-5 exp-card p-5 sm:p-6 flex flex-col justify-between">
+          <div>
+            <div class="step-eyebrow mb-1">ผลการสังเกตและสมการเคมี</div>
+            <h3 id="l4_rightHeading" class="text-lg font-bold text-[#1d232a] mb-3">ผลการทดลองและสมการเคมี</h3>
+            <div id="l4_rightContent" class="space-y-3 text-xs sm:text-sm"></div>
+          </div>
+
+          <div id="l4_examTip" class="mt-4 p-3.5 rounded-xl bg-[#e6f3f0] text-[#1f6f61] text-xs leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         STUDY SHEET VIEW (Complete Summary of Chapter 2)
+         =================================================================== -->
+    <section id="sheetView" class="hidden space-y-6">
+      <div class="exp-card p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e4dfd5] pb-4 mb-5">
+          <div>
+            <div class="step-eyebrow text-[#c24d2c]">COMPLETE STUDY GUIDE · เคมีพี่สกาย</div>
+            <h2 class="text-2xl font-bold text-[#1d232a]">สรุปเนื้อหาละเอียด บทที่ 2 อะตอมและตารางธาตุ (ครบทุกหัวข้อ)</h2>
+            <p class="text-sm text-[#6e6a61]">สรุปแบบจำลองอะตอม การทดลอง การจัดเรียงอิเล็กตรอน แนวโน้มตารางธาตุ สมบัติตามหมู่ และกัมมันตรังสีจากชีท 64 หน้า</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button data-sheet-filter="all" class="sheet-filter-btn btn-terra !py-1.5 !px-3 !text-xs">ทั้งหมด</button>
+            <button data-sheet-filter="s1" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">1. แบบจำลอง & การทดลอง</button>
+            <button data-sheet-filter="s2" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">2. จัดเรียงอิเล็กตรอน</button>
+            <button data-sheet-filter="s3" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">3. ตารางธาตุ & IE/EN</button>
+            <button data-sheet-filter="s4" class="sheet-filter-btn btn-outline-warm !py-1.5 !px-3 !text-xs">4. สมบัติตามหมู่ & กัมมันตรังสี</button>
+          </div>
+        </div>
+
+        <div id="studySheetContainer" class="space-y-6"></div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         QUIZ & OLYMPIAD (สอวน. / IJSO) CHALLENGE VIEW
+         =================================================================== -->
+    <section id="quizView" class="hidden space-y-6">
+      <div class="exp-card p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#e4dfd5] pb-4 mb-5">
+          <div>
+            <div class="step-eyebrow text-[#c24d2c]">โจทย์ฝึกหัดและโจทย์ท้าทาย</div>
+            <h2 class="text-2xl font-bold text-[#1d232a]">คลังโจทย์ฝึกหัดคัดสรร & โจทย์ท้าทาย สอวน. / IJSO</h2>
+            <p class="text-sm text-[#6e6a61]">ฝึกทำโจทย์ประจำบทพร้อมข้อสอบคัดเลือกเข้าค่าย 1 สอวน. และ IJSO พร้อมเฉลยละเอียด</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="quizCategorySelect" class="select-warm font-medium">
+              <option value="all">ทุกหัวข้อ (รวมโจทย์พื้นฐาน + สอวน./IJSO)</option>
+              <option value="model">แบบจำลองอะตอม การทดลอง & อนุภาคมูลฐาน</option>
+              <option value="config">สเปกตรัม & การจัดเรียงอิเล็กตรอน (หลัก/ย่อย/ออร์บิทัล)</option>
+              <option value="periodic">ตารางธาตุ ขนาดอะตอม/ไอออน ค่า IE & เลขออกซิเดชัน</option>
+              <option value="groups">สมบัติตามหมู่ แฮโลเจน แทรนซิชัน & กัมมันตรังสี</option>
+              <option value="olympiad">โจทย์ท้าทายระดับสูง (สอวน. & IJSO ท้ายบท)</option>
+            </select>
+            <div id="quizScoreBadge" class="px-3 py-1.5 rounded-lg bg-[#e6f3f0] text-[#1f6f61] font-mono-num text-xs font-semibold">
+              คะแนน: 0 / 0
+            </div>
+            <button id="btnResetQuiz" class="btn-outline-warm !py-1.5 !px-3 !text-xs">เริ่มทำใหม่</button>
+          </div>
+        </div>
+
+        <div id="quizListContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Reference Constants Modal -->
+  <div id="refModal" class="fixed inset-0 z-50 hidden bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="exp-card max-w-lg w-full p-6 relative">
+      <div class="flex items-center justify-between border-b border-[#e4dfd5] pb-3 mb-4">
+        <div>
+          <div class="step-eyebrow">อนุภาคมูลฐานและค่าคงที่</div>
+          <h3 class="text-lg font-bold text-[#1d232a]">อนุภาคมูลฐานและค่าคงที่สำคัญประจำบทที่ 2</h3>
+        </div>
+        <button id="btnCloseRefModal" class="text-[#6e6a61] hover:text-[#1d232a] text-xl font-bold px-2">×</button>
+      </div>
+      <div class="space-y-3 text-xs sm:text-sm">
+        <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="font-bold text-[#c24d2c] mb-1.5">ตารางอนุภาคมูลฐานของอะตอม</div>
+          <table class="w-full text-left font-mono-num text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-[#e4dfd5] text-[#6e6a61]">
+                <th class="py-1">อนุภาค</th>
+                <th class="py-1">ประจุ</th>
+                <th class="py-1">ประจุ (C)</th>
+                <th class="py-1">มวล (amu)</th>
+                <th class="py-1">ผู้ค้นพบ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#f0ece3]">
+              <tr><td class="py-1.5 font-bold">โปรตอน (p)</td><td>+1</td><td>+1.6×10⁻¹⁹</td><td>1.007</td><td>โกลด์สไตน์/รัทเทอร์ฟอร์ด</td></tr>
+              <tr><td class="py-1.5 font-bold">อิเล็กตรอน (e⁻)</td><td>−1</td><td>−1.6×10⁻¹⁹</td><td>0.00055</td><td>ทอมสัน (พ.ศ. 2440)</td></tr>
+              <tr><td class="py-1.5 font-bold">นิวตรอน (n)</td><td>0</td><td>0</td><td>1.009</td><td>แชดวิก (พ.ศ. 2475)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="font-bold text-[#1f6f61] mb-1">ค่าคงที่คลื่นแม่เหล็กไฟฟ้า & อะตอม</div>
+          <ul class="text-xs space-y-1 font-mono-num text-[#1d232a]">
+            <li>• ค่า e/m ของอิเล็กตรอน = 1.76 × 10⁸ C/g (คงที่เสมอ)</li>
+            <li>• ค่า e/m สูงสุดของรังสีบวก (H⁺) = 9.58 × 10⁴ C/g</li>
+            <li>• มวลโปรตอน ≈ 1,836 เท่าของมวลอิเล็กตรอน (9.11 × 10⁻²⁸ g)</li>
+            <li>• ความเร็วแสงในสุญญากาศ c = 3 × 10⁸ m/s · ค่าคงที่พลังค์ h = 6.6 × 10⁻³⁴ J·s</li>
+            <li>• สูตรพลังงานคลื่นแม่เหล็กไฟฟ้า: E = hf = hc / λ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // ELEMENT DATABASE (Z = 1 to 36 + Selected Heavy Elements for Examples)
+    // =========================================================================
+    const ELEMENTS = [
+      null,
+      { z: 1, sym: 'H', name: 'ไฮโดรเจน', A: 1, group: 'IA', period: 1 },
+      { z: 2, sym: 'He', name: 'ฮีเลียม', A: 4, group: 'VIIIA', period: 1 },
+      { z: 3, sym: 'Li', name: 'ลิเทียม', A: 7, group: 'IA', period: 2 },
+      { z: 4, sym: 'Be', name: 'เบริลเลียม', A: 9, group: 'IIA', period: 2 },
+      { z: 5, sym: 'B', name: 'โบรอน', A: 11, group: 'IIIA', period: 2 },
+      { z: 6, sym: 'C', name: 'คาร์บอน', A: 12, group: 'IVA', period: 2 },
+      { z: 7, sym: 'N', name: 'ไนโตรเจน', A: 14, group: 'VA', period: 2 },
+      { z: 8, sym: 'O', name: 'ออกซิเจน', A: 16, group: 'VIA', period: 2 },
+      { z: 9, sym: 'F', name: 'ฟลูออรีน', A: 19, group: 'VIIA', period: 2 },
+      { z: 10, sym: 'Ne', name: 'นีออน', A: 20, group: 'VIIIA', period: 2 },
+      { z: 11, sym: 'Na', name: 'โซเดียม', A: 23, group: 'IA', period: 3 },
+      { z: 12, sym: 'Mg', name: 'แมกนีเซียม', A: 24, group: 'IIA', period: 3 },
+      { z: 13, sym: 'Al', name: 'อะลูมิเนียม', A: 27, group: 'IIIA', period: 3 },
+      { z: 14, sym: 'Si', name: 'ซิลิคอน', A: 28, group: 'IVA', period: 3 },
+      { z: 15, sym: 'P', name: 'ฟอสฟอรัส', A: 31, group: 'VA', period: 3 },
+      { z: 16, sym: 'S', name: 'กำมะถัน', A: 32, group: 'VIA', period: 3 },
+      { z: 17, sym: 'Cl', name: 'คลอรีน', A: 35, group: 'VIIA', period: 3 },
+      { z: 18, sym: 'Ar', name: 'อาร์กอน', A: 40, group: 'VIIIA', period: 3 },
+      { z: 19, sym: 'K', name: 'โพแทสเซียม', A: 39, group: 'IA', period: 4 },
+      { z: 20, sym: 'Ca', name: 'แคลเซียม', A: 40, group: 'IIA', period: 4 },
+      { z: 21, sym: 'Sc', name: 'สแกนเดียม', A: 45, group: 'IIIB (แทรนซิชัน)', period: 4 },
+      { z: 22, sym: 'Ti', name: 'ไทเทเนียม', A: 48, group: 'IVB (แทรนซิชัน)', period: 4 },
+      { z: 23, sym: 'V', name: 'วาเนเดียม', A: 51, group: 'VB (แทรนซิชัน)', period: 4 },
+      { z: 24, sym: 'Cr', name: 'โครเมียม (ข้อยกเว้นบรรจุครึ่ง!)', A: 52, group: 'VIB (แทรนซิชัน)', period: 4 },
+      { z: 25, sym: 'Mn', name: 'แมงกานีส', A: 55, group: 'VIIB (แทรนซิชัน)', period: 4 },
+      { z: 26, sym: 'Fe', name: 'เหล็ก', A: 56, group: 'VIIIB (แทรนซิชัน)', period: 4 },
+      { z: 27, sym: 'Co', name: 'โคบอลต์', A: 59, group: 'VIIIB (แทรนซิชัน)', period: 4 },
+      { z: 28, sym: 'Ni', name: 'นิกเกิล', A: 59, group: 'VIIIB (แทรนซิชัน)', period: 4 },
+      { z: 29, sym: 'Cu', name: 'ทองแดง (ข้อยกเว้นบรรจุเต็ม!)', A: 64, group: 'IB (แทรนซิชัน)', period: 4 },
+      { z: 30, sym: 'Zn', name: 'สังกะสี', A: 65, group: 'IIB (แทรนซิชัน)', period: 4 },
+      { z: 31, sym: 'Ga', name: 'แกลเลียม', A: 70, group: 'IIIA', period: 4 },
+      { z: 32, sym: 'Ge', name: 'เจอร์เมเนียม', A: 73, group: 'IVA', period: 4 },
+      { z: 33, sym: 'As', name: 'สารหนู', A: 75, group: 'VA', period: 4 },
+      { z: 34, sym: 'Se', name: 'ซีลีเนียม', A: 79, group: 'VIA', period: 4 },
+      { z: 35, sym: 'Br', name: 'โบรมีน', A: 80, group: 'VIIA', period: 4 },
+      { z: 36, sym: 'Kr', name: 'คริปทอน', A: 84, group: 'VIIIA', period: 4 }
+    ];
+
+    // Global State
+    const state = {
+      activeTab: 'lab1',
+      tick: 0,
+
+      // Lab 1: Atomic Models & Classic Scientist Experiments
+      lab1: {
+        model: 'dalton',        // 'dalton', 'thomson', 'rutherford', 'bohr', 'cloud'
+        bohrN: 1,               // current electron level in Bohr model (1, 2, 3, 4)
+        bohrPhotonAnim: 0,      // > 0 when emitting/absorbing photon
+        bohrPhotonColor: '#ef4444',
+        bohrPhotonText: '',
+        cloudOrbital: 's',      // 's', 'px', 'py', 'pz'
+
+        exp: 'thomson',         // 'thomson', 'goldstein', 'millikan', 'rutherford', 'chadwick'
+        // Thomson controls
+        thomsonE: 1,            // -1, 0, +1 electric field
+        thomsonB: 0,            // 0 or 1 magnetic field balancing E
+        thomsonWheel: false,    // paddle wheel inside tube
+        // Goldstein controls
+        goldsteinGasIdx: 0,     // 0=H2, 1=He, 2=Ne, 3=Ar
+        // Millikan controls
+        millikanVoltage: 50,    // 0 to 100 (balances at 60!)
+        // Rutherford alpha scattering particles
+        alphaBeams: []
+      },
+
+      // Lab 2: Electron Configuration (Z = 1..36, charge q = -2..+3)
+      lab2: {
+        Z: 19,
+        charge: 0
+      },
+
+      // Lab 3: Periodic Trends, Radius, IE Jump & Oxidation Number
+      lab3: {
+        radMode: 'period_group', // 'period_group', 'isoelectronic', 'same_elem'
+        rightMode: 'ie_pull',    // 'ie_pull' or 'ox_num'
+        ieElemIdx: 0,            // 0=Mg (IIA), 1=Al (IIIA), 2=Na (IA), 3=P (VA)
+        iePulledCount: 1,        // how many electrons pulled (1 to 4)
+        oxCompoundIdx: 0
+      },
+
+      // Lab 4: Group Properties, Flame Test, Halogen CCl4, Transition Colors, Nuclear Half-life
+      lab4: {
+        station: 'flame',        // 'flame', 'halogen', 'transition', 'nuclear'
+        // Station 1: Flame test & IA water reaction
+        flameIdx: 0,             // Li, Na, K, Ca, Sr, Ba, Cu
+        waterMetalIdx: 1,        // 0=Li, 1=Na, 2=K
+        // Station 2: Halogen displacement in CCl4 & AgNO3
+        halX2: 'Cl2',            // 'Cl2', 'Br2', 'I2'
+        halSalt: 'KI',           // 'KCl', 'KBr', 'KI'
+        halShaken: true,
+        halShakeAnim: 0,
+        // Station 3: Transition 3d ions
+        transIdx: 8,             // default MnO4- or Cu2+
+        // Station 4: Nuclear radiation & Half-life
+        nucSubMode: 'halflife',  // 'radiation' or 'halflife'
+        halfLifeSteps: 0         // 0 to 5 half-lives
+      },
+
+      quizCategory: 'all',
+      quizAnswers: {}
+    };
+
+    // Initialize Rutherford alpha beams
+    for (let i = 0; i < 18; i++) {
+      const yOffsets = [-75, -60, -45, -32, -20, -11, -3, 1, 14, 26, 38, 52, 65, 78, -9, 8, -50, 45];
+      state.lab1.alphaBeams.push({
+        x: (i * 25) % 420,
+        y0: yOffsets[i % yOffsets.length],
+        speed: 3.2
+      });
+    }
+
+    // =========================================================================
+    // TAB NAVIGATION
+    // =========================================================================
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+      });
+
+      ['view_lab1', 'view_lab2', 'view_lab3', 'view_lab4', 'sheetView', 'quizView'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+
+      if (tabId === 'lab1') {
+        document.getElementById('view_lab1').classList.remove('hidden');
+        updateLab1UI();
+      } else if (tabId === 'lab2') {
+        document.getElementById('view_lab2').classList.remove('hidden');
+        updateLab2UI();
+      } else if (tabId === 'lab3') {
+        document.getElementById('view_lab3').classList.remove('hidden');
+        updateLab3UI();
+      } else if (tabId === 'lab4') {
+        document.getElementById('view_lab4').classList.remove('hidden');
+        updateLab4UI();
+      } else if (tabId === 'sheet') {
+        document.getElementById('sheetView').classList.remove('hidden');
+        renderStudySheet('all');
+      } else if (tabId === 'quiz') {
+        document.getElementById('quizView').classList.remove('hidden');
+        renderQuizList();
+      }
+    }
+
+    // =========================================================================
+    // LAB 1: 5 ATOMIC MODELS & 5 SCIENTIST EXPERIMENTS
+    // =========================================================================
+    const MODEL_INFO = {
+      dalton: {
+        year: 'พ.ศ. 2351 John Dalton',
+        info: `
+          <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง:</b> อะตอมเป็น <b>"ทรงกลมตัน"</b> ขนาดเล็กที่สุด แบ่งแยกไม่ได้ สร้างใหม่หรือทำให้สูญหายไม่ได้</div>
+          <div><b class="text-[#1f6f61]">ข้อที่ยังใช้ได้ในปัจจุบัน (ข้อ 4 ข้อเดียว!):</b> โมเลกุลของสารประกอบเกิดจากอะตอมของธาตุตั้งแต่ 2 ชนิดขึ้นไปมารวมกันด้วยอัตราส่วนเลขลงตัวน้อยๆ</div>
+          <div class="text-[#6e6a61]">ข้ออื่นตกไปเพราะ: ค้นพบอนุภาคมูลฐาน (p, n, e⁻), ค้นพบไอโซโทปที่มวลต่างกัน, และเกิดปฏิกิริยานิวเคลียร์เปลี่ยนธาตุได้</div>
+        `,
+        footer: 'ดอลตันเป็นคนแรกที่เสนอ "ทฤษฎีอะตอม" อย่างเป็นระบบ (5 ข้อ)'
+      },
+      thomson: {
+        year: 'พ.ศ. 2440 J.J. Thomson',
+        info: `
+          <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง (ขนมพุดดิ้งลูกพลัม):</b> อะตอมเป็นทรงกลมที่มีเนื้อประจุบวกกระจายสม่ำเสมอ และมี <b>อิเล็กตรอน (ประจุลบ)</b> ฝังกระจายอยู่ทั่วไป</div>
+          <div><b class="text-[#1f6f61]">ความเป็นกลางทางไฟฟ้า:</b> จำนวนประจุบวกเท่ากับจำนวนประจุลบ อะตอมจึงเป็นกลางทางไฟฟ้า</div>
+        `,
+        footer: 'เกิดจากการค้นพบอิเล็กตรอนของทอมสัน และการค้นพบรังสีบวกของโกลด์สไตน์'
+      },
+      rutherford: {
+        year: 'พ.ศ. 2454 Ernest Rutherford',
+        info: `
+          <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง (กำเนิดนิวเคลียส):</b> อะตอมมี <b>"นิวเคลียส"</b> ขนาดเล็กมากอยู่ตรงกลางซึ่งรวมประจุบวกและมวลเกือบทั้งหมดไว้</div>
+          <div><b class="text-[#1f6f61]">บริเวณรอบนอก:</b> อิเล็กตรอนวิ่งวนอยู่รอบนิวเคลียสเป็นบริเวณกว้าง (อะตอมส่วนใหญ่จึงเป็นที่ว่าง) แต่ยังไม่ได้บอกว่าจัดเรียงเป็นชั้นอย่างไร</div>
+        `,
+        footer: 'เกิดจากการทดลองยิงอนุภาคแอลฟา (α) ใส่แผ่นทองคำบางๆ'
+      },
+      bohr: {
+        year: 'พ.ศ. 2456 Niels Bohr',
+        info: `
+          <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง:</b> อิเล็กตรอนเคลื่อนที่รอบนิวเคลียสเป็นวงกลมตาม <b>"ระดับพลังงาน" (n = 1, 2, 3, ... หรือชั้น K, L, M, N)</b> คล้ายวงโคจรดาวเคราะห์</div>
+          <div><b class="text-[#1f6f61]">การเกิดสเปกตรัม:</b> เมื่อ e⁻ ดูดพลังงานจะกระโดดขึ้นชั้นสูง (Excited State) ซึ่งไม่เสถียร จึงตกลงมาชั้นต่ำและ <b>คายพลังงานเป็นแสงสเปกตรัม (E = hf = hc/λ)</b></div>
+          <div class="text-[#6e6a61]">• ตกลงชั้น n=1 (ไลมาน: UV) · ตกลงชั้น n=2 (บาลเมอร์: แสงที่ตามองเห็น!) · ตกลงชั้น n=3 (พาสเชน: อินฟราเรด)</div>
+        `,
+        footer: 'จุดสังเกต: ยิ่งระดับพลังงานสูงขึ้น (ห่างนิวเคลียส) ช่องว่างระหว่างชั้นจะยิ่งแคบลง (E₂₁ > E₃₂ > E₄₃ > E₅₄)'
+      },
+      cloud: {
+        year: 'ปัจจุบัน · Electron Cloud Model',
+        info: `
+          <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง (กลุ่มหมอก):</b> อิเล็กตรอนเคลื่อนที่เร็วมากจนบอกตำแหน่งและวิถีที่แน่นอนไม่ได้ บอกได้เพียง <b>"โอกาสที่จะพบอิเล็กตรอน"</b></div>
+          <div><b class="text-[#1f6f61]">ความหนาแน่นหมอก & รูปร่างออร์บิทัล:</b> บริเวณหมอกทึบมีโอกาสพบ e⁻ สูง หมอกจางมีโอกาสพบต่ำ · ออร์บิทัล <b>s</b> เป็นทรงกลม, ออร์บิทัล <b>p</b> เป็นทรงดัมเบล</div>
+        `,
+        footer: 'พัฒนาจากหลักความไม่แน่นอนของไฮเซนเบิร์กและสมการคลื่นของชเรอดิงเงอร์'
+      }
+    };
+
+    const GOLDSTEIN_GASES = [
+      { sym: 'H₂ (แก๊สไฮโดรเจน)', ion: 'H⁺ (โปรตอน)', mass: 1, em: '9.58 × 10⁴ C/g (สูงสุด! เพราะเบาที่สุด)', deflection: 38 },
+      { sym: 'He (แก๊สฮีเลียม)', ion: 'He⁺', mass: 4, em: '2.41 × 10⁴ C/g', deflection: 20 },
+      { sym: 'Ne (แก๊สนีออน)', ion: 'Ne⁺', mass: 20, em: '4.78 × 10³ C/g', deflection: 10 },
+      { sym: 'Ar (แก๊สอาร์กอน)', ion: 'Ar⁺', mass: 40, em: '2.42 × 10³ C/g (เบนน้อยสุด เพราะหนักมาก)', deflection: 6 }
+    ];
+
+    function updateLab1UI() {
+      const L = state.lab1;
+
+      // Update 5 Atomic Models UI
+      document.querySelectorAll('.l1-model-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-model') === L.model);
+      });
+
+      const mInfo = MODEL_INFO[L.model];
+      document.getElementById('l1_modelYearBadge').textContent = mInfo.year;
+      document.getElementById('l1_modelInfoBox').innerHTML = mInfo.info;
+      document.getElementById('l1_modelFooter').textContent = mInfo.footer;
+
+      const mControls = document.getElementById('l1_modelControls');
+      if (L.model === 'bohr') {
+        mControls.innerHTML = `
+          <span class="text-xs font-bold text-[#1d232a]">ทดลองกระตุ้น/คายแสงของ e⁻:</span>
+          <button data-bohr-n="1" class="bohr-n-btn ${L.bohrN === 1 ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs">n=1 (สภาวะพื้น K)</button>
+          <button data-bohr-n="2" class="bohr-n-btn ${L.bohrN === 2 ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs">n=2 (ชั้น L)</button>
+          <button data-bohr-n="3" class="bohr-n-btn ${L.bohrN === 3 ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs">n=3 (ชั้น M)</button>
+          <button data-bohr-n="4" class="bohr-n-btn ${L.bohrN === 4 ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs">n=4 (ชั้น N)</button>
+        `;
+        mControls.querySelectorAll('.bohr-n-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const targetN = parseInt(btn.getAttribute('data-bohr-n'), 10);
+            const prevN = L.bohrN;
+            L.bohrN = targetN;
+            if (targetN < prevN) {
+              // Emits photon!
+              L.bohrPhotonAnim = 1.0;
+              if (targetN === 1) {
+                L.bohrPhotonColor = '#7c3aed';
+                L.bohrPhotonText = `คายแสง UV (ชุดไลมาน n=${prevN}→1)`;
+              } else if (targetN === 2) {
+                L.bohrPhotonColor = prevN === 3 ? '#ef4444' : '#0284c7';
+                L.bohrPhotonText = `คายแสงที่ตามองเห็น! (ชุดบาลเมอร์ n=${prevN}→2)`;
+              } else {
+                L.bohrPhotonColor = '#d97706';
+                L.bohrPhotonText = `คายรังสีอินฟราเรด (ชุดพาสเชน n=${prevN}→3)`;
+              }
+            } else if (targetN > prevN) {
+              L.bohrPhotonAnim = 1.0;
+              L.bohrPhotonColor = '#1f6f61';
+              L.bohrPhotonText = `ดูดพลังงานกระโดดขึ้น n=${prevN}→${targetN}`;
+            }
+            updateLab1UI();
+          });
+        });
+      } else if (L.model === 'cloud') {
+        mControls.innerHTML = `
+          <span class="text-xs font-bold text-[#1d232a]">เลือกรูปร่างออร์บิทัล:</span>
+          <button data-orb="s" class="cloud-orb-btn ${L.cloudOrbital === 's' ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-3 !text-xs">ออร์บิทัล s (ทรงกลม)</button>
+          <button data-orb="px" class="cloud-orb-btn ${L.cloudOrbital === 'px' ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-3 !text-xs">ออร์บิทัล pₓ (ดัมเบลแนวนอน)</button>
+          <button data-orb="py" class="cloud-orb-btn ${L.cloudOrbital === 'py' ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-3 !text-xs">ออร์บิทัล pᵧ (ดัมเบลแนวตั้ง)</button>
+        `;
+        mControls.querySelectorAll('.cloud-orb-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            L.cloudOrbital = btn.getAttribute('data-orb');
+            updateLab1UI();
+          });
+        });
+      } else {
+        mControls.innerHTML = `<span class="text-xs text-[#6e6a61]">กดปุ่มด้านบนเพื่อเทียบความแตกต่างของแบบจำลองอะตอมแต่ละยุค</span>`;
+      }
+
+      // Update Right Card: Scientist Experiments
+      const expControls = document.getElementById('l1_expControls');
+      const expInfo = document.getElementById('l1_expInfoBox');
+      const expFooter = document.getElementById('l1_expFooter');
+      const expBadge = document.getElementById('l1_expParticleBadge');
+
+      if (L.exp === 'thomson') {
+        expBadge.textContent = 'ค้นพบ: อิเล็กตรอน (e⁻) & ค่า e/m';
+        expControls.innerHTML = `
+          <button id="l1_btnThomE" class="${L.thomsonE !== 0 ? 'btn-terra' : 'btn-outline-warm'} !py-1.5 !px-3 !text-xs">
+            สนามไฟฟ้า E: ${L.thomsonE !== 0 ? 'เปิด (เบนหาขั้ว +)' : 'ปิด'}
+          </button>
+          <button id="l1_btnThomB" class="${L.thomsonB !== 0 ? 'btn-teal' : 'btn-outline-warm'} !py-1.5 !px-3 !text-xs">
+            สนามแม่เหล็ก B: ${L.thomsonB !== 0 ? 'เปิดหักล้าง (eE = evB)' : 'ปิด'}
+          </button>
+          <button id="l1_btnThomWheel" class="btn-outline-warm !py-1.5 !px-3 !text-xs">
+            ${L.thomsonWheel ? 'ซ่อนใบพัดกังหัน' : 'ใส่ใบพัดกังหันกั้น'}
+          </button>
+        `;
+        expInfo.innerHTML = `
+          <div><b class="text-[#c24d2c]">สิ่งที่ทอมสันสังเกตเห็น:</b> รังสีพุ่งจากขั้วแคโทด (−) ไปแอโนด (+) · <b>ทำให้กังหันหมุนได้และไม่ทะลุแผ่นโลหะ</b> (แปลว่ามีมวล/ตัวตน) · <b>เบนเข้าหาขั้วบวก</b> (แปลว่ามีประจุลบ!)</div>
+          <div><b class="text-[#1f6f61]">การวัดค่าประจุต่อมวล (e/m):</b> เมื่อปรับสนามไฟฟ้าและสนามแม่เหล็กให้หักล้างกันจนลำรังสีพุ่งตรง (v = E/B) คำนวณได้ <b>e/m = 1.76 × 10⁸ C/g คงที่เสมอ</b> ไม่ว่าจะเปลี่ยนโลหะขั้วแคโทดหรือแก๊สเป็นชนิดใด!</div>
+        `;
+        expFooter.textContent = 'สรุป: อิเล็กตรอนของทุกธาตุเหมือนกัน และเป็นองค์ประกอบพื้นฐานของอะตอมทุกชนิด';
+
+        document.getElementById('l1_btnThomE').addEventListener('click', () => { L.thomsonE = L.thomsonE ? 0 : 1; updateLab1UI(); });
+        document.getElementById('l1_btnThomB').addEventListener('click', () => { L.thomsonB = L.thomsonB ? 0 : 1; updateLab1UI(); });
+        document.getElementById('l1_btnThomWheel').addEventListener('click', () => { L.thomsonWheel = !L.thomsonWheel; updateLab1UI(); });
+
+      } else if (L.exp === 'goldstein') {
+        const gGas = GOLDSTEIN_GASES[L.goldsteinGasIdx];
+        expBadge.textContent = 'ค้นพบ: รังสีบวก (โปรตอน H⁺)';
+        expControls.innerHTML = `
+          <span class="text-xs font-bold text-[#1d232a]">เปลี่ยนแก๊สในหลอด:</span>
+          ${GOLDSTEIN_GASES.map((g, i) => `
+            <button data-gidx="${i}" class="gold-gas-btn ${L.goldsteinGasIdx === i ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs">${g.sym.split(' ')[0]}</button>
+          `).join('')}
+        `;
+        expInfo.innerHTML = `
+          <div><b class="text-[#c24d2c]">รังสีบวก (รังสีแคแนล) เกิดได้อย่างไร?:</b> อิเล็กตรอนจากรังสีแคโทดวิ่งไปชนอะตอมของ <b>${gGas.sym}</b> ในหลอดจนเสีย e⁻ กลายเป็นไอออนบวก (<b>${gGas.ion}</b>) วิ่งสวนทางลอดรูขั้วแคโทด (−) ไปด้านหลัง และเบนเข้าหาขั้วลบ!</div>
+          <div><b class="text-[#1f6f61]">ค่า e/m ของรังสีบวก "ไม่คงที่":</b> ขึ้นกับมวลของแก๊สที่บรรจุ ขณะนี้ใช้ <b>${gGas.sym}</b> ได้ค่า <b>e/m = ${gGas.em}</b></div>
+        `;
+        expFooter.textContent = 'ข้อสอบชอบถาม: แก๊สไฮโดรเจน (H₂) ให้ไอออนบวก H⁺ (โปรตอน) ที่เบาที่สุด จึงมีค่า e/m สูงที่สุดในบรรดารังสีบวก!';
+
+        expControls.querySelectorAll('.gold-gas-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            L.goldsteinGasIdx = parseInt(btn.getAttribute('data-gidx'), 10);
+            updateLab1UI();
+          });
+        });
+
+      } else if (L.exp === 'millikan') {
+        expBadge.textContent = 'หาค่าประจุ e = 1.6×10⁻¹⁹ C';
+        const isBalanced = Math.abs(L.millikanVoltage - 60) <= 5;
+        expControls.innerHTML = `
+          <div class="w-full px-2">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span>ปรับความต่างศักย์แผ่นโลหะ (สนามไฟฟ้า E):</span>
+              <span class="font-mono-num ${isBalanced ? 'text-[#1f6f61]' : 'text-[#c24d2c]'}">
+                ${isBalanced ? '✓ สมดุลพอดี! หยดน้ำมันลอยนิ่ง (qE = mg)' : (L.millikanVoltage < 60 ? 'แรงไฟฟ้าน้อยกว่า mg (หยดตกลง)' : 'แรงไฟฟ้ามากกว่า mg (หยดลอยขึ้น)')}
+              </span>
+            </div>
+            <input type="range" id="l1_sl_millikan" class="exp-slider" min="10" max="100" step="5" value="${L.millikanVoltage}">
+          </div>
+          <button id="l1_btnBalanceOil" class="btn-teal !py-1 !px-3 !text-xs">ปรับสนามไฟฟ้าให้หยดน้ำมันลอยนิ่งพอดี (qE = mg)</button>
+        `;
+        expInfo.innerHTML = `
+          <div><b class="text-[#1d232a]">หลักการของมิลลิแกน:</b> พ่นหยดน้ำมันเล็กๆ แล้วฉายรังสีเอกซ์ให้มีประจุลบ จากนั้นปรับสนามไฟฟ้าจนแรงดึงขึ้นเท่ากับน้ำหนักดึงลง (<b>qE = mg</b>) หยดน้ำมันจึงลอยนิ่ง!</div>
+          <div><b class="text-[#c24d2c]">ผลลัพธ์ที่ได้:</b> ประจุบนหยดน้ำมันทุกหยดเป็นจำนวนเต็มเท่าของ <b>1.6 × 10⁻¹⁹ C</b> เสมอ จึงสรุปว่าประจุของอิเล็กตรอน 1 ตัว (e) = <b>1.6 × 10⁻¹⁹ C</b></div>
+          <div><b class="text-[#1f6f61]">รวมพลังทอมสัน + มิลลิแกน:</b> หามวลอิเล็กตรอน m = e ÷ (e/m) = 1.6×10⁻¹⁹ ÷ 1.76×10⁸ = <b>9.11 × 10⁻²⁸ กรัม</b></div>
+        `;
+        expFooter.textContent = 'จำแม่นๆ: ทอมสันหาได้แค่ "อัตราส่วน e/m" ส่วนมิลลิแกนหาค่า "ประจุ e" จึงนำมาหารกันได้มวล m ของอิเล็กตรอน';
+
+        document.getElementById('l1_sl_millikan').addEventListener('input', e => {
+          L.millikanVoltage = parseInt(e.target.value, 10);
+          updateLab1UI();
+        });
+        document.getElementById('l1_btnBalanceOil').addEventListener('click', () => {
+          L.millikanVoltage = 60;
+          updateLab1UI();
+        });
+
+      } else if (L.exp === 'rutherford') {
+        expBadge.textContent = 'ค้นพบ: นิวเคลียสประจุบวก';
+        expControls.innerHTML = `
+          <span class="text-xs font-semibold text-[#1f6f61]">เส้นสีเขียว = ทะลุตรง (ส่วนใหญ่)</span>
+          <span class="text-xs font-semibold text-[#d97706]">เส้นสีส้ม = เบี่ยงเบน (ส่วนน้อย)</span>
+          <span class="text-xs font-semibold text-[#c24d2c]">เส้นสีแดง = สะท้อนกลับ (น้อยที่สุด!)</span>
+        `;
+        expInfo.innerHTML = `
+          <div><b class="text-[#1f6f61]">1) ส่วนใหญ่ทะลุผ่านเป็นเส้นตรง:</b> แสดงว่าอะตอมส่วนใหญ่เป็น <b>"ที่ว่างเปล่า"</b></div>
+          <div><b class="text-[#d97706]">2) ส่วนน้อยเบี่ยงเบนไปจากแนวเดิม:</b> แสดงว่าภายในอะตอมมีจุดที่มี <b>ประจุบวก</b> ผลักอนุภาคแอลฟา (+) ให้เบนไป</div>
+          <div><b class="text-[#c24d2c]">3) ส่วนน้อยที่สุดสะท้อนกลับ:</b> แสดงว่าจุดประจุบวกนั้น <b>มีขนาดเล็กมากแต่มีมวลมาก</b> (รวมมวลเกือบทั้งหมดของอะตอมไว้) เรียกว่า <b>"นิวเคลียส"</b></div>
+        `;
+        expFooter.textContent = 'โอกาสเกิดจากมากไปน้อย: ทะลุผ่านตรง >> เบี่ยงเบน > สะท้อนกลับ (ข้อสอบถามบ่อยมาก!)';
+
+      } else {
+        // Chadwick (Neutron discovery)
+        expBadge.textContent = 'ค้นพบ: นิวตรอน (n)';
+        expControls.innerHTML = `
+          <span class="text-xs font-semibold text-[#1d232a]">สมการนิวเคลียร์: ⁹₄Be + ⁴₂He (แอลฟา) → ¹²₆C + ¹₀n (นิวตรอน)</span>
+        `;
+        expInfo.innerHTML = `
+          <div><b class="text-[#1d232a]">พ.ศ. 2473 โบเทและเบเกอร์:</b> ยิงอนุภาคแอลฟา (⁴₂He) ใส่แผ่นเบริลเลียม (⁹₄Be) พบรังสีที่ไม่มีประจุไฟฟ้าและมีอำนาจทะลุทะลวงสูงมาก</div>
+          <div><b class="text-[#c24d2c]">พ.ศ. 2475 เจมส์ แชดวิก (James Chadwick):</b> พิสูจน์ว่ารังสีนั้นคืออนุภาคที่เป็นกลางทางไฟฟ้า (ไม่เบนในสนามไฟฟ้า/แม่เหล็ก) และมี <b>มวลใกล้เคียงกับโปรตอน</b> ตั้งชื่อว่า <b>"นิวตรอน" (neutron)</b></div>
+        `;
+        expFooter.textContent = 'ลำดับการค้นพบอนุภาคมูลฐาน: อิเล็กตรอน (ทอมสัน) → โปรตอน (โกลด์สไตน์/รัทเทอร์ฟอร์ด) → นิวตรอน (แชดวิก)';
+      }
+    }
+
+    function drawLab1Canvases() {
+      drawLab1ModelCanvas();
+      drawLab1ExpCanvas();
+    }
+
+    function drawLab1ModelCanvas() {
+      const canvas = document.getElementById('l1_modelCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab1;
+      const cx = W / 2, cy = H / 2;
+
+      if (L.model === 'dalton') {
+        // Solid indivisible sphere with 3D shading
+        const grad = ctx.createRadialGradient(cx - 25, cy - 25, 10, cx, cy, 78);
+        grad.addColorStop(0, '#cbd5e1');
+        grad.addColorStop(0.6, '#64748b');
+        grad.addColorStop(1, '#334155');
+        ctx.beginPath();
+        ctx.arc(cx, cy, 75, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 13px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('ทรงกลมตัน แบ่งแยกไม่ได้ (ยังไม่มี p, n, e⁻)', cx, H - 14);
+
+      } else if (L.model === 'thomson') {
+        // Plum pudding sphere
+        ctx.beginPath();
+        ctx.arc(cx, cy, 78, 0, Math.PI * 2);
+        ctx.fillStyle = '#fbcfe8';
+        ctx.fill();
+        ctx.strokeStyle = '#db2777';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Positive charges distributed throughout
+        const posPts = [[-38, -32], [35, -35], [0, -48], [-45, 15], [45, 15], [-20, 45], [25, 42], [0, 5]];
+        ctx.fillStyle = '#be185d';
+        ctx.font = 'bold 16px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        posPts.forEach(([dx, dy]) => ctx.fillText('+', cx + dx, cy + dy));
+
+        // Electrons embedded like plums
+        const ePts = [[-22, -18], [24, -16], [-28, 22], [26, 20], [0, -28], [0, 32]];
+        ePts.forEach(([dx, dy], i) => {
+          const ox = Math.sin(state.tick * 0.05 + i) * 2;
+          const oy = Math.cos(state.tick * 0.05 + i) * 2;
+          ctx.beginPath();
+          ctx.arc(cx + dx + ox, cy + dy + oy, 10, 0, Math.PI * 2);
+          ctx.fillStyle = '#0284c7';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+          ctx.fillText('−', cx + dx + ox, cy + dy + oy + 4);
+        });
+
+      } else if (L.model === 'rutherford') {
+        // Empty space outer boundary
+        ctx.beginPath();
+        ctx.arc(cx, cy, 85, 0, Math.PI * 2);
+        ctx.fillStyle = '#ecfdf5';
+        ctx.fill();
+        ctx.strokeStyle = '#10b981';
+        ctx.setLineDash([5, 4]);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Elliptical orbits
+        [0, 60, 120].forEach((deg, idx) => {
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.rotate((deg * Math.PI) / 180);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 76, 28, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = '#94a3b8';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+
+          // Orbiting electron
+          const ang = state.tick * 0.04 + idx * 2.1;
+          const ex = 76 * Math.cos(ang);
+          const ey = 28 * Math.sin(ang);
+          ctx.beginPath();
+          ctx.arc(ex, ey, 7, 0, Math.PI * 2);
+          ctx.fillStyle = '#0284c7';
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // Tiny dense positive nucleus in center
+        ctx.beginPath();
+        ctx.arc(cx, cy, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#c24d2c';
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('+N', cx, cy + 4);
+
+      } else if (L.model === 'bohr') {
+        // Concentric quantized shells n=1, 2, 3, 4 (spacing gets narrower at higher n!)
+        const radii = [32, 58, 78, 94];
+        const labels = ['n=1 (K)', 'n=2 (L)', 'n=3 (M)', 'n=4 (N)'];
+
+        radii.forEach((r, idx) => {
+          const nVal = idx + 1;
+          ctx.beginPath();
+          ctx.arc(cx - 50, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = L.bohrN === nVal ? '#c24d2c' : '#cbd5e1';
+          ctx.lineWidth = L.bohrN === nVal ? 2.5 : 1.5;
+          ctx.stroke();
+        });
+
+        // Nucleus
+        ctx.beginPath();
+        ctx.arc(cx - 50, cy, 11, 0, Math.PI * 2);
+        ctx.fillStyle = '#c24d2c';
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('+', cx - 50, cy + 3.5);
+
+        // Active electron on shell L.bohrN
+        const activeR = radii[L.bohrN - 1];
+        const ang = state.tick * 0.035;
+        const ex = (cx - 50) + activeR * Math.cos(ang);
+        const ey = cy + activeR * Math.sin(ang);
+
+        ctx.beginPath();
+        ctx.arc(ex, ey, 8, 0, Math.PI * 2);
+        ctx.fillStyle = '#0284c7';
+        ctx.fill();
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Photon wave animation if active
+        if (L.bohrPhotonAnim > 0) {
+          L.bohrPhotonAnim = Math.max(0, L.bohrPhotonAnim - 0.015);
+          ctx.fillStyle = L.bohrPhotonColor;
+          ctx.font = 'bold 11.5px "IBM Plex Sans Thai", sans-serif';
+          ctx.textAlign = 'left';
+          ctx.fillText(L.bohrPhotonText, cx + 55, 42);
+
+          // Wavy photon arrow
+          ctx.strokeStyle = L.bohrPhotonColor;
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          for (let x = 0; x < 90; x += 3) {
+            const wx = cx + 55 + x;
+            const wy = 65 + Math.sin(x * 0.35 - state.tick * 0.2) * 7;
+            if (x === 0) ctx.moveTo(wx, wy);
+            else ctx.lineTo(wx, wy);
+          }
+          ctx.stroke();
+        }
+
+        // Right side Mini Energy Level Ladder (showing gap narrowing!)
+        const lx = cx + 70, lw = 120;
+        const levelY = [215, 135, 92, 68]; // E1, E2, E3, E4 (gaps get smaller!)
+        levelY.forEach((ly, idx) => {
+          const nVal = idx + 1;
+          ctx.strokeStyle = L.bohrN === nVal ? '#c24d2c' : '#64748b';
+          ctx.lineWidth = L.bohrN === nVal ? 3 : 1.5;
+          ctx.beginPath();
+          ctx.moveTo(lx, ly);
+          ctx.lineTo(lx + lw, ly);
+          ctx.stroke();
+
+          ctx.fillStyle = L.bohrN === nVal ? '#c24d2c' : '#6e6a61';
+          ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(labels[idx], lx + lw + 6, ly + 4);
+
+          if (L.bohrN === nVal) {
+            ctx.beginPath();
+            ctx.arc(lx + lw / 2, ly, 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#0284c7';
+            ctx.fill();
+          }
+        });
+
+      } else {
+        // Electron Cloud Model (s spherical vs px / py dumbbell probability density dots)
+        // Draw axes
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(cx - 105, cy); ctx.lineTo(cx + 105, cy);
+        ctx.moveTo(cx, cy - 105); ctx.lineTo(cx, cy + 105);
+        ctx.stroke();
+
+        // Draw probability cloud dots
+        ctx.fillStyle = '#4f46e5';
+        const numDots = 240;
+        for (let i = 0; i < numDots; i++) {
+          // Deterministic pseudo-random cloud points
+          const seed1 = Math.sin(i * 12.9898) * 43758.5453;
+          const seed2 = Math.cos(i * 78.233) * 23421.631;
+          const u = seed1 - Math.floor(seed1);
+          const v = seed2 - Math.floor(seed2);
+          const r = Math.pow(u, 0.55) * 85;
+          const theta = v * Math.PI * 2;
+
+          let dx = r * Math.cos(theta);
+          let dy = r * Math.sin(theta);
+
+          if (L.cloudOrbital === 'px') {
+            dx = Math.sign(Math.cos(theta)) * (18 + Math.abs(dx) * 1.05);
+            dy = dy * 0.36;
+          } else if (L.cloudOrbital === 'py') {
+            dy = Math.sign(Math.sin(theta)) * (18 + Math.abs(dy) * 1.05);
+            dx = dx * 0.36;
+          }
+
+          ctx.globalAlpha = Math.max(0.18, 0.75 - (r / 110));
+          ctx.beginPath();
+          ctx.arc(cx + dx, cy + dy, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1.0;
+
+        // Nucleus at center
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#c24d2c';
+        ctx.fill();
+      }
+    }
+
+    function drawLab1ExpCanvas() {
+      const canvas = document.getElementById('l1_expCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab1;
+
+      if (L.exp === 'thomson') {
+        // Cathode Ray Tube
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(30, 50, 400, 145, 45);
+        ctx.fill();
+        ctx.stroke();
+
+        // Cathode (-) on left, Anode (+) with slit
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(65, 85, 12, 75);
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('แคโทด (−)', 71, 42);
+
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillRect(145, 85, 10, 30);
+        ctx.fillRect(145, 130, 10, 30);
+        ctx.fillText('แอโนด (+)', 150, 42);
+
+        // External Electric Plates (+ on top, - on bottom)
+        if (L.thomsonE !== 0) {
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(210, 62, 110, 8);
+          ctx.fillText('+ + + ขั้วบวก + + +', 265, 58);
+
+          ctx.fillStyle = '#0284c7';
+          ctx.fillRect(210, 175, 110, 8);
+          ctx.fillText('− − − ขั้วลบ − − −', 265, 208);
+        }
+
+        // Magnetic Field (X markers) if enabled
+        if (L.thomsonB !== 0) {
+          ctx.fillStyle = '#1f6f61';
+          ctx.font = 'bold 12px "IBM Plex Mono", monospace';
+          for (let mx = 220; mx <= 310; mx += 30) {
+            ctx.fillText('×', mx, 105);
+            ctx.fillText('×', mx, 145);
+          }
+        }
+
+        // Deflection calculation: E bends UP (-y), B bends DOWN (+y), both together cancel out!
+        let netDeflect = 0;
+        if (L.thomsonE && !L.thomsonB) netDeflect = -38;
+        else if (!L.thomsonE && L.thomsonB) netDeflect = 38;
+        else if (L.thomsonE && L.thomsonB) netDeflect = 0;
+
+        // Draw glowing green cathode ray beam
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(77, 122);
+        ctx.lineTo(210, 122);
+        const endX = L.thomsonWheel ? 275 : 418;
+        const endY = L.thomsonWheel ? 122 : (122 + netDeflect);
+        ctx.quadraticCurveTo(280, 122, endX, endY);
+        ctx.stroke();
+
+        // Glowing spot on fluorescent screen
+        if (!L.thomsonWheel) {
+          ctx.beginPath();
+          ctx.arc(endX, endY, 8, 0, Math.PI * 2);
+          ctx.fillStyle = '#22c55e';
+          ctx.fill();
+        } else {
+          // Spinning paddle wheel hit by cathode ray
+          ctx.save();
+          ctx.translate(285, 122);
+          ctx.rotate(state.tick * 0.08);
+          ctx.strokeStyle = '#d97706';
+          ctx.lineWidth = 3;
+          for (let k = 0; k < 4; k++) {
+            ctx.rotate(Math.PI / 2);
+            ctx.beginPath(); ctx.moveTo(-18, 0); ctx.lineTo(18, 0); ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+      } else if (L.exp === 'goldstein') {
+        // Perforated Cathode Tube (Canal Rays)
+        const gGas = GOLDSTEIN_GASES[L.goldsteinGasIdx];
+        ctx.fillStyle = '#ffffff';
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(30, 50, 400, 145, 45);
+        ctx.fill();
+        ctx.stroke();
+
+        // Anode (+) on left, Perforated Cathode (-) in center!
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillRect(65, 85, 10, 75);
+        ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('แอโนด (+)', 70, 42);
+
+        // Perforated Cathode (-) in middle
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(215, 65, 12, 32);
+        ctx.fillRect(215, 108, 12, 28);
+        ctx.fillRect(215, 147, 12, 32);
+        ctx.fillText('แคโทดเจาะรู (−)', 221, 42);
+
+        // Cathode ray (electrons) going left from cathode to anode
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(215, 122);
+        ctx.lineTo(75, 122);
+        ctx.stroke();
+
+        // Positive Canal Rays going right through holes and bending toward (-) plate at bottom!
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(280, 178, 110, 7);
+        ctx.font = 'bold 10.5px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText('แผ่นขั้วลบ (−) ดึงรังสีบวกให้เบนลง', 335, 206);
+
+        ctx.strokeStyle = '#e11d48';
+        ctx.lineWidth = 3.5;
+        [102, 141].forEach(hy => {
+          ctx.beginPath();
+          ctx.moveTo(140, hy);
+          ctx.lineTo(240, hy);
+          ctx.quadraticCurveTo(320, hy, 415, hy + gGas.deflection);
+          ctx.stroke();
+        });
+
+        ctx.fillStyle = '#be123c';
+        ctx.font = 'bold 11.5px "IBM Plex Mono", monospace';
+        ctx.fillText(`รังสีบวก (${gGas.ion}) → e/m = ${gGas.em.split(' ')[0]} C/g`, 230, 232);
+
+      } else if (L.exp === 'millikan') {
+        // Millikan Oil Drop Chamber
+        ctx.fillStyle = '#faf8f4';
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(110, 25, 240, 200, 16);
+        ctx.fill();
+        ctx.stroke();
+
+        // Top Positive Plate (+) and Bottom Negative Plate (-)
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillRect(130, 55, 200, 10);
+        ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('แผ่นโลหะขั้วบวก (+)', 230, 46);
+
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(130, 185, 200, 10);
+        ctx.fillText('แผ่นโลหะขั้วลบ (−)', 230, 212);
+
+        // Oil drop position based on voltage (60 = balanced in middle y=120)
+        const offset = (60 - L.millikanVoltage) * 0.9;
+        const dropY = Math.max(78, Math.min(168, 120 + offset));
+
+        // Force vectors: qE (upward) vs mg (downward)
+        const qELen = (L.millikanVoltage / 60) * 36;
+        const mgLen = 36;
+
+        // Upward arrow qE
+        ctx.strokeStyle = '#1f6f61';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(230, dropY - 12);
+        ctx.lineTo(230, dropY - 12 - qELen);
+        ctx.stroke();
+        ctx.fillStyle = '#1f6f61';
+        ctx.fillText('แรงไฟฟ้า qE ↑', 292, dropY - 18);
+
+        // Downward arrow mg
+        ctx.strokeStyle = '#c24d2c';
+        ctx.beginPath();
+        ctx.moveTo(230, dropY + 12);
+        ctx.lineTo(230, dropY + 12 + mgLen);
+        ctx.stroke();
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillText('น้ำหนัก mg ↓', 292, dropY + 32);
+
+        // Golden Oil Drop with (-) electrons
+        ctx.beginPath();
+        ctx.arc(230, dropY, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#eab308';
+        ctx.fill();
+        ctx.strokeStyle = '#ca8a04';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+        ctx.fillText('e⁻', 230, dropY + 3.5);
+
+      } else if (L.exp === 'rutherford') {
+        // Gold Foil Alpha Scattering
+        const nucX = 250, nucY = 128;
+
+        // Circular ZnS Fluorescent Screen
+        ctx.strokeStyle = '#16a34a';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(nucX, nucY, 102, -Math.PI * 0.82, Math.PI * 0.82);
+        ctx.stroke();
+
+        // Thin Gold Foil strip
+        ctx.fillStyle = '#eab308';
+        ctx.fillRect(nucX - 4, nucY - 88, 8, 176);
+
+        // Gold Nucleus in center
+        ctx.beginPath();
+        ctx.arc(nucX, nucY, 10, 0, Math.PI * 2);
+        ctx.fillStyle = '#c24d2c';
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('Au+', nucX, nucY + 3);
+
+        // Alpha Emitter Box on left
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(25, nucY - 22, 55, 44);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px "IBM Plex Mono", monospace';
+        ctx.fillText('ยิง α', 52, nucY + 4);
+
+        // Draw trajectories (straight, deflected, backscattered)
+        state.lab1.alphaBeams.forEach(b => {
+          b.x = (b.x + b.speed) % 340;
+          const absY = Math.abs(b.y0);
+          let color = '#16a34a'; // straight
+          if (absY <= 4) color = '#c24d2c'; // backscatter!
+          else if (absY <= 18) color = '#d97706'; // deflected
+
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(80, nucY + b.y0);
+
+          if (absY <= 4) {
+            // Backscatter off nucleus!
+            ctx.lineTo(nucX - 12, nucY + b.y0);
+            ctx.lineTo(155, nucY + (b.y0 >= 0 ? 68 : -68));
+          } else if (absY <= 18) {
+            // Deflect at an angle
+            ctx.lineTo(nucX, nucY + b.y0);
+            ctx.lineTo(nucX + 88, nucY + b.y0 + (b.y0 > 0 ? 48 : -48));
+          } else {
+            // Pass straight through empty space
+            ctx.lineTo(nucX + 98, nucY + b.y0);
+          }
+          ctx.stroke();
+        });
+
+      } else {
+        // Chadwick (Alpha + Be -> C + Neutron)
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(30, 100, 65, 50);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('ต้นกำเนิด α', 62, 129);
+
+        // Alpha ray hitting Beryllium sheet
+        ctx.strokeStyle = '#c24d2c';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(95, 125); ctx.lineTo(195, 125); ctx.stroke();
+        ctx.fillStyle = '#c24d2c';
+        ctx.fillText('⁴₂He (α)', 145, 114);
+
+        // Beryllium target
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(195, 65, 16, 120);
+        ctx.fillStyle = '#1d232a';
+        ctx.fillText('แผ่น ⁹₄Be', 203, 54);
+
+        // Neutrons emerging straight through electric plates without bending!
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(265, 72, 110, 7);
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(265, 172, 110, 7);
+
+        ctx.strokeStyle = '#1f6f61';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([6, 4]);
+        [105, 125, 145].forEach(ny => {
+          ctx.beginPath(); ctx.moveTo(211, ny); ctx.lineTo(425, ny); ctx.stroke();
+        });
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#1f6f61';
+        ctx.font = 'bold 11.5px "IBM Plex Sans Thai", sans-serif';
+        ctx.fillText('นิวตรอน (¹₀n) เป็นกลาง → พุ่งตรงไม่เบนในสนามไฟฟ้า!', 320, 215);
+      }
+    }
+
+    // =========================================================================
+    // LAB 2: ELECTRON CONFIGURATION ENGINE (Main Shells, Sublevels, Orbitals)
+    // =========================================================================
+    function computeElectronConfig(Z, charge) {
+      // Step 1: Build neutral atom configuration first (including Cr=24 and Cu=29 exceptions!)
+      let dCount = 0, s4Count = 0;
+      const sublevels = []; // { name, n, l, count, max, orbitals }
+
+      let rem = Z;
+      const take = cap => {
+        const v = Math.min(rem, cap);
+        rem -= v;
+        return v;
+      };
+
+      const c1s = take(2);
+      const c2s = take(2);
+      const c2p = take(6);
+      const c3s = take(2);
+      const c3p = take(6);
+
+      let c4s = 0, c3d = 0, c4p = 0;
+      if (Z === 24) {
+        c4s = 1; c3d = 5; rem = 0;
+      } else if (Z === 29) {
+        c4s = 1; c3d = 10; rem = 0;
+      } else {
+        c4s = take(2);
+        c3d = take(10);
+        c4p = take(6);
+      }
+
+      const map = { '1s': c1s, '2s': c2s, '2p': c2p, '3s': c3s, '3p': c3p, '4s': c4s, '3d': c3d, '4p': c4p };
+
+      // Step 2: Apply ion charge!
+      // Positive charge (+q): remove from highest principal quantum number n FIRST (4p -> 4s -> 3d -> 3p -> 3s -> 2p -> 2s -> 1s)
+      if (charge > 0) {
+        let toRemove = charge;
+        const removeOrder = ['4p', '4s', '3d', '3p', '3s', '2p', '2s', '1s'];
+        removeOrder.forEach(sub => {
+          if (toRemove > 0 && map[sub] > 0) {
+            const r = Math.min(toRemove, map[sub]);
+            map[sub] -= r;
+            toRemove -= r;
+          }
+        });
+      } else if (charge < 0) {
+        // Negative charge (-q): add to next available sublevel in Aufbau order
+        let toAdd = -charge;
+        const addOrder = [
+          ['1s', 2], ['2s', 2], ['2p', 6], ['3s', 2], ['3p', 6], ['4s', 2], ['3d', 10], ['4p', 6]
+        ];
+        addOrder.forEach(([sub, cap]) => {
+          if (toAdd > 0 && map[sub] < cap) {
+            const a = Math.min(toAdd, cap - map[sub]);
+            map[sub] += a;
+            toAdd -= a;
+          }
+        });
+      }
+
+      // Compute main shells K (n=1), L (n=2), M (n=3), N (n=4)
+      const K = map['1s'];
+      const L = map['2s'] + map['2p'];
+      const M = map['3s'] + map['3p'] + map['3d'];
+      const N = map['4s'] + map['4p'];
+      const shells = [K, L, M, N].filter(v => v > 0);
+
+      // Build ordered sublevel list for display & orbital boxes
+      const orderSpecs = [
+        { name: '1s', n: 1, numOrb: 1 },
+        { name: '2s', n: 2, numOrb: 1 },
+        { name: '2p', n: 2, numOrb: 3 },
+        { name: '3s', n: 3, numOrb: 1 },
+        { name: '3p', n: 3, numOrb: 3 },
+        { name: '4s', n: 4, numOrb: 1 },
+        { name: '3d', n: 3, numOrb: 5 },
+        { name: '4p', n: 4, numOrb: 3 }
+      ];
+
+      let unpairedTotal = 0;
+      const activeSublevels = [];
+      orderSpecs.forEach(spec => {
+        const cnt = map[spec.name];
+        if (cnt > 0) {
+          // Distribute electrons into spec.numOrb boxes following Hund's rule!
+          const boxes = Array.from({ length: spec.numOrb }, () => ({ up: 0, down: 0 }));
+          let eLeft = cnt;
+          for (let i = 0; i < spec.numOrb && eLeft > 0; i++) {
+            boxes[i].up = 1;
+            eLeft--;
+          }
+          for (let i = 0; i < spec.numOrb && eLeft > 0; i++) {
+            boxes[i].down = 1;
+            eLeft--;
+          }
+          boxes.forEach(b => {
+            if (b.up === 1 && b.down === 0) unpairedTotal++;
+          });
+          activeSublevels.push({ ...spec, count: cnt, boxes });
+        }
+      });
+
+      return { shells, activeSublevels, unpairedTotal, map };
+    }
+
+    function toSuperscript(num) {
+      const supMap = { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+      return String(num).split('').map(ch => supMap[ch] || ch).join('');
+    }
+
+    function updateLab2UI() {
+      const L = state.lab2;
+      const elem = ELEMENTS[L.Z];
+      const totalE = Math.max(1, L.Z - L.charge);
+      const cfg = computeElectronConfig(L.Z, L.charge);
+      const neutralCfg = computeElectronConfig(L.Z, 0);
+
+      document.getElementById('l2_elemSelect').value = L.Z;
+      document.getElementById('l2_zSlider').value = L.Z;
+      document.getElementById('l2_zReadout').textContent = `Z = ${L.Z} (${elem.sym})`;
+
+      document.querySelectorAll('.l2-q-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', parseInt(btn.getAttribute('data-q'), 10) === L.charge);
+      });
+
+      // Charge string for Nuclear Symbol
+      const qStr = L.charge === 0 ? '' : (L.charge > 0 ? (L.charge === 1 ? '+' : `${L.charge}+`) : (L.charge === -1 ? '−' : `${Math.abs(L.charge)}−`));
+      const neutrons = elem.A - L.Z;
+
+      document.getElementById('l2_nuclearBanner').innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="px-3.5 py-2 rounded-xl bg-white border-2 border-[#c24d2c] flex items-center gap-1 font-mono-num">
+            <div class="flex flex-col text-[11px] font-bold text-[#6e6a61] leading-tight text-right mr-0.5">
+              <span>${elem.A}</span>
+              <span class="text-[#c24d2c]">${L.Z}</span>
+            </div>
+            <span class="text-2xl font-bold text-[#1d232a]">${elem.sym}</span>
+            <span class="text-xs font-bold text-[#1f6f61] -mt-3">${qStr}</span>
+          </div>
+          <div class="text-xs">
+            <div class="font-bold text-[#1d232a] text-sm">${elem.name} (${L.charge === 0 ? 'อะตอมเป็นกลาง' : 'ไอออน'})</div>
+            <div class="text-[#6e6a61]">คาบที่ <b>${elem.period}</b> · หมู่ <b>${elem.group}</b></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center font-mono-num text-xs">
+          <div class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4dfd5]">
+            <div class="text-[10px] text-[#6e6a61]">โปรตอน (p)</div>
+            <div class="font-bold text-[#c24d2c]">${L.Z}</div>
+          </div>
+          <div class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4dfd5]">
+            <div class="text-[10px] text-[#6e6a61]">นิวตรอน (n)</div>
+            <div class="font-bold text-[#1d232a]">${neutrons}</div>
+          </div>
+          <div class="px-2.5 py-1.5 rounded-lg bg-white border border-[#e4dfd5]">
+            <div class="text-[10px] text-[#6e6a61]">อิเล็กตรอน (e⁻)</div>
+            <div class="font-bold text-[#1f6f61]">${totalE}</div>
+          </div>
+        </div>
+      `;
+
+      // Main Shell Summary
+      const shellNames = ['K', 'L', 'M', 'N'];
+      const shellStr = cfg.shells.join(', ');
+      const neutralShellStr = neutralCfg.shells.join(', ');
+      document.getElementById('l2_mainShellSummary').innerHTML = `
+        <div><b class="text-[#c24d2c]">การจัดเรียงระดับพลังงานหลัก (K, L, M, N):</b> <span class="font-mono-num text-sm font-bold">${shellStr}</span> ${L.charge !== 0 ? `<span class="text-[#6e6a61]">(อะตอมกลางเดิม: ${neutralShellStr})</span>` : ''}</div>
+        <div><b class="text-[#1f6f61]">ถอดรหัสตำแหน่งตารางธาตุ (จากอะตอมกลาง):</b> มี <b>${neutralCfg.shells.length} ชั้น = อยู่คาบที่ ${elem.period}</b> · ชั้นนอกสุดมี <b>${neutralCfg.shells[neutralCfg.shells.length - 1]} e⁻ → หมู่ ${elem.group}</b></div>
+      `;
+
+      // Sublevel full & noble gas strings
+      const fullStr = cfg.activeSublevels.map(s => `${s.name}${toSuperscript(s.count)}`).join(' ');
+      let nobleStr = fullStr;
+      if (totalE > 18 && cfg.map['1s'] === 2 && cfg.map['2s'] === 2 && cfg.map['2p'] === 6 && cfg.map['3s'] === 2 && cfg.map['3p'] === 6) {
+        const afterAr = cfg.activeSublevels.filter(s => !['1s', '2s', '2p', '3s', '3p'].includes(s.name));
+        nobleStr = `[Ar] ${afterAr.map(s => `${s.name}${toSuperscript(s.count)}`).join(' ')}`;
+      } else if (totalE > 10 && cfg.map['1s'] === 2 && cfg.map['2s'] === 2 && cfg.map['2p'] === 6) {
+        const afterNe = cfg.activeSublevels.filter(s => !['1s', '2s', '2p'].includes(s.name));
+        nobleStr = `[Ne] ${afterNe.map(s => `${s.name}${toSuperscript(s.count)}`).join(' ')}`;
+      }
+
+      document.getElementById('l2_sublevelFullText').textContent = fullStr;
+      document.getElementById('l2_sublevelNobleText').textContent = `เขียนย่อด้วยแก๊สเฉื่อย: ${nobleStr}`;
+      document.getElementById('l2_unpairedBadge').textContent = `อิเล็กตรอนเดี่ยว: ${cfg.unpairedTotal} ตัว`;
+
+      // Render Orbital Boxes
+      const orbContainer = document.getElementById('l2_orbitalBoxesContainer');
+      orbContainer.innerHTML = cfg.activeSublevels.map(sub => `
+        <div class="flex flex-col items-center bg-white p-2 rounded-lg border border-[#e4dfd5]">
+          <div class="flex gap-1">
+            ${sub.boxes.map(b => {
+              let arrows = '';
+              if (b.up && b.down) arrows = '<span class="text-[#c24d2c]">↑</span><span class="text-[#1f6f61]">↓</span>';
+              else if (b.up) arrows = '<span class="text-[#c24d2c]">↑</span>';
+              return `<div class="orbital-box">${arrows}</div>`;
+            }).join('')}
+          </div>
+          <span class="text-[11px] font-mono-num font-bold text-[#1d232a] mt-1">${sub.name}${toSuperscript(sub.count)}</span>
+        </div>
+      `).join('');
+
+      // Draw Aufbau SVG & Explain Box
+      drawAufbauSvg(cfg.map);
+
+      let specialNote = '';
+      if (L.Z === 24 && L.charge === 0) {
+        specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">ข้อยกเว้น ₂₄Cr: จัดเป็น [Ar] 4s¹ 3d⁵ (2, 8, 13, 1) เพื่อให้ 3d บรรจุครึ่ง (5 ใน 10) ซึ่งเสถียรกว่า 4s² 3d⁴!</div>`;
+      } else if (L.Z === 29 && L.charge === 0) {
+        specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">ข้อยกเว้น ₂₉Cu: จัดเป็น [Ar] 4s¹ 3d¹⁰ (2, 8, 18, 1) เพื่อให้ 3d บรรจุเต็ม (10 ใน 10) ซึ่งเสถียรกว่า 4s² 3d⁹!</div>`;
+      } else if (L.Z >= 21 && L.Z <= 30 && L.charge > 0) {
+        specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">กับดักไอออนแทรนซิชัน: ตอนเติม e⁻ เติม 4s ก่อน 3d แต่ตอนเสีย e⁻ ต้องดึงออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ!</div>`;
+      } else {
+        specialNote = `<div class="text-[#1f6f61] font-semibold">✓ จัดเรียงตามหลักเอาฟบาวปกติ: เติม 4s ให้เต็มก่อนแล้วจึงเติม 3d</div>`;
+      }
+
+      document.getElementById('l2_rulesExplainBox').innerHTML = `
+        ${specialNote}
+        <div>• <b>จำนวนอิเล็กตรอนเดี่ยว:</b> มี <b>${cfg.unpairedTotal} ตัว</b> ${cfg.unpairedTotal === 0 ? '(บรรจุเต็มทุกออร์บิทัลที่ใช้งาน)' : '(สังเกตลูกศรเดี่ยว ↑ ในกล่องออร์บิทัล)'}</div>
+        <div>• <b>วิธีจัดไอออนให้ไม่ผิด:</b> ต้องจัดอะตอมที่เป็นกลางให้เสร็จก่อนเสมอ แล้วจึงดึงออก/เติมเข้าที่ชั้นนอกสุด</div>
+      `;
+    }
+
+    function drawAufbauSvg(subMap) {
+      const svg = document.getElementById('l2_aufbauSvg');
+      const rows = [
+        ['1s'],
+        ['2s', '2p'],
+        ['3s', '3p', '3d'],
+        ['4s', '4p']
+      ];
+      let html = `<text x="10" y="16" font-size="10" fill="#6e6a61" font-weight="700">แผนภาพลูกศรทแยงมุม</text>`;
+      rows.forEach((r, rIdx) => {
+        r.forEach((sub, cIdx) => {
+          const cx = 36 + cIdx * 54;
+          const cy = 38 + rIdx * 32;
+          const isFilled = (subMap[sub] || 0) > 0;
+          html += `
+            <line x1="${cx + 18}" y1="${cy - 14}" x2="${cx - 18}" y2="${cy + 14}" stroke="#d2cbc0" stroke-width="1.2" stroke-dasharray="2,2"/>
+            <circle cx="${cx}" cy="${cy}" r="13" fill="${isFilled ? '#c24d2c' : '#ffffff'}" stroke="${isFilled ? '#c24d2c' : '#b8b0a2'}" stroke-width="1.5"/>
+            <text x="${cx}" y="${cy + 3.5}" font-size="10" fill="${isFilled ? '#ffffff' : '#6e6a61'}" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${sub}</text>
+          `;
+        });
+      });
+      svg.innerHTML = html;
+    }
+
+    function drawLab2ShellCanvas() {
+      const canvas = document.getElementById('l2_shellCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab2;
+      const elem = ELEMENTS[L.Z];
+      const cfg = computeElectronConfig(L.Z, L.charge);
+      const cx = W / 2, cy = H / 2;
+      const radii = [30, 54, 78, 102];
+      const shellNames = ['K', 'L', 'M', 'N'];
+
+      cfg.shells.forEach((cnt, sIdx) => {
+        const r = radii[sIdx];
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = sIdx === cfg.shells.length - 1 ? '#c24d2c' : '#cbd5e1';
+        ctx.lineWidth = sIdx === cfg.shells.length - 1 ? 2 : 1.5;
+        ctx.stroke();
+
+        // Draw electrons around shell
+        for (let i = 0; i < cnt; i++) {
+          const ang = (i / cnt) * Math.PI * 2 + state.tick * (0.012 / (sIdx + 1));
+          const ex = cx + r * Math.cos(ang);
+          const ey = cy + r * Math.sin(ang);
+          ctx.beginPath();
+          ctx.arc(ex, ey, 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = sIdx === cfg.shells.length - 1 ? '#c24d2c' : '#1f6f61';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      });
+
+      // Nucleus
+      ctx.beginPath();
+      ctx.arc(cx, cy, 15, 0, Math.PI * 2);
+      ctx.fillStyle = '#1d232a';
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px "IBM Plex Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${L.Z}+`, cx, cy + 4);
+    }
+
+    // =========================================================================
+    // LAB 3: PERIODIC TRENDS, RADIUS, IE JUMP & OXIDATION NUMBER
+    // =========================================================================
+    const IE_SAMPLES = [
+      {
+        sym: '₁₂Mg (หมู่ IIA · 2, 8, 2)',
+        group: 'IIA (มีเวเลนซ์ e⁻ 2 ตัว)',
+        ies: [738, 1451, 7733, 10540],
+        jumpAfter: 2,
+        desc: 'IE₁ และ IE₂ ดึงออกจากชั้นนอกสุด (ชั้น M) จึงใช้พลังงานน้อย แต่พอตัวที่ 3 (IE₃ = 7,733) ต้องดึงข้ามเข้าไปในชั้นใน (ชั้น L) ค่า IE จึงกระโดดพุ่งขึ้นกว่า 5 เท่า!'
+      },
+      {
+        sym: '₁₃Al (หมู่ IIIA · 2, 8, 3)',
+        group: 'IIIA (มีเวเลนซ์ e⁻ 3 ตัว)',
+        ies: [578, 1817, 2745, 11577],
+        jumpAfter: 3,
+        desc: 'ดึง 3 ตัวแรกจากชั้นนอกสุด แต่พอตัวที่ 4 (IE₄ = 11,577) กระโดดข้ามชั้นเข้าไปดึงชั้นใน บอกทันทีว่ามีเวเลนซ์ 3 ตัว (อยู่หมู่ IIIA)'
+      },
+      {
+        sym: '₁₁Na (หมู่ IA · 2, 8, 1)',
+        group: 'IA (มีเวเลนซ์ e⁻ 1 ตัว)',
+        ies: [496, 4562, 6910, 9543],
+        jumpAfter: 1,
+        desc: 'กระโดดใหญ่ตั้งแต่ IE₁ ไป IE₂ (496 → 4,562 kJ/mol) แปลว่ามีเวเลนซ์อิเล็กตรอนเพียง 1 ตัว (อยู่หมู่ IA)'
+      }
+    ];
+
+    const OX_SAMPLES = [
+      { formula: 'KMnO₄', target: 'Mn', eq: '(+1) + Mn + 4(−2) = 0', ans: '+7', desc: 'K อยู่หมู่ IA = +1, O = −2 (4 ตัว = −8) ผลรวมเป็น 0 ดังนั้น Mn = +7' },
+      { formula: 'K₂Cr₂O₇', target: 'Cr', eq: '2(+1) + 2(Cr) + 7(−2) = 0', ans: '+6', desc: '2(+1) + 2Cr − 14 = 0 → 2Cr = +12 → Cr 1 อะตอม = +6' },
+      { formula: 'SO₄²⁻', target: 'S', eq: 'S + 4(−2) = −2', ans: '+6', desc: 'ผลรวมเลขออกซิเดชันเท่ากับประจุของหมู่ไอออน (−2) → S − 8 = −2 → S = +6' },
+      { formula: 'HCO₃⁻', target: 'C', eq: '(+1) + C + 3(−2) = −1', ans: '+4', desc: 'H = +1, O = −2 → 1 + C − 6 = −1 → C = +4' },
+      { formula: 'CuSO₄·5H₂O', target: 'Cu', eq: 'Cu + (SO₄²⁻ = −2) + 5(0) = 0', ans: '+2', desc: 'น้ำผลึก H₂O เป็นโมเลกุลกลางคิดรวมเป็น 0 และกลุ่ม SO₄²⁻ มีประจุ −2 ดังนั้น Cu = +2' }
+    ];
+
+    function updateLab3UI() {
+      const L = state.lab3;
+
+      // Left Card: Radius visualizer
+      document.querySelectorAll('.l3-radmode-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-l3-radmode') === L.radMode);
+      });
+
+      const radSvg = document.getElementById('l3_radiusSvg');
+      const radExp = document.getElementById('l3_radiusExplain');
+
+      if (L.radMode === 'period_group') {
+        radSvg.innerHTML = `
+          <rect x="10" y="10" width="450" height="230" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ในคาบเดียวกัน (ซ้าย → ขวา): จำนวนชั้นเท่ากัน แต่โปรตอนมากขึ้น ดึงให้เล็กลง!</text>
+          ${[
+            { s: '₁₁Na', p: '11p+', r: 36, x: 75 },
+            { s: '₁₂Mg', p: '12p+', r: 30, x: 175 },
+            { s: '₁₅P', p: '15p+', r: 24, x: 275 },
+            { s: '₁₇Cl', p: '17p+', r: 19, x: 375 }
+          ].map(it => `
+            <circle cx="${it.x}" cy="92" r="${it.r}" fill="#fbece7" stroke="#c24d2c" stroke-width="2"/>
+            <text x="${it.x}" y="95" font-size="11" fill="#c24d2c" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${it.s}</text>
+            <text x="${it.x}" y="144" font-size="10" fill="#6e6a61" text-anchor="middle" font-family="IBM Plex Mono">(${it.p} · 3 ชั้น)</text>
+          `).join('')}
+          <line x1="35" y1="162" x2="435" y2="162" stroke="#f0ece3"/>
+          <text x="235" y="184" font-size="12" fill="#1f6f61" text-anchor="middle" font-weight="700">สรุปทิศทางแนวโน้มตารางธาตุ (จำคู่ตรงข้าม!)</text>
+          <text x="235" y="206" font-size="11" fill="#1d232a" text-anchor="middle">• ขนาดอะตอม & ความเป็นโลหะ: ใหญ่ขึ้นทาง ซ้าย-ล่าง</text>
+          <text x="235" y="224" font-size="11" fill="#c24d2c" text-anchor="middle" font-weight="600">• EN, IE₁, EA & ความเป็นอโลหะ: สูงขึ้นทาง ขวา-บน</text>
+        `;
+        radExp.innerHTML = `
+          <div><b class="text-[#c24d2c]">ทำไมซ้ายไปขวาอะตอมเล็กลง?:</b> เพราะอยู่คาบเดียวกันมีจำนวนชั้นเท่ากัน แต่เลขอะตอม (โปรตอนในนิวเคลียส) เพิ่มขึ้น จึงดึงดูดชั้นอิเล็กตรอนเข้าหาตัวแรงขึ้น</div>
+          <div><b class="text-[#1f6f61]">ทำไมบนลงล่างอะตอมใหญ่ขึ้น?:</b> เพราะจำนวนชั้นระดับพลังงาน (K, L, M, N...) เพิ่มขึ้น</div>
+        `;
+      } else if (L.radMode === 'isoelectronic') {
+        radSvg.innerHTML = `
+          <rect x="10" y="10" width="450" height="230" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ไอโซอิเล็กทรอนิก (มี 10 e⁻ จัดเรียง 2, 8 เท่ากันหมด): โปรตอนมาก = เล็กสุด!</text>
+          ${[
+            { s: '₇N³⁻', p: '7 โปรตอน', r: 42, x: 68, c: '#0284c7' },
+            { s: '₈O²⁻', p: '8 โปรตอน', r: 35, x: 158, c: '#0284c7' },
+            { s: '₉F⁻', p: '9 โปรตอน', r: 29, x: 242, c: '#0284c7' },
+            { s: '₁₁Na⁺', p: '11 โปรตอน', r: 22, x: 322, c: '#c24d2c' },
+            { s: '₁₂Mg²⁺', p: '12 โปรตอน', r: 17, x: 398, c: '#c24d2c' }
+          ].map(it => `
+            <circle cx="${it.x}" cy="115" r="${it.r}" fill="#faf8f4" stroke="${it.c}" stroke-width="2.5"/>
+            <text x="${it.x}" y="119" font-size="11" fill="${it.c}" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${it.s}</text>
+            <text x="${it.x}" y="176" font-size="10" fill="#1d232a" text-anchor="middle" font-family="IBM Plex Mono" font-weight="600">${it.p}</text>
+            <text x="${it.x}" y="192" font-size="9.5" fill="#6e6a61" text-anchor="middle" font-family="IBM Plex Mono">(10 e⁻)</text>
+          `).join('')}
+          <text x="235" y="222" font-size="11.5" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">เรียงขนาดจากเล็กไปใหญ่: Mg²⁺ &lt; Na⁺ &lt; F⁻ &lt; O²⁻ &lt; N³⁻</text>
+        `;
+        radExp.innerHTML = `
+          <div><b class="text-[#c24d2c]">กฎเปรียบเทียบขนาดไอออน:</b> ① ดูจำนวนชั้นก่อน (ชั้นน้อยกว่า = เล็กกว่าเสมอ) ② ถ้าจำนวนชั้นเท่ากัน (Isoelectronic) <b>ตัวที่มีโปรตอนมากกว่าจะดึงดูดกลุ่มหมอกอิเล็กตรอนเข้ามามากกว่า จึงมีขนาดเล็กกว่า!</b></div>
+        `;
+      } else {
+        radSvg.innerHTML = `
+          <rect x="10" y="10" width="450" height="230" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
+          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ธาตุเดียวกัน: ยิ่งเสีย e⁻ (ไอออนบวก) ยิ่งเล็กลง · ยิ่งรับ e⁻ (ไอออนลบ) ยิ่งใหญ่ขึ้น</text>
+          ${[
+            { s: 'Fe', sub: 'อะตอมกลาง', r: 36, x: 85, c: '#475569' },
+            { s: 'Fe²⁺', sub: 'เสีย 2 e⁻', r: 27, x: 175, c: '#c24d2c' },
+            { s: 'Fe³⁺', sub: 'เสีย 3 e⁻', r: 20, x: 255, c: '#c24d2c' },
+            { s: 'Cl', sub: 'อะตอมกลาง', r: 24, x: 340, c: '#1f6f61' },
+            { s: 'Cl⁻', sub: 'รับเพิ่ม 1 e⁻', r: 38, x: 412, c: '#0284c7' }
+          ].map(it => `
+            <circle cx="${it.x}" cy="115" r="${it.r}" fill="#faf8f4" stroke="${it.c}" stroke-width="2.5"/>
+            <text x="${it.x}" y="119" font-size="11" fill="${it.c}" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${it.s}</text>
+            <text x="${it.x}" y="178" font-size="10" fill="#6e6a61" text-anchor="middle">${it.sub}</text>
+          `).join('')}
+          <text x="235" y="218" font-size="11.5" fill="#1d232a" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">ไอออนบวก: Fe &gt; Fe²⁺ &gt; Fe³⁺   |   ไอออนลบ: Cl &lt; Cl⁻</text>
+        `;
+        radExp.innerHTML = `
+          <div><b class="text-[#c24d2c]">ไอออนบวกเล็กลงเสมอ:</b> เพราะเสียอิเล็กตรอนวงนอกออกไป (บางตัวเสียจนชั้นนอกหายไปทั้งชั้น และอิเล็กตรอนที่เหลือถูกนิวเคลียสดึงแน่นขึ้น)</div>
+          <div><b class="text-[#0284c7]">ไอออนลบใหญ่ขึ้นเสมอ:</b> เพราะรับอิเล็กตรอนเพิ่มเข้ามา ทำให้เกิดแรงผลักระหว่างอิเล็กตรอนมากขึ้น กลุ่มหมอกจึงขยายตัวออก</div>
+        `;
+      }
+
+      // Right Card: IE Pull vs Oxidation Number
+      document.querySelectorAll('.l3-rightmode-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-l3-rightmode') === L.rightMode);
+      });
+
+      const rightArea = document.getElementById('l3_rightInteractiveArea');
+      if (L.rightMode === 'ie_pull') {
+        const sample = IE_SAMPLES[L.ieElemIdx];
+        rightArea.innerHTML = `
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <select id="l3_ieSelect" class="select-warm font-semibold flex-1">
+              ${IE_SAMPLES.map((s, i) => `<option value="${i}" ${L.ieElemIdx === i ? 'selected' : ''}>${s.sym}</option>`).join('')}
+            </select>
+            <button id="l3_btnPullNext" class="btn-terra !py-1.5 !px-3 !text-xs">ดึง e⁻ ตัวถัดไป (IE${Math.min(4, L.iePulledCount + 1)})</button>
+            <button id="l3_btnResetIE" class="btn-outline-warm !py-1.5 !px-2.5 !text-xs">รีเซ็ต</button>
+          </div>
+
+          <div class="bg-[#faf8f4] border border-[#e4dfd5] rounded-xl p-3.5 space-y-2">
+            <div class="text-xs font-bold text-[#1d232a] mb-1">เปรียบเทียบพลังงานที่ใช้ดึงอิเล็กตรอนทีละตัว (kJ/mol):</div>
+            ${sample.ies.map((val, idx) => {
+              const stepNum = idx + 1;
+              const isPulled = stepNum <= L.iePulledCount;
+              const isBigJump = stepNum === sample.jumpAfter + 1;
+              const widthPct = Math.min(100, Math.max(8, (val / 12000) * 100));
+              return `
+                <div class="p-2 rounded-lg ${isPulled ? (isBigJump ? 'bg-[#fbece7] border border-[#c24d2c]' : 'bg-white border border-[#e4dfd5]') : 'opacity-40 bg-white border border-dashed border-[#d2cbc0]'}">
+                  <div class="flex justify-between text-xs font-mono-num mb-1">
+                    <span class="font-bold ${isBigJump ? 'text-[#c24d2c]' : 'text-[#1d232a]'}">
+                      IE${stepNum} ${isBigJump ? 'กระโดดใหญ่! (ดึงชั้นใน)' : '(ดึงชั้นนอกสุด)'}
+                    </span>
+                    <span class="font-bold">${val.toLocaleString()} kJ/mol</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-[#ece8df] rounded-full overflow-hidden">
+                    <div class="h-full ${isBigJump ? 'bg-[#c24d2c]' : 'bg-[#1f6f61]'}" style="width:${widthPct}%"></div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+
+          <div class="mt-3 p-3 rounded-xl bg-white border border-[#e4dfd5] text-xs">
+            <b class="text-[#c24d2c]">วิเคราะห์หาหมู่ (${sample.group}):</b> ${sample.desc}
+          </div>
+        `;
+
+        document.getElementById('l3_ieSelect').addEventListener('change', e => {
+          L.ieElemIdx = parseInt(e.target.value, 10);
+          L.iePulledCount = 4;
+          updateLab3UI();
+        });
+        document.getElementById('l3_btnPullNext').addEventListener('click', () => {
+          L.iePulledCount = L.iePulledCount >= 4 ? 1 : L.iePulledCount + 1;
+          updateLab3UI();
+        });
+        document.getElementById('l3_btnResetIE').addEventListener('click', () => {
+          L.iePulledCount = 1;
+          updateLab3UI();
+        });
+
+      } else {
+        const ox = OX_SAMPLES[L.oxCompoundIdx];
+        rightArea.innerHTML = `
+          <div class="mb-3">
+            <label class="block text-xs font-semibold text-[#1d232a] mb-1">เลือกสารประกอบ/ไอออนที่ต้องการหาเลขออกซิเดชัน:</label>
+            <select id="l3_oxSelect" class="select-warm w-full font-semibold">
+              ${OX_SAMPLES.map((o, i) => `<option value="${i}" ${L.oxCompoundIdx === i ? 'selected' : ''}>หาเลขออกซิเดชันของ ${o.target} ใน ${o.formula}</option>`).join('')}
+            </select>
+          </div>
+          <div class="p-4 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] text-center space-y-2">
+            <div class="text-xs text-[#6e6a61]">ตั้งสมการผลรวมเลขออกซิเดชัน:</div>
+            <div class="text-lg font-bold font-mono-num text-[#1d232a]">${ox.eq}</div>
+            <div class="inline-block px-4 py-1.5 rounded-xl bg-[#fbece7] text-[#c24d2c] font-mono-num text-base font-bold">
+              เลขออกซิเดชันของ ${ox.target} = ${ox.ans}
+            </div>
+            <p class="text-xs text-[#1d232a] pt-2">${ox.desc}</p>
+          </div>
+          <div class="mt-3 p-3 rounded-xl bg-white border border-[#e4dfd5] text-xs space-y-1">
+            <div class="font-bold text-[#1f6f61]">กฎเหล็กเลขออกซิเดชัน 6 ข้อ:</div>
+            <div>1) ธาตุอิสระทุกชนิด (Na, O₂, S₈) = <b>0</b> · 2) หมู่ IA = <b>+1</b>, IIA = <b>+2</b>, IIIA = <b>+3</b></div>
+            <div>3) H ส่วนใหญ่ = <b>+1</b> (ยกเว้นกับโลหะ = −1) · 4) O ส่วนใหญ่ = <b>−2</b> (ยกเว้นเปอร์ออกไซด์ = −1)</div>
+          </div>
+        `;
+        document.getElementById('l3_oxSelect').addEventListener('change', e => {
+          L.oxCompoundIdx = parseInt(e.target.value, 10);
+          updateLab3UI();
+        });
+      }
+    }
+
+    // =========================================================================
+    // LAB 4: FLAME TEST, HALOGEN CCl4, TRANSITION COLORS & NUCLEAR HALF-LIFE
+    // =========================================================================
+    const FLAME_METALS = [
+      { sym: 'Li⁺ (ลิเทียม)', colorName: 'สีแดงเข้ม (Crimson Red)', hex: '#dc2626', glow: '#f87171' },
+      { sym: 'Na⁺ (โซเดียม)', colorName: 'สีเหลืองสด (Bright Yellow)', hex: '#eab308', glow: '#fde047' },
+      { sym: 'K⁺ (โพแทสเซียม)', colorName: 'สีม่วงอ่อน (Lilac / Violet)', hex: '#a855f7', glow: '#d8b4fe' },
+      { sym: 'Ca²⁺ (แคลเซียม)', colorName: 'สีแดงอิฐ (Brick Red)', hex: '#ea580c', glow: '#fdba74' },
+      { sym: 'Sr²⁺ (สตรอนเทียม)', colorName: 'สีแดงเข้ม (Red)', hex: '#b91c1c', glow: '#fca5a5' },
+      { sym: 'Ba²⁺ (แบเรียม)', colorName: 'สีเขียวอ่อน / เขียวแอปเปิล', hex: '#65a30d', glow: '#bef264' },
+      { sym: 'Cu²⁺ (ทองแดง)', colorName: 'สีเขียวแกมน้ำเงิน (Blue-Green)', hex: '#0d9488', glow: '#5eead4' }
+    ];
+
+    const TRANSITION_IONS = [
+      { ion: 'Sc³⁺', ox: '+3', cfg: '3d⁰', colorName: 'ไม่มีสี (ใส)', hex: '#f8fafc' },
+      { ion: 'Ti³⁺', ox: '+3', cfg: '3d¹', colorName: 'สีม่วง', hex: '#9333ea' },
+      { ion: 'V³⁺', ox: '+3', cfg: '3d²', colorName: 'สีเขียว', hex: '#16a34a' },
+      { ion: 'VO²⁺', ox: '+4', cfg: '3d¹', colorName: 'สีน้ำเงิน', hex: '#2563eb' },
+      { ion: 'Cr³⁺', ox: '+3', cfg: '3d³', colorName: 'สีเขียวเข้ม', hex: '#15803d' },
+      { ion: 'CrO₄²⁻', ox: '+6', cfg: '3d⁰ (ข้อยกเว้นมีสี)', colorName: 'สีเหลือง', hex: '#facc15' },
+      { ion: 'Cr₂O₇²⁻', ox: '+6', cfg: '3d⁰ (ข้อยกเว้นมีสี)', colorName: 'สีส้ม', hex: '#f97316' },
+      { ion: 'Mn²⁺', ox: '+2', cfg: '3d⁵', colorName: 'สีชมพูอ่อนมาก', hex: '#fbcfe8' },
+      { ion: 'MnO₄⁻', ox: '+7', cfg: '3d⁰ (ข้อยกเว้นมีสี)', colorName: 'สีม่วงเข้ม', hex: '#6b21a8' },
+      { ion: 'Fe²⁺', ox: '+2', cfg: '3d⁶', colorName: 'สีเขียวอ่อน', hex: '#86efac' },
+      { ion: 'Fe³⁺', ox: '+3', cfg: '3d⁵', colorName: 'สีเหลืองน้ำตาล', hex: '#d97706' },
+      { ion: 'Co²⁺', ox: '+2', cfg: '3d⁷', colorName: 'สีชมพู', hex: '#f43f5e' },
+      { ion: 'Ni²⁺', ox: '+2', cfg: '3d⁸', colorName: 'สีเขียว', hex: '#22c55e' },
+      { ion: 'Cu²⁺', ox: '+2', cfg: '3d⁹', colorName: 'สีฟ้า', hex: '#0ea5e9' },
+      { ion: 'Zn²⁺', ox: '+2', cfg: '3d¹⁰ (เต็ม)', colorName: 'ไม่มีสี (ใส)', hex: '#f8fafc' }
+    ];
+
+    function updateLab4UI() {
+      const L = state.lab4;
+      document.querySelectorAll('.l4-station-btn').forEach(btn => {
+        btn.classList.toggle('active-sub', btn.getAttribute('data-l4-station') === L.station);
+      });
+
+      const eyebrow = document.getElementById('l4_eyebrow');
+      const title = document.getElementById('l4_title');
+      const badge = document.getElementById('l4_badge');
+      const controlsBar = document.getElementById('l4_controlsBar');
+      const caption = document.getElementById('l4_caption');
+      const rHeading = document.getElementById('l4_rightHeading');
+      const rContent = document.getElementById('l4_rightContent');
+      const examTip = document.getElementById('l4_examTip');
+
+      if (L.station === 'flame') {
+        const fm = FLAME_METALS[L.flameIdx];
+        eyebrow.textContent = 'STATION 01 / FLAME TEST & ALKALI REACTION';
+        title.textContent = 'การเผาทดสอบสีเปลวไฟ (Flame Test) ของไอออนโลหะ';
+        badge.textContent = fm.colorName;
+
+        controlsBar.innerHTML = FLAME_METALS.map((m, i) => `
+          <button data-fidx="${i}" class="flame-btn ${L.flameIdx === i ? 'btn-terra' : 'btn-outline-warm'} !py-1.5 !px-2.5 !text-xs">${m.sym}</button>
+        `).join('');
+
+        rHeading.textContent = `ผลการเผาเปลวไฟ: ${fm.sym}`;
+        rContent.innerHTML = `
+          <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+            <div class="text-xs text-[#6e6a61]">สีเปลวไฟที่สังเกตเห็น:</div>
+            <div class="text-base font-bold mt-0.5" style="color:${fm.hex}">${fm.colorName}</div>
+            <div class="text-xs text-[#1d232a] mt-1.5">เกิดจากอิเล็กตรอนของโลหะดูดความร้อนขึ้นไปสู่สภาวะกระตุ้น แล้วคายพลังงานออกมาเป็นแสงสีเฉพาะตัวเมื่อตกกลับสู่ระดับพลังงานต่ำ (ตามแบบจำลองอะตอมของโบร์)</div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4dfd5] space-y-1.5">
+            <div class="font-bold text-[#c24d2c] text-xs">สมบัติเด่นของโลหะหมู่ IA (Li, Na, K) กับน้ำ:</div>
+            <div class="text-xs">• ความหนาแน่นต่ำ ลอยน้ำได้ เนื้ออ่อนตัดด้วยมีดได้ ต้องเก็บในน้ำมันพาราฟิน</div>
+            <div class="text-xs font-mono-num bg-[#faf8f4] p-2 rounded">2Na(s) + 2H₂O(l) → 2NaOH(aq) + H₂(g)</div>
+            <div class="text-xs">• ได้สารละลายเบส (เปลี่ยนสีฟีนอล์ฟทาลีนจากใสเป็น <b>สีชมพู</b>) ความรุนแรงเพิ่มขึ้นจากบนลงล่าง: <b>Li &lt; Na &lt; K &lt; Rb &lt; Cs</b></div>
+          </div>
+        `;
+        caption.innerHTML = `กดเลือกไอออนของโลหะแต่ละชนิดด้านบน เพื่อดูสีเปลวไฟที่เกิดจากการคายพลังงานของอิเล็กตรอน`;
+        examTip.innerHTML = `<b>เก็งข้อสอบสีเปลวไฟ (รูปที่ 2.29 หน้า 44):</b> <b>Li</b> แดงเข้ม · <b>Na</b> เหลือง · <b>K</b> ม่วงอ่อน · <b>Ca</b> แดงอิฐ · <b>Ba</b> เขียวอ่อน · <b>Cu</b> เขียวแกมน้ำเงิน`;
+
+        controlsBar.querySelectorAll('.flame-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            L.flameIdx = parseInt(btn.getAttribute('data-fidx'), 10);
+            updateLab4UI();
+          });
+        });
+
+      } else if (L.station === 'halogen') {
+        eyebrow.textContent = 'STATION 02 / HALOGEN DISPLACEMENT IN CCl₄';
+        title.textContent = 'การแย่งชิงอิเล็กตรอนของแฮโลเจน & สีในชั้น CCl₄';
+        badge.textContent = 'ความว่องไว: F₂ > Cl₂ > Br₂ > I₂';
+
+        controlsBar.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold">เติมแฮโลเจน (X₂):</span>
+            ${['Cl2', 'Br2', 'I2'].map(x => `
+              <button data-hal-x="${x}" class="hal-x-btn ${L.halX2 === x ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs font-mono-num">${x.replace('2', '₂')}</button>
+            `).join('')}
+            <span class="text-xs font-bold ml-2">ลงในสารละลาย:</span>
+            ${['KCl', 'KBr', 'KI'].map(s => `
+              <button data-hal-s="${s}" class="hal-s-btn ${L.halSalt === s ? 'btn-teal' : 'btn-outline-warm'} !py-1 !px-2.5 !text-xs font-mono-num">${s}</button>
+            `).join('')}
+          </div>
+        `;
+
+        // Determine reaction outcome
+        const rank = { 'Cl2': 3, 'Br2': 2, 'I2': 1 };
+        const saltHal = L.halSalt === 'KCl' ? 'Cl2' : (L.halSalt === 'KBr' ? 'Br2' : 'I2');
+        const canReact = rank[L.halX2] > rank[saltHal];
+        const finalFreeHalogen = canReact ? saltHal : L.halX2;
+
+        const ccl4ColorInfo = finalFreeHalogen === 'Cl2'
+          ? { name: 'สีเหลืองอ่อน', hex: '#fef08a' }
+          : finalFreeHalogen === 'Br2'
+            ? { name: 'สีส้มถึงน้ำตาลแดง (เกิด Br₂)', hex: '#ea580c' }
+            : { name: 'สีม่วงสด (เกิด I₂)', hex: '#9333ea' };
+
+        rHeading.textContent = `ผลการทดลอง: เติม ${L.halX2.replace('2', '₂')} ลงใน ${L.halSalt} + CCl₄`;
+        rContent.innerHTML = `
+          <div class="p-3.5 rounded-xl ${canReact ? 'bg-[#e6f3f0] border border-[#1f6f61]' : 'bg-[#fbece7] border border-[#c24d2c]'}">
+            <div class="font-bold text-sm ${canReact ? 'text-[#1f6f61]' : 'text-[#c24d2c]'}">
+              ${canReact ? '✓ เกิดปฏิกิริยาการแทนที่! (แย่งอิเล็กตรอนสำเร็จ)' : '✗ ไม่เกิดปฏิกิริยาการแทนที่'}
+            </div>
+            <div class="text-xs mt-1 text-[#1d232a]">
+              ${canReact
+                ? `เพราะ <b>${L.halX2.replace('2', '₂')}</b> อยู่บนกว่า จึงว่องไวกว่าและแย่งอิเล็กตรอนจากไอออนใน <b>${L.halSalt}</b> ได้ กลายเป็นโมเลกุล <b>${saltHal.replace('2', '₂')}</b> ลงไปละลายในชั้น CCl₄ ด้านล่าง!`
+                : `เพราะ <b>${L.halX2.replace('2', '₂')}</b> ว่องไวน้อยกว่า (หรือเป็นตัวเดียวกัน) จึงแย่งอิเล็กตรอนจาก <b>${L.halSalt}</b> ไม่ได้ สีในชั้น CCl₄ จึงเป็นสีของ ${L.halX2.replace('2', '₂')} เดิม`
+              }
+            </div>
+            <div class="mt-2 font-mono-num text-xs bg-white p-2 rounded border border-[#e4dfd5]">
+              ชั้นล่าง (CCl₄ ไม่มีขั้ว หนักกว่าน้ำ): <b>${ccl4ColorInfo.name}</b>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4dfd5] space-y-1 text-xs">
+            <div class="font-bold text-[#1d232a]">การทดสอบไอออนแฮไลด์ด้วย AgNO₃ (หน้า 48):</div>
+            <div>• <b>Cl⁻ + Ag⁺ → AgCl(s)</b> ตะกอนสีขาว</div>
+            <div>• <b>Br⁻ + Ag⁺ → AgBr(s)</b> ตะกอนสีเหลืองอ่อน (ครีม)</div>
+            <div>• <b>I⁻ + Ag⁺ → AgI(s)</b> ตะกอนสีเหลือง</div>
+            <div>• <b>F⁻ + Ag⁺ → ไม่ตกตะกอน</b> (เพราะ AgF ละลายน้ำได้!)</div>
+          </div>
+        `;
+        caption.innerHTML = `<b>หลักการละลาย:</b> โมเลกุลแฮโลเจน (X₂) ไม่มีขั้ว จึงละลายในชั้น <b>CCl₄ (ไม่มีขั้ว อยู่ชั้นล่างเพราะหนักกว่าน้ำ)</b> ได้ดีกว่าในน้ำมาก`;
+        examTip.innerHTML = `<b>จำง่ายๆ:</b> <b>"ตัวบนแย่ง e⁻ ตัวล่างได้"</b> (F₂ > Cl₂ > Br₂ > I₂) สังเกตสีชั้น CCl₄: ถ้าได้ <b>สีส้ม = มี Br₂</b>, ถ้าได้ <b>สีม่วง = มี I₂</b>`;
+
+        controlsBar.querySelectorAll('.hal-x-btn').forEach(btn => {
+          btn.addEventListener('click', () => { L.halX2 = btn.getAttribute('data-hal-x'); L.halShakeAnim = 1.0; updateLab4UI(); });
+        });
+        controlsBar.querySelectorAll('.hal-s-btn').forEach(btn => {
+          btn.addEventListener('click', () => { L.halSalt = btn.getAttribute('data-hal-s'); L.halShakeAnim = 1.0; updateLab4UI(); });
+        });
+
+      } else if (L.station === 'transition') {
+        const tr = TRANSITION_IONS[L.transIdx];
+        eyebrow.textContent = 'STATION 03 / TRANSITION METAL ION COLORS';
+        title.textContent = 'สีของไอออนธาตุแทรนซิชันคาบที่ 4 ในสารละลายน้ำ';
+        badge.textContent = `${tr.ion} (${tr.colorName})`;
+
+        controlsBar.innerHTML = TRANSITION_IONS.map((t, i) => `
+          <button data-tidx="${i}" class="trans-btn ${L.transIdx === i ? 'btn-terra' : 'btn-outline-warm'} !py-1 !px-2 !text-xs font-mono-num">${t.ion}</button>
+        `).join('');
+
+        rHeading.textContent = `ข้อมูลไอออน: ${tr.ion}`;
+        rContent.innerHTML = `
+          <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] space-y-1.5">
+            <div><b>เลขออกซิเดชันของโลหะ:</b> <span class="font-mono-num font-bold text-[#c24d2c]">${tr.ox}</span></div>
+            <div><b>การจัดเรียงอิเล็กตรอนใน 3d:</b> <span class="font-mono-num font-bold text-[#1f6f61]">[Ar] ${tr.cfg}</span></div>
+            <div><b>สีในสารละลายน้ำ:</b> <span class="font-bold">${tr.colorName}</span></div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4dfd5] space-y-1.5 text-xs">
+            <div class="font-bold text-[#1d232a]">จุดที่ข้อสอบชอบถามเรื่องธาตุแทรนซิชัน:</div>
+            <div>• <b>ธาตุที่มีเลขออกซิเดชันค่าเดียวในคาบ 4:</b> คือ <b>Sc (+3)</b> และ <b>Zn (+2)</b> ซึ่งสารละลาย<b>ไม่มีสี</b>ทั้งคู่เพราะเป็น 3d⁰ และ 3d¹⁰</div>
+            <div>• <b>ข้อยกเว้นที่มีสีเข้มทั้งที่เป็น 3d⁰:</b> ได้แก่ <b>MnO₄⁻ (ม่วงเข้ม)</b>, <b>CrO₄²⁻ (เหลือง)</b>, และ <b>Cr₂O₇²⁻ (ส้ม)</b></div>
+          </div>
+        `;
+        caption.innerHTML = `กดเลือกหลอดทดลองไอออนแทรนซิชันแต่ละชนิดเพื่อเทียบสี เลขออกซิเดชัน และการจัดเรียงในออร์บิทัล 3d`;
+        examTip.innerHTML = `<b>ปัจจัยที่ทำให้สีของสารประกอบแทรนซิชันเปลี่ยน:</b> 1) เลขออกซิเดชันเปลี่ยน (เช่น Fe²⁺ เขียวอ่อน → Fe³⁺ เหลืองน้ำตาล) · 2) ลิแกนด์ที่ล้อมรอบเปลี่ยน (เช่น Cu²⁺ ในน้ำสีฟ้า → เติม NH₃ ได้ [Cu(NH₃)₄]²⁺ สีน้ำเงินเข้ม)`;
+
+        controlsBar.querySelectorAll('.trans-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            L.transIdx = parseInt(btn.getAttribute('data-tidx'), 10);
+            updateLab4UI();
+          });
+        });
+
+      } else {
+        // Station 4: Nuclear Radiation & Half-life
+        const steps = L.halfLifeSteps;
+        const pctLeft = 100 / Math.pow(2, steps);
+        const fracStr = steps === 0 ? '1 (100%)' : `1/${Math.pow(2, steps)} (${pctLeft}%)`;
+
+        eyebrow.textContent = 'STATION 04 / RADIOACTIVITY & HALF-LIFE (T½)';
+        title.textContent = 'อำนาจทะลุผ่านของรังสี (α, β⁻, γ) & การสลายตัวครึ่งชีวิต';
+        badge.textContent = `N = N₀(1/2)ⁿ`;
+
+        controlsBar.innerHTML = `
+          <button id="l4_btnToggleNuc" class="btn-teal !py-1.5 !px-3 !text-xs">
+            ${L.nucSubMode === 'halflife' ? 'สลับดูอำนาจทะลุผ่าน & สนามไฟฟ้า (α, β⁻, γ)' : '⏳ สลับดูการสลายตัวครึ่งชีวิต (T½)'}
+          </button>
+          ${L.nucSubMode === 'halflife' ? `
+            <button id="l4_btnStepHalfLife" class="btn-terra !py-1.5 !px-3.5 !text-xs">⏳ ผ่านไปอีก +1 ครึ่งชีวิต (T½)</button>
+            <button id="l4_btnResetHalfLife" class="btn-outline-warm !py-1.5 !px-3 !text-xs">เริ่มต้น N₀ (100%)</button>
+          ` : ''}
+        `;
+
+        rHeading.textContent = L.nucSubMode === 'halflife'
+          ? `ผ่านไป n = ${steps} ครึ่งชีวิต (เหลือ ${fracStr})`
+          : `เปรียบเทียบรังสีแอลฟา (α), บีตา (β⁻), และแกมมา (γ)`;
+
+        rContent.innerHTML = L.nucSubMode === 'halflife' ? `
+          <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] space-y-1.5">
+            <div><b>จำนวนครั้งครึ่งชีวิต (n = t ÷ T½):</b> <span class="font-mono-num font-bold text-[#c24d2c]">n = ${steps} ครั้ง</span></div>
+            <div><b>ปริมาณสารที่เหลือ (N):</b> <span class="font-mono-num font-bold text-[#1f6f61]">เหลือ ${fracStr}</span> (สลายไปแล้ว ${(100 - pctLeft).toFixed(2)}%)</div>
+            <div class="text-xs text-[#6e6a61]">ตัวอย่าง: ถ้าเริ่มต้นมี 80 g ผ่านไป ${steps} ครึ่งชีวิต จะเหลือ = 80 ÷ 2${toSuperscript(steps)} = <b>${(80 / Math.pow(2, steps)).toFixed(2)} g</b></div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-white border border-[#e4dfd5] space-y-1 text-xs">
+            <div class="font-bold text-[#1d232a]">ประโยชน์ของไอโซโทปกัมมันตรังสีที่ต้องจำ:</div>
+            <div>• <b>C-14:</b> หาอายุซากสิ่งมีชีวิต/โบราณวัตถุ (T½ = 5,730 ปี)</div>
+            <div>• <b>I-131:</b> ตรวจและรักษาโรคต่อมไทรอยด์ · <b>Co-60:</b> ฉายรังสีรักษามะเร็งและถนอมอาหาร</div>
+            <div>• <b>Tc-99m:</b> ถ่ายภาพอวัยวะทางการแพทย์ · <b>Na-24:</b> ตรวจการไหลเวียนเลือด</div>
+          </div>
+        ` : `
+          <div class="p-3.5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5] space-y-1.5 text-xs">
+            <div><b class="text-[#c24d2c]">1) แอลฟา (⁴₂He, ประจุ +2):</b> มวลมากที่สุด (4 u) ทะลุผ่านน้อยสุด (กระดาษกั้นได้) เบนเข้าหาขั้วลบเล็กน้อย · สลายแล้ว <b>A ลด 4, Z ลด 2</b></div>
+            <div><b class="text-[#0284c7]">2) บีตาลบ (⁰₋₁e, ประจุ −1):</b> อิเล็กตรอนความเร็วสูง ทะลุผ่านปานกลาง (แผ่นอะลูมิเนียมกั้นได้) เบนเข้าหาขั้วบวกมากเพราะเบามาก · สลายแล้ว <b>A เท่าเดิม, Z เพิ่ม 1</b></div>
+            <div><b class="text-[#1f6f61]">3) แกมมา (⁰₀γ, ไม่มีประจุ):</b> คลื่นแม่เหล็กไฟฟ้าพลังงานสูง ทะลุผ่านสูงสุด (ต้องใช้ตะกั่ว/คอนกรีตหนา) <b>ไม่เบนในสนามไฟฟ้า</b> · <b>A และ Z ไม่เปลี่ยน</b></div>
+          </div>
+        `;
+        caption.innerHTML = L.nucSubMode === 'halflife'
+          ? `สังเกตเม็ดนิวเคลียสในกล่อง: ทุกๆ ครั้งที่กด <b>"ผ่านไปอีก +1 ครึ่งชีวิต"</b> จำนวนนิวเคลียสที่เหลืออยู่ (สีส้มอิฐ) จะลดลงเหลือครึ่งหนึ่งของรอบก่อนหน้าเสมอ`
+          : `เปรียบเทียบอำนาจทะลุผ่านของรังสีทั้ง 3 ชนิด และมุมการเบี่ยงเบนเมื่อผ่านสนามไฟฟ้า`;
+        examTip.innerHTML = `<b>ระวังโจทย์หลอกครึ่งชีวิต:</b> ถ้าโจทย์บอกว่า <i>"สลายตัวไป 7/8 ของปริมาณเดิม"</i> ต้องแปลงเป็น <b>"เหลืออยู่ 1/8"</b> ก่อนเสมอ (1/8 = 1/2³ แปลว่าผ่านไป n = 3 ครึ่งชีวิต!)`;
+
+        document.getElementById('l4_btnToggleNuc').addEventListener('click', () => {
+          L.nucSubMode = L.nucSubMode === 'halflife' ? 'radiation' : 'halflife';
+          updateLab4UI();
+        });
+        const stepBtn = document.getElementById('l4_btnStepHalfLife');
+        if (stepBtn) {
+          stepBtn.addEventListener('click', () => {
+            L.halfLifeSteps = L.halfLifeSteps >= 5 ? 0 : L.halfLifeSteps + 1;
+            updateLab4UI();
+          });
+        }
+        const rstBtn = document.getElementById('l4_btnResetHalfLife');
+        if (rstBtn) {
+          rstBtn.addEventListener('click', () => {
+            L.halfLifeSteps = 0;
+            updateLab4UI();
+          });
+        }
+      }
+    }
+
+    function drawLab4Canvas() {
+      const canvas = document.getElementById('l4_mainCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+
+      const L = state.lab4;
+
+      if (L.station === 'flame') {
+        const fm = FLAME_METALS[L.flameIdx];
+        const bx = W / 2;
+
+        // Bunsen burner base & tube
+        ctx.fillStyle = '#475569';
+        ctx.fillRect(bx - 40, 240, 80, 14);
+        ctx.fillStyle = '#64748b';
+        ctx.fillRect(bx - 12, 175, 24, 65);
+
+        // Animated Flame with selected metal ion color!
+        const flicker = Math.sin(state.tick * 0.18) * 5;
+        ctx.save();
+        // Outer glow
+        const grad = ctx.createRadialGradient(bx, 110, 10, bx, 110, 82);
+        grad.addColorStop(0, fm.glow);
+        grad.addColorStop(0.55, fm.hex);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(bx, 110, 82, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Main outer flame cone
+        ctx.fillStyle = fm.hex;
+        ctx.beginPath();
+        ctx.moveTo(bx - 16, 175);
+        ctx.quadraticCurveTo(bx - 42, 115, bx + flicker, 32);
+        ctx.quadraticCurveTo(bx + 42, 115, bx + 16, 175);
+        ctx.closePath();
+        ctx.fill();
+
+        // Inner bright cone
+        ctx.fillStyle = fm.glow;
+        ctx.beginPath();
+        ctx.moveTo(bx - 8, 175);
+        ctx.quadraticCurveTo(bx - 18, 130, bx + flicker * 0.4, 82);
+        ctx.quadraticCurveTo(bx + 18, 130, bx + 8, 175);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+
+        // Platinum wire loop dipping into flame
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(110, 145);
+        ctx.lineTo(bx - 4, 125);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(bx, 124, 5, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 13px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(`ลวดจุ่มเกลือ ${fm.sym}`, 28, 142);
+
+      } else if (L.station === 'halogen') {
+        const rank = { 'Cl2': 3, 'Br2': 2, 'I2': 1 };
+        const saltHal = L.halSalt === 'KCl' ? 'Cl2' : (L.halSalt === 'KBr' ? 'Br2' : 'I2');
+        const canReact = rank[L.halX2] > rank[saltHal];
+        const finalFree = canReact ? saltHal : L.halX2;
+
+        const topWaterHex = finalFree === 'Cl2' ? '#fef9c3' : (finalFree === 'Br2' ? '#fed7aa' : '#fde68a');
+        const botCCl4Hex = finalFree === 'Cl2' ? '#fef08a' : (finalFree === 'Br2' ? '#ea580c' : '#9333ea');
+        const botLabel = finalFree === 'Cl2' ? 'CCl₄: สีเหลืองอ่อน (Cl₂)' : (finalFree === 'Br2' ? 'CCl₄: สีส้มแดง (Br₂)' : 'CCl₄: สีม่วงเข้ม (I₂)');
+
+        if (L.halShakeAnim > 0) L.halShakeAnim = Math.max(0, L.halShakeAnim - 0.05);
+        const shakeOffset = Math.sin(L.halShakeAnim * Math.PI * 6) * 8;
+
+        const tx = 195 + shakeOffset, tw = 90, tTop = 30, tBot = 240;
+
+        // Top Aqueous Layer (Water + K+ halide)
+        ctx.fillStyle = topWaterHex;
+        ctx.fillRect(tx + 3, 75, tw - 6, 80);
+
+        // Bottom CCl4 Layer (Nonpolar, denser than water!)
+        ctx.fillStyle = botCCl4Hex;
+        ctx.globalAlpha = 0.85;
+        ctx.beginPath();
+        ctx.roundRect(tx + 3, 155, tw - 6, 82, [0, 0, 42, 42]);
+        ctx.fill();
+        ctx.globalAlpha = 1.0;
+
+        // Test tube glass outline
+        ctx.strokeStyle = '#475569';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(tx, tTop);
+        ctx.lineTo(tx, tBot - 42);
+        ctx.arc(tx + tw / 2, tBot - 42, tw / 2, Math.PI, 0, true);
+        ctx.lineTo(tx + tw, tTop);
+        ctx.stroke();
+
+        // Layer Labels on right
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 12px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText(`ชั้นบน: น้ำ (มีขั้ว เบากว่า)`, tx + tw + 18, 115);
+        ctx.fillStyle = finalFree === 'I2' ? '#7e22ce' : '#c24d2c';
+        ctx.fillText(`ชั้นล่าง: ${botLabel}`, tx + tw + 18, 195);
+
+      } else if (L.station === 'transition') {
+        // Draw rack of 15 transition ion test tubes!
+        const tubeW = 24, gap = 8;
+        const startX = (W - (15 * tubeW + 14 * gap)) / 2;
+
+        TRANSITION_IONS.forEach((t, idx) => {
+          const x = startX + idx * (tubeW + gap);
+          const isSel = idx === L.transIdx;
+          const yTop = isSel ? 38 : 58;
+          const yBot = 215;
+
+          // Liquid inside tube
+          ctx.fillStyle = t.hex;
+          ctx.beginPath();
+          ctx.roundRect(x + 2, yTop + 28, tubeW - 4, yBot - yTop - 30, [0, 0, 10, 10]);
+          ctx.fill();
+
+          // Tube outline
+          ctx.strokeStyle = isSel ? '#c24d2c' : '#64748b';
+          ctx.lineWidth = isSel ? 2.5 : 1.5;
+          ctx.beginPath();
+          ctx.roundRect(x, yTop, tubeW, yBot - yTop, [2, 2, 12, 12]);
+          ctx.stroke();
+
+          // Ion label
+          ctx.fillStyle = isSel ? '#c24d2c' : '#1d232a';
+          ctx.font = `${isSel ? 'bold ' : ''}9.5px "IBM Plex Mono", monospace`;
+          ctx.textAlign = 'center';
+          ctx.fillText(t.ion, x + tubeW / 2, yTop - 6);
+        });
+
+        const cur = TRANSITION_IONS[L.transIdx];
+        ctx.fillStyle = '#1d232a';
+        ctx.font = 'bold 13px "IBM Plex Sans Thai", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`กำลังเลือกหลอด: ${cur.ion} (เลขออกซิเดชัน ${cur.ox} · ${cur.cfg}) → ${cur.colorName}`, W / 2, 252);
+
+      } else {
+        // Station 4: Nuclear Radiation vs Half-Life Grid
+        if (L.nucSubMode === 'halflife') {
+          // Draw 64 radioactive nuclei in a 16x4 grid
+          const totalNuc = 64;
+          const activeNuc = totalNuc / Math.pow(2, L.halfLifeSteps);
+          const cols = 16, rows = 4;
+          const startX = 52, startY = 58, spacing = 26;
+
+          ctx.fillStyle = '#1d232a';
+          ctx.font = 'bold 12.5px "IBM Plex Sans Thai", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`จำลองนิวเคลียสกัมมันตรังสี 64 นิวเคลียส: ผ่านไป ${L.halfLifeSteps} ครึ่งชีวิต → เหลือยังไม่สลาย ${activeNuc} นิวเคลียส`, W / 2, 32);
+
+          for (let i = 0; i < totalNuc; i++) {
+            const r = Math.floor(i / cols);
+            const c = i % cols;
+            const nx = startX + c * spacing;
+            const ny = startY + r * 36;
+            const isAlive = i < activeNuc;
+
+            ctx.beginPath();
+            ctx.arc(nx, ny, 9.5, 0, Math.PI * 2);
+            ctx.fillStyle = isAlive ? '#c24d2c' : '#e2e8f0';
+            ctx.fill();
+            ctx.strokeStyle = isAlive ? '#ffffff' : '#cbd5e1';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+
+          // Legend
+          ctx.fillStyle = '#c24d2c';
+          ctx.fillText(`● สีส้มอิฐ = นิวเคลียสกัมมันตรังสีที่เหลือ (${activeNuc})     ○ สีเทาจาง = สลายตัวไปแล้ว (${totalNuc - activeNuc})`, W / 2, 225);
+
+        } else {
+          // Penetrating power of Alpha, Beta, Gamma
+          const barriers = [
+            { x: 185, w: 10, name: 'กระดาษ', color: '#cbd5e1' },
+            { x: 295, w: 16, name: 'อะลูมิเนียม (~5 mm)', color: '#94a3b8' },
+            { x: 415, w: 28, name: 'ตะกั่ว/คอนกรีตหนา', color: '#475569' }
+          ];
+          barriers.forEach(b => {
+            ctx.fillStyle = b.color;
+            ctx.fillRect(b.x, 35, b.w, 185);
+            ctx.fillStyle = '#1d232a';
+            ctx.font = 'bold 10.5px "IBM Plex Sans Thai", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(b.name, b.x + b.w / 2, 240);
+          });
+
+          // Alpha beam (stops at paper)
+          ctx.strokeStyle = '#c24d2c';
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(45, 75); ctx.lineTo(185, 75); ctx.stroke();
+          ctx.fillStyle = '#c24d2c';
+          ctx.textAlign = 'left';
+          ctx.fillText('α (แอลฟา +2, มวล 4 u)', 45, 65);
+
+          // Beta beam (passes paper, stops at Aluminum)
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(45, 130); ctx.lineTo(295, 130); ctx.stroke();
+          ctx.fillStyle = '#0284c7';
+          ctx.fillText('β⁻ (บีตาลบ −1, เบามาก)', 45, 120);
+
+          // Gamma ray (passes paper & Al, attenuated by thick lead)
+          ctx.strokeStyle = '#1f6f61';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(45, 185); ctx.lineTo(443, 185); ctx.stroke();
+          ctx.fillStyle = '#1f6f61';
+          ctx.fillText('γ (แกมมา 0, คลื่นแม่เหล็กไฟฟ้า)', 45, 175);
+        }
+      }
+    }
+
+    // =========================================================================
+    // STUDY SHEET DATA (All 5 Topics from the 64-Page PDF)
+    // =========================================================================
+    const STUDY_SECTIONS = [
+      {
+        part: 's1',
+        badge: 'ส่วนที่ 1.1 – 1.5 · หน้า 2–15',
+        title: '1. แบบจำลองอะตอม การทดลอง และอนุภาคมูลฐาน',
+        summary: 'จำลำดับการค้นพบอนุภาคมูลฐาน: อิเล็กตรอน (ทอมสัน) → โปรตอน (โกลด์สไตน์/รัทเทอร์ฟอร์ด) → นิวตรอน (แชดวิก)',
+        cards: [
+          {
+            heading: '1.1–1.3 วิวัฒนาการแบบจำลองอะตอม & การทดลองสำคัญ',
+            formulas: [
+              'ดอลตัน : ทรงกลมตัน แบ่งแยกไม่ได้ (เหลือเพียงข้อโมเลกุลสารประกอบที่ยังใช้ได้)',
+              'ทอมสัน : หลอดรังสีแคโทด ค้นพบ e⁻ และวัดค่า e/m = 1.76×10⁸ C/g (คงที่ทุกธาตุ)',
+              'มิลลิแกน : หยดน้ำมันลอยนิ่ง (qE = mg) หาประจุ e = 1.6×10⁻¹⁹ C → คำนวณมวล e⁻ = 9.11×10⁻²⁸ g',
+              'โกลด์สไตน์ : รังสีบวก (แคแนล) เกิดจากแก๊สในหลอด ค่า e/m ไม่คงที่ (H⁺ สูงสุด = 9.58×10⁴ C/g)',
+              'รัทเทอร์ฟอร์ด : ยิง α ใส่แผ่นทองคำบาง → ส่วนใหญ่ทะลุตรง (ที่ว่าง), ส่วนน้อยเบน, น้อยสุดสะท้อนกลับ (นิวเคลียส)'
+            ],
+            tips: [
+              'อัตราส่วนค่า e/m ของ e⁻ ต่อ H⁺ ≈ 1,836 เท่า แปลว่าโปรตอนมีมวลมากกว่าอิเล็กตรอนประมาณ 1,836 เท่า!'
+            ]
+          },
+          {
+            heading: '1.4–1.5 สัญลักษณ์นิวเคลียร์ & ครอบครัวไอโซ (Iso-Family)',
+            formulas: [
+              'สัญลักษณ์นิวเคลียร์ ᴬᶻX : Z (ล่าง) = โปรตอน (บอกชนิดธาตุ) · A (บน) = โปรตอน + นิวตรอน',
+              'นิวตรอน (n) = A − Z  |  ไอออนบวก (+k): e⁻ = Z − k  |  ไอออนลบ (−k): e⁻ = Z + k',
+              'ไอโซโทป (p เท่า) · ไอโซบาร์ (A บนเท่า) · ไอโซโทน (n เท่า) · ไอโซอิเล็กทรอนิก (e⁻ เท่า)'
+            ],
+            tips: [
+              'สมบัติของธาตุจะเปลี่ยนไปทันทีถ้าเปลี่ยน "จำนวนโปรตอน (Z)"'
+            ]
+          }
+        ]
+      },
+      {
+        part: 's2',
+        badge: 'ส่วนที่ 1.6 – 1.7 · หน้า 16–31',
+        title: '2. สเปกตรัม แบบจำลองโบร์ และการจัดเรียงอิเล็กตรอน 3 รูปแบบ',
+        summary: 'จัดระดับหลักให้คล่อง ระวังข้อยกเว้น Cr/Cu และตอนทำเป็นไอออนบวกแทรนซิชันต้องดึง 4s ออกก่อน 3d เสมอ!',
+        cards: [
+          {
+            heading: '1.6.1–1.6.2 คลื่นแม่เหล็กไฟฟ้า & สเปกตรัมของโบร์',
+            formulas: [
+              'ความเร็วแสงในสุญญากาศเท่ากันทุกคลื่น : c = fλ = 3×10⁸ m/s',
+              'พลังงานโฟตอน : E = hf = hc / λ  (เมื่อ h = 6.6×10⁻³⁴ J·s, 1 nm = 10⁻⁹ m)',
+              'อนุกรมสเปกตรัมไฮโดรเจน : ตกลง n=1 (ไลมาน: UV) · ตกลง n=2 (บาลเมอร์: แสงที่ตามองเห็น) · ตกลง n=3,4,5 (IR)'
+            ],
+            tips: [
+              'ระดับพลังงานยิ่งสูง ช่องว่างยิ่งแคบลง: E₂₁ > E₃₂ > E₄₃ > E₅₄ ดังนั้นการตกลงมาชั้น n=1 ให้พลังงานสูงสุด (ความยาวคลื่นสั้นสุด)'
+            ]
+          },
+          {
+            heading: '1.6.3 การจัดเรียงอิเล็กตรอน (หลัก, ย่อย, ออร์บิทัล)',
+            formulas: [
+              'ความจุระดับหลัก (2n²) : K=2, L=8, M=18, N=32, O=50 (ชั้นนอกสุดห้ามเกิน 8)',
+              'ความจุระดับย่อย : s = 2 (1 ออร์บิทัล), p = 6 (3 ออร์บิทัล), d = 10 (5 ออร์บิทัล), f = 14 (7 ออร์บิทัล)',
+              'ข้อยกเว้นเสถียรพิเศษ : ₂₄Cr = [Ar] 4s¹ 3d⁵ (2,8,13,1) และ ₂₉Cu = [Ar] 4s¹ 3d¹⁰ (2,8,18,1)'
+            ],
+            tips: [
+              'การจัดไอออนบวก (เช่น Fe²⁺, Fe³⁺, Mn²⁺): ต้องจัดอะตอมกลางก่อน แล้วดึง e⁻ ออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ!'
+            ]
+          }
+        ]
+      },
+      {
+        part: 's3',
+        badge: 'ส่วนที่ 2.1 – 2.2 · หน้า 32–42',
+        title: '3. ตารางธาตุ แนวโน้มสมบัติ ค่า IE และเลขออกซิเดชัน',
+        summary: 'จำว่า "ยิ่งอะตอมเล็ก ยิ่งดึงอิเล็กตรอนเก่ง" และหาหมู่ธาตุจากจุดกระโดดใหญ่ของค่า IE',
+        cards: [
+          {
+            heading: '2.1–2.2.2 โครงสร้างตารางธาตุ ขนาดอะตอม/ไอออน และค่า EN',
+            formulas: [
+              'จำนวนชั้น = เลขคาบ · เวเลนซ์อิเล็กตรอน = เลขหมู่ (สำหรับธาตุหมู่ A)',
+              'ขนาดอะตอม : ใหญ่ขึ้นจากบนลงล่าง และจากขวาไปซ้าย (ซ้าย-ล่าง ใหญ่สุด)',
+              'EN, IE₁, EA : เพิ่มขึ้นจากล่างขึ้นบน และจากซ้ายไปขวา (F มีค่า EN สูงสุด : F > O > Cl ≈ N > Br)',
+              'ขนาดไอออนที่ชั้นเท่ากัน (Isoelectronic) : โปรตอนมากกว่า = ขนาดเล็กกว่า (เช่น Mg²⁺ < Na⁺ < F⁻ < O²⁻ < N³⁻)'
+            ],
+            tips: [
+              'ธาตุกึ่งโลหะอยู่แนวเส้นขั้นบันได ได้แก่ B, Si, Ge, As, Sb, Te, Po'
+            ]
+          },
+          {
+            heading: '2.2.3–2.2.4 พลังงานไอออไนเซชัน (IE) & เลขออกซิเดชัน',
+            formulas: [
+              'นิยาม IEₙ : พลังงานที่ดึง e⁻ ตัวที่ n ออกจากอะตอม/ไอออนใน "สถานะแก๊ส" ทีละ 1 ตัว เช่น IE₂ : X⁺(g) → X²⁺(g) + e⁻',
+              'จุดกระโดดใหญ่ของ IE : ถ้ากระโดดระหว่าง IEₖ กับ IEₖ₊₁ แปลว่าธาตุนั้นมีเวเลนซ์ k ตัว (อยู่หมู่ kA)',
+              'ข้อยกเว้น IE₁ ในคาบเดียวกัน : หมู่ IIA > IIIA (เพราะ s² บรรจุเต็ม) และ หมู่ VA > VIA (เพราะ p³ บรรจุครึ่ง)'
+            ],
+            tips: [
+              'ผลรวมเลขออกซิเดชันของสารประกอบ = 0 และของหมู่ไอออน = ประจุของไอออนนั้น'
+            ]
+          }
+        ]
+      },
+      {
+        part: 's4',
+        badge: 'ส่วนที่ 2.3 – 2.5 · หน้า 43–62',
+        title: '4. สมบัติของธาตุตามหมู่ แทรนซิชัน และธาตุกัมมันตรังสี',
+        summary: 'แม่นสีเปลวไฟ การแย่ง e⁻ ของแฮโลเจน สีของไอออนแทรนซิชัน และการคำนวณครึ่งชีวิต',
+        cards: [
+          {
+            heading: '2.3–2.4 โลหะหมู่ IA/IIA, แฮโลเจน (VIIA) และธาตุแทรนซิชัน',
+            formulas: [
+              'สีเปลวไฟ : Li (แดงเข้ม), Na (เหลือง), K (ม่วงอ่อน), Ca (แดงอิฐ), Sr (แดงเข้ม), Ba (เขียวอ่อน), Cu (เขียวแกมน้ำเงิน)',
+              'แฮโลเจนในชั้น CCl₄ (ชั้นล่าง) : Cl₂ (เหลืองอ่อน), Br₂ (ส้ม/น้ำตาลแดง), I₂ (ม่วง) · ความไวรับ e⁻ : F₂ > Cl₂ > Br₂ > I₂',
+              'แทรนซิชันคาบ 4 ที่มีเลขออกซิเดชันค่าเดียวและสารละลายไม่มีสี : Sc (+3, 3d⁰) และ Zn (+2, 3d¹⁰)'
+            ],
+            tips: [
+              'แฮโลเจนตัวบนแย่งอิเล็กตรอนจากไอออนแฮไลด์ตัวล่างได้ เช่น Cl₂ + 2KI → 2KCl + I₂ (ชั้น CCl₄ เปลี่ยนเป็นสีม่วง)'
+            ]
+          },
+          {
+            heading: '2.5 ธาตุกัมมันตรังสี การดุลสมการนิวเคลียร์ & ครึ่งชีวิต (T½)',
+            formulas: [
+              'อำนาจทะลุผ่าน : α (กระดาษกั้นได้, A ลด 4 Z ลด 2) < β⁻ (อะลูมิเนียมกั้นได้, A เท่าเดิม Z เพิ่ม 1) < γ (ตะกั่วหนา, A/Z ไม่เปลี่ยน)',
+              'สูตรครึ่งชีวิต : N = N₀ × (1/2)ⁿ  เมื่อ  n = เวลาที่ผ่านไป (t) ÷ ครึ่งชีวิต (T½)',
+              'ฟิชชัน (นิวเคลียสหนักแตกตัว เช่น U-235 ในโรงไฟฟ้า) vs ฟิวชัน (นิวเคลียสเบารวมตัว เช่น H บนดวงอาทิตย์)'
+            ],
+            tips: [
+              'ครึ่งชีวิตเป็นค่าคงที่เฉพาะไอโซโทป ไม่ขึ้นกับอุณหภูมิ ความดัน หรือปริมาณสารเริ่มต้น'
+            ]
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // QUIZ BANK (Practice + Olympiad สอวน. & IJSO from PDF)
+    // =========================================================================
+    const QUIZ_BANK = [
+      {
+        id: 'Q7', cat: 'model', source: 'ข้อที่ 7 · หน้า 9',
+        q: 'ทอมสันพบว่าค่า e/m ของอนุภาคในรังสีแคโทดคงที่เสมอ ไม่ว่าจะเปลี่ยนโลหะขั้วแคโทดหรือชนิดแก๊สในหลอด ข้อสรุปใดถูกต้องที่สุด',
+        choices: [
+          'อิเล็กตรอนของทุกธาตุเหมือนกัน และเป็นองค์ประกอบของอะตอมทุกชนิด',
+          'อะตอมของทุกธาตุมีมวลเท่ากัน',
+          'อิเล็กตรอนมีมวลมากกว่าโปรตอน',
+          'แก๊สในหลอดไม่มีผลต่อรังสีใดๆ ในหลอด'
+        ],
+        ans: 0,
+        exp: 'ค่า e/m ของรังสีแคโทดคงที่เท่ากับ 1.76×10⁸ C/g เสมอไม่ว่าจะใช้โลหะหรือแก๊สใด พิสูจน์ว่าอิเล็กตรอนเป็นอนุภาคมูลฐานที่เหมือนกันในทุกอะตอม'
+      },
+      {
+        id: 'Q11', cat: 'model', source: 'ข้อที่ 11 หน้า 10',
+        q: 'ถ้าบรรจุแก๊สต่อไปนี้ในหลอดของโกลด์สไตน์ แก๊สใดให้รังสีบวกที่มีค่าประจุต่อมวล (e/m) สูงที่สุด',
+        choices: ['Ar', 'Ne', 'He', 'H₂'],
+        ans: 3,
+        exp: 'แก๊ส H₂ เสียอิเล็กตรอนกลายเป็นไอออน H⁺ (โปรตอน) ซึ่งมีมวลน้อยที่สุด ตัวหาร (m) น้อยที่สุดจึงได้ค่า e/m สูงที่สุด (9.58×10⁴ C/g)'
+      },
+      {
+        id: 'Q27', cat: 'model', source: 'ข้อที่ 27 หน้า 15',
+        q: 'อะตอม ⁴⁰₁₈Ar และไอออน Ca²⁺ (เลขมวล 40, เลขอะตอม 20) มีความสัมพันธ์กันแบบใด',
+        choices: ['ไอโซโทป', 'ไอโซโทน', 'ไอโซบาร์เท่านั้น', 'ทั้งไอโซบาร์และไอโซอิเล็กทรอนิก'],
+        ans: 3,
+        exp: 'ทั้งคู่มีเลขมวล A = 40 เท่ากัน (เป็นไอโซบาร์) และ Ca²⁺ มีอิเล็กตรอน = 20 − 2 = 18 ตัว เท่ากับ ₁₈Ar พอดี (เป็นไอโซอิเล็กทรอนิกด้วย)'
+      },
+      {
+        id: 'Q46', cat: 'config', source: 'ข้อที่ 46 หน้า 20',
+        q: 'การเปลี่ยนระดับพลังงานของอะตอมไฮโดรเจนข้อใด "ปล่อย" โฟตอนที่มีพลังงานสูงที่สุด',
+        choices: ['n = 1 ไป n = 2', 'n = 2 ไป n = 1', 'n = 2 ไป n = 6', 'n = 6 ไป n = 2'],
+        ans: 1,
+        exp: 'การ "ปล่อย" (คาย) โฟตอนต้องตกลงจากชั้นสูงมาชั้นต่ำ (ตัด ก และ ค) และช่องว่างระหว่างชั้น n=2 กับ n=1 กว้างกว่าผลรวมของชั้นบนทั้งหมด (ตกลง n=1 ให้รังสี UV ชุดไลมาน) ดังนั้น n=2 ไป n=1 พลังงานสูงสุด!'
+      },
+      {
+        id: 'Q57', cat: 'config', source: 'ข้อที่ 57 หน้า 25',
+        q: 'ธาตุ ₂₄Cr มีการจัดอิเล็กตรอนในระดับพลังงานหลักตามข้อใด',
+        choices: ['2, 8, 12, 2', '2, 8, 13, 1', '2, 8, 14', '2, 8, 8, 6'],
+        ans: 1,
+        exp: '₂₄Cr จัดเรียงแบบบรรจุครึ่งใน 3d เป็น [Ar] 4s¹ 3d⁵ เมื่อรวมจำนวนอิเล็กตรอนตามระดับพลังงานหลัก (K, L, M, N) จึงได้ 2, 8, 13, 1'
+      },
+      {
+        id: 'Q66', cat: 'config', source: 'ข้อที่ 66 หน้า 28',
+        q: 'ไอออน Fe³⁺ (Z = 26) มีการจัดอิเล็กตรอนในระดับพลังงานย่อยตามข้อใด',
+        choices: ['[Ar] 4s² 3d³', '[Ar] 4s¹ 3d⁴', '[Ar] 3d⁵', '[Ar] 4s² 3d⁶'],
+        ans: 2,
+        exp: 'อะตอมกลาง ₂₆Fe คือ [Ar] 4s² 3d⁶ เมื่อเสีย 3 อิเล็กตรอนเป็น Fe³⁺ ต้องดึงออกจาก 4s ก่อน 2 ตัว แล้วดึงจาก 3d อีก 1 ตัว เหลือ [Ar] 3d⁵ (บรรจุครึ่ง เสถียร!)'
+      },
+      {
+        id: 'Q82', cat: 'periodic', source: 'ข้อที่ 82 หน้า 36',
+        q: 'เรียงลำดับขนาดไอออนจากเล็กไปใหญ่ : N³⁻, O²⁻, F⁻, K⁺ (เลขอะตอม N=7, O=8, F=9, K=19)',
+        choices: ['F⁻ < O²⁻ < N³⁻ < K⁺', 'F⁻ < N³⁻ < O²⁻ < K⁺', 'O²⁻ < F⁻ < N³⁻ < K⁺', 'N³⁻ < O²⁻ < F⁻ < K⁺'],
+        ans: 0,
+        exp: 'N³⁻, O²⁻, F⁻ มี 10 e⁻ (2, 8 → 2 ชั้น) โดยโปรตอน F(9) > O(8) > N(7) จึงเรียงจากเล็กไปใหญ่ได้ F⁻ < O²⁻ < N³⁻ ส่วน K⁺ มี 18 e⁻ (2, 8, 8 → 3 ชั้น) มีจำนวนชั้นมากกว่าจึงใหญ่ที่สุด!'
+      },
+      {
+        id: 'Q85', cat: 'periodic', source: 'ข้อที่ 85 หน้า 39',
+        q: 'ธาตุ A มีค่า IE₁ ถึง IE₇ เท่ากับ 1400, 2900, 4600, 7500, 9500, 53000, 64000 kJ/mol ตามลำดับ ธาตุ A ควรอยู่หมู่ใด',
+        choices: ['หมู่ VA', 'หมู่ IIIA', 'หมู่ VIIA', 'หมู่ IA'],
+        ans: 0,
+        exp: 'สังเกตจุดกระโดดใหญ่ระหว่าง IE₅ (9,500) ไป IE₆ (53,000) แสดงว่าดึงอิเล็กตรอนชั้นนอกสุดออกได้ 5 ตัวก่อนจะข้ามเข้าชั้นใน ธาตุ A จึงมีเวเลนซ์อิเล็กตรอน 5 ตัว อยู่หมู่ VA'
+      },
+      {
+        id: 'Q103', cat: 'groups', source: 'ข้อที่ 103 หน้า 49',
+        q: 'เติมน้ำคลอรีน (Cl₂) ลงในสารละลาย KI แล้วเติม CCl₄ เขย่าและตั้งทิ้งไว้ ชั้น CCl₄ จะมีสีใด',
+        choices: ['ส้ม', 'ม่วง', 'เหลืองอ่อน', 'ไม่มีสี'],
+        ans: 1,
+        exp: 'Cl₂ อยู่เหนือ I₂ จึงแย่งอิเล็กตรอนจาก I⁻ ใน KI ได้เกิดเป็นโมเลกุล I₂ (Cl₂ + 2KI → 2KCl + I₂) ซึ่ง I₂ ละลายในชั้น CCl₄ ให้สีม่วง!'
+      },
+      {
+        id: 'Q117', cat: 'groups', source: 'ข้อที่ 117 หน้า 57',
+        q: '²³²₉₀Th สลายตัวต่อเนื่องจนได้ ²⁰⁸₈₂Pb ซึ่งเสถียร จะปล่อยอนุภาคแอลฟา (⁴₂He) และบีตาลบ (⁰₋₁e) อย่างละกี่อนุภาค',
+        choices: ['α 6, β⁻ 4', 'α 4, β⁻ 6', 'α 6, β⁻ 2', 'α 8, β⁻ 4'],
+        ans: 0,
+        exp: 'เลขมวล A ลดลง = 232 − 208 = 24 → เนื่องจาก β⁻ ไม่มีมวล การลดของเลขมวลเกิดจาก α เท่านั้น ได้จำนวน α = 24 ÷ 4 = 6 อนุภาค (ทำให้ Z ลดลง 6×2 = 12 เหลือ 90−12 = 78) ต้องการให้ Z เป็น 82 จึงต้องปล่อย β⁻ = 82 − 78 = 4 อนุภาค'
+      },
+      {
+        id: 'QA1', cat: 'olympiad', source: 'ข้อ A1 (สอวน. ค่าย 1) · หน้า 63',
+        q: 'อะตอมของธาตุ A มีการจัดเรียงอิเล็กตรอน 2, 8, 18, 2 อะตอมของธาตุ D มีอิเล็กตรอนน้อยกว่านิวตรอนอยู่ 4 และน้อยกว่าจำนวนอิเล็กตรอนของไอออนที่เสถียรของธาตุ A อยู่ 2 ข้อใดคือสัญลักษณ์นิวเคลียร์และจำนวนอิเล็กตรอนของ D²⁺',
+        choices: [
+          '⁵⁶₂₆D²⁺ มี 24 อิเล็กตรอน',
+          '⁶⁰₂₈D²⁺ มี 26 อิเล็กตรอน',
+          '⁵⁸₂₈D²⁺ มี 28 อิเล็กตรอน',
+          '⁵⁶₂₆D²⁺ มี 26 อิเล็กตรอน'
+        ],
+        ans: 0,
+        exp: 'ธาตุ A มี e⁻ = 2+8+18+2 = 30 (Zn) ไอออนเสถียรคือ A²⁺ มี 28 e⁻ → อะตอม D มี e⁻ น้อยกว่าอยู่ 2 คือ 28 − 2 = 26 ตัว (ดังนั้น Z ของ D = 26) และมีนิวตรอนมากกว่าอยู่ 4 คือ n = 26 + 4 = 30 ตัว → เลขมวล A = 26 + 30 = 56 ได้สัญลักษณ์ ⁵⁶₂₆D²⁺ ซึ่งมีอิเล็กตรอน = 26 − 2 = 24 ตัว!'
+      },
+      {
+        id: 'QB1', cat: 'olympiad', source: 'ข้อ B1 (IJSO ครั้งที่ 21) · หน้า 64',
+        q: 'กำหนดการจัดเรียงอิเล็กตรอนของโครเมียม (₂₄Cr) เป็น [Ar]4sʷ3dˣ และของ Co³⁺ (₂₇Co³⁺) เป็น [Ar]4sʸ3dᶻ ข้อใดคือค่าของ w − x + y − z',
+        choices: ['−10', '−8', '−6', '−4'],
+        ans: 0,
+        exp: 'โครเมียม ₂₄Cr จัดเรียงแบบบรรจุครึ่งเป็น [Ar] 4s¹ 3d⁵ ดังนั้น w = 1, x = 5 | โคบอลต์ ₂₇Co คือ [Ar] 4s² 3d⁷ เมื่อกลายเป็น Co³⁺ จะเสียจาก 4s ไป 2 ตัว และจาก 3d อีก 1 ตัว ได้ [Ar] 4s⁰ 3d⁶ ดังนั้น y = 0, z = 6 → แทนค่า w − x + y − z = 1 − 5 + 0 − 6 = −10'
+      }
+    ];
+
+    function renderStudySheet(filterPart) {
+      document.querySelectorAll('.sheet-filter-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-sheet-filter') === filterPart;
+        btn.className = `sheet-filter-btn ${isMatch ? 'btn-terra' : 'btn-outline-warm'} !py-1.5 !px-3 !text-xs`;
+      });
+
+      const container = document.getElementById('studySheetContainer');
+      const sections = filterPart === 'all' ? STUDY_SECTIONS : STUDY_SECTIONS.filter(s => s.part === filterPart);
+
+      container.innerHTML = sections.map(sec => `
+        <div class="p-5 rounded-2xl bg-[#faf8f4] border border-[#e4dfd5]">
+          <div class="inline-block px-2.5 py-0.5 rounded-md bg-[#fbece7] text-[#c24d2c] font-mono-num text-xs font-semibold mb-1.5">${sec.badge}</div>
+          <h3 class="text-lg sm:text-xl font-bold text-[#1d232a]">${sec.title}</h3>
+          <p class="text-xs sm:text-sm text-[#6e6a61] mb-4">${sec.summary}</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${sec.cards.map(c => `
+              <div class="bg-white p-4 rounded-xl border border-[#e4dfd5] flex flex-col justify-between">
+                <div>
+                  <h4 class="font-bold text-sm sm:text-base text-[#1d232a] mb-2.5">${c.heading}</h4>
+                  <div class="space-y-1.5 mb-3">
+                    ${c.formulas.map(f => `
+                      <div class="text-xs font-mono-num bg-[#faf8f4] px-3 py-1.5 rounded border-l-2 border-[#c24d2c] text-[#1d232a]">${f}</div>
+                    `).join('')}
+                  </div>
+                </div>
+                <div class="border-t border-[#f0ece3] pt-2.5 space-y-1">
+                  ${c.tips.map(t => `<p class="text-xs text-[#6e6a61]">${t}</p>`).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderQuizList() {
+      const cat = state.quizCategory;
+      const filtered = cat === 'all' ? QUIZ_BANK : QUIZ_BANK.filter(q => q.cat === cat);
+      const container = document.getElementById('quizListContainer');
+
+      let correctCount = 0, answeredCount = 0;
+      QUIZ_BANK.forEach(q => {
+        if (state.quizAnswers[q.id] !== undefined) {
+          answeredCount++;
+          if (state.quizAnswers[q.id] === q.ans) correctCount++;
+        }
+      });
+      document.getElementById('quizScoreBadge').textContent = `คะแนน: ${correctCount} / ${answeredCount} (ทั้งหมด ${QUIZ_BANK.length} ข้อ)`;
+
+      const thaiChoices = ['ก', 'ข', 'ค', 'ง'];
+      container.innerHTML = filtered.map((item, idx) => {
+        const picked = state.quizAnswers[item.id];
+        const isAnswered = picked !== undefined;
+        return `
+          <div class="p-5 rounded-xl bg-[#faf8f4] border border-[#e4dfd5]">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded bg-[#fbece7] text-[#c24d2c] font-mono-num text-xs font-bold">${item.source}</span>
+              ${isAnswered ? (
+                picked === item.ans
+                  ? '<span class="text-xs font-bold text-[#1f6f61]">✓ ตอบถูกต้อง</span>'
+                  : '<span class="text-xs font-bold text-[#c24d2c]">✗ ยังไม่ถูก ดูวิธีคิดด้านล่าง</span>'
+              ) : '<span class="text-xs text-[#948f84]">เลือกคำตอบเพื่อตรวจทันที</span>'}
+            </div>
+            <p class="font-semibold text-sm sm:text-base text-[#1d232a] mb-3">${idx + 1}. ${item.q}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              ${item.choices.map((ch, cIdx) => {
+                let btnStyle = 'bg-white border-[#d2cbc0] text-[#1d232a] hover:bg-[#f5f2eb]';
+                if (isAnswered) {
+                  if (cIdx === item.ans) btnStyle = 'bg-[#e6f3f0] border-[#1f6f61] text-[#1f6f61] font-bold';
+                  else if (cIdx === picked) btnStyle = 'bg-[#fbece7] border-[#c24d2c] text-[#c24d2c]';
+                }
+                return `
+                  <button data-qid="${item.id}" data-cidx="${cIdx}" class="quiz-choice-btn text-left px-3.5 py-2.5 rounded-lg border text-xs sm:text-sm transition ${btnStyle}">
+                    <span class="font-bold mr-1.5">${thaiChoices[cIdx]}.</span> ${ch}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            ${isAnswered ? `
+              <div class="mt-3 p-3 rounded-lg bg-white border border-[#e4dfd5] text-xs text-[#1d232a]">
+                <span class="font-bold text-[#1f6f61]">เฉลยวิธีคิด:</span> ${item.exp}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.quiz-choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.quizAnswers[btn.getAttribute('data-qid')] = parseInt(btn.getAttribute('data-cidx'), 10);
+          renderQuizList();
+        });
+      });
+    }
+
+    // =========================================================================
+    // MAIN ANIMATION LOOP
+    // =========================================================================
+    function animateApp() {
+      state.tick++;
+      if (state.activeTab === 'lab1') drawLab1Canvases();
+      else if (state.activeTab === 'lab2') drawLab2ShellCanvas();
+      else if (state.activeTab === 'lab4') drawLab4Canvas();
+      requestAnimationFrame(animateApp);
+    }
+
+    // =========================================================================
+    // WIRE EVENT LISTENERS ON LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Populate Lab 2 Element Dropdown (Z=1 to 36)
+      const elemSel = document.getElementById('l2_elemSelect');
+      elemSel.innerHTML = ELEMENTS.slice(1).map(el =>
+        `<option value="${el.z}" ${el.z === state.lab2.Z ? 'selected' : ''}>Z = ${el.z} · ${el.sym} (${el.name}) — หมู่ ${el.group}</option>`
+      ).join('');
+
+      // Top navigation tabs
+      document.querySelectorAll('[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+
+      // Lab 1 controls
+      document.querySelectorAll('.l1-model-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab1.model = btn.getAttribute('data-model');
+          updateLab1UI();
+        });
+      });
+      document.getElementById('l1_expSelect').addEventListener('change', e => {
+        state.lab1.exp = e.target.value;
+        updateLab1UI();
+      });
+
+      // Lab 2 controls
+      elemSel.addEventListener('change', e => {
+        state.lab2.Z = parseInt(e.target.value, 10);
+        updateLab2UI();
+      });
+      document.getElementById('l2_zSlider').addEventListener('input', e => {
+        state.lab2.Z = parseInt(e.target.value, 10);
+        updateLab2UI();
+      });
+      document.querySelectorAll('.l2-q-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab2.charge = parseInt(btn.getAttribute('data-q'), 10);
+          updateLab2UI();
+        });
+      });
+      document.querySelectorAll('.l2-quick-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab2.Z = parseInt(btn.getAttribute('data-quick-z'), 10);
+          state.lab2.charge = parseInt(btn.getAttribute('data-quick-q'), 10);
+          updateLab2UI();
+        });
+      });
+
+      // Lab 3 controls
+      document.querySelectorAll('.l3-radmode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab3.radMode = btn.getAttribute('data-l3-radmode');
+          updateLab3UI();
+        });
+      });
+      document.querySelectorAll('.l3-rightmode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab3.rightMode = btn.getAttribute('data-l3-rightmode');
+          updateLab3UI();
+        });
+      });
+
+      // Lab 4 controls
+      document.querySelectorAll('.l4-station-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.lab4.station = btn.getAttribute('data-l4-station');
+          updateLab4UI();
+        });
+      });
+
+      // Study Sheet filter buttons
+      document.querySelectorAll('.sheet-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => renderStudySheet(btn.getAttribute('data-sheet-filter')));
+      });
+
+      // Quiz controls
+      document.getElementById('quizCategorySelect').addEventListener('change', e => {
+        state.quizCategory = e.target.value;
+        renderQuizList();
+      });
+      document.getElementById('btnResetQuiz').addEventListener('click', () => {
+        state.quizAnswers = {};
+        renderQuizList();
+      });
+
+      // Reference Modal
+      const refModal = document.getElementById('refModal');
+      document.getElementById('btnOpenRefModal').addEventListener('click', () => refModal.classList.remove('hidden'));
+      document.getElementById('btnOpenRefDesktop').addEventListener('click', () => refModal.classList.remove('hidden'));
+      document.getElementById('btnCloseRefModal').addEventListener('click', () => refModal.classList.add('hidden'));
+      refModal.addEventListener('click', e => {
+        if (e.target === refModal) refModal.classList.add('hidden');
+      });
+
+      // Initial render
+      updateLab1UI();
+      updateLab2UI();
+      updateLab3UI();
+      updateLab4UI();
+      requestAnimationFrame(animateApp);
+    });
+  </script>
+<script>/* ChemLab: #lab2 opens that tab; ?from=N-P (opened from the e-book) turns the e-book link into a way back to page P */
+addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
+</body>
+</html>

@@ -261,7 +261,6 @@ body{background-image:none}
 .rdlab{position:absolute;right:72px;bottom:16px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(520px,calc(100% - 144px));padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 8px 24px rgba(29,36,51,.12)}
 .rdlab span{font-size:12px;color:var(--muted)}
 .rdlab a{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:4px 12px;border-radius:8px;background:#c4432b;color:#fffdf8;font:500 14px "IBM Plex Sans Thai",sans-serif;text-decoration:none}
-.rdlab a::before{content:"P×V";font:500 11px "JetBrains Mono",monospace;opacity:.8}
 .rdlab a:hover{filter:brightness(1.08)}
 .rdlab a:focus-visible{outline:2px solid #ff6b4a;outline-offset:2px}
 @media (max-width:760px){.rdlab{right:12px;left:12px;bottom:12px;max-width:none}}
@@ -307,7 +306,28 @@ body{background-image:none}
 /* A chapter becomes readable once its pages are in books/NN-slug/p01.webp… — set `pages` to the page count. */
 // chapters that have an interactive experiment room; `pages` lists which book pages each experiment belongs to
 const L = '../lessons/';
-const LABS = {5:{home:L+'boyle.html', pages:[
+const LABS = {
+ 2:{home:L+'atom.html', pages:[
+  {from:2,  to:20, href:L+'atom.html#lab1', label:'แบบจำลองอะตอมและการทดลอง'},
+  {from:21, to:30, href:L+'atom.html#lab2', label:'จัดเรียงอิเล็กตรอน'},
+  {from:31, to:31, href:L+'atom.html#lab1', label:'แบบจำลองอะตอมและการทดลอง'},
+  {from:32, to:42, href:L+'atom.html#lab3', label:'ตารางธาตุและค่า IE'},
+  {from:43, to:61, href:L+'atom.html#lab4', label:'เปลวไฟ แฮโลเจน และรังสี'},
+ ]},
+ 3:{home:L+'bonds.html', pages:[
+  {from:2,  to:14, href:L+'bonds.html#ionic',    label:'พันธะไอออนิก'},
+  {from:15, to:26, href:L+'bonds.html#covalent', label:'พันธะโคเวเลนต์'},
+  {from:27, to:31, href:L+'bonds.html#shape',    label:'รูปร่างโมเลกุลและ VSEPR'},
+  {from:32, to:34, href:L+'bonds.html#forces',   label:'แรงระหว่างโมเลกุล'},
+ ]},
+ 4:{home:L+'stoich.html', pages:[
+  {from:2,  to:24, href:L+'stoich.html#lab1', label:'นับโมลและอะตอม'},
+  {from:25, to:33, href:L+'stoich.html#lab2', label:'ความเข้มข้นของสารละลาย'},
+  {from:34, to:38, href:L+'stoich.html#lab3', label:'เจือจางและผสมสารละลาย'},
+  {from:39, to:41, href:L+'stoich.html#lab2', label:'จุดเดือดและจุดเยือกแข็ง'},
+  {from:42, to:63, href:L+'stoich.html#lab4', label:'อัตราส่วนโมลและสารกำหนดปริมาณ'},
+ ]},
+ 5:{home:L+'boyle.html', pages:[
   {from:21, to:22, href:L+'gas-mixtures.html#motion', label:'ทฤษฎีจลน์ของแก๊ส'},
   {from:23, to:25, href:L+'boyle.html#boyle',         label:'กฎของบอยล์'},
   {from:26, to:27, href:L+'boyle.html#charles',       label:'กฎของชาร์ล'},
