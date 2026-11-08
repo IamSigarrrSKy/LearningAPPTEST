@@ -79,6 +79,7 @@
     group('ข้อมูลของฉัน',[ user?item('โรงเรียนและครูผู้สอน',()=>openName(false)):item('แก้ชื่อเล่น Guest',()=>window.ChemLabEntry.open()) ]),
     group('สำหรับครู',[
      user&&item('รายงานสำหรับครู',()=>viaPrivate('รายงานสำหรับครู')),
+     item('รายงานเส้นทางเรียน (ใครติดเรื่องไหน)',()=>{location.href='teacher/path-report.html';}),
      item('ตั้งค่า Google Drive',()=>document.getElementById('homeCfg').click()),
     ]),
    ];

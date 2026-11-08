@@ -1,0 +1,83 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>รายงานครู: เส้นทางเรียน ChemLab</title>
+<meta name="description" content="รายงานสำหรับครู: นักเรียนคนไหนยังติดทักษะไหนในเส้นทางเรียนโมลและมวล อ่านจากไฟล์ผลสอบในเครื่องครู">
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lessons/lab.css"><link rel="stylesheet" href="../lessons/chemlab-theme.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+<style>
+  .drop{display:grid;gap:10px;padding:22px;border:2px dashed var(--line);border-radius:16px;background:var(--surface);text-align:center}
+  .drop.over{border-color:var(--accent)}
+  .drop input[type=file]{justify-self:center;font:14px var(--font-body)}
+  .drop textarea{width:100%;min-height:70px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:13px var(--font-mono)}
+  .steps{margin:0;padding-left:20px;text-align:left;color:var(--muted);font-size:14px}
+  .bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:22px 0 8px}
+  .bar label{font-size:13px;color:var(--muted)}
+  .bar input,.bar select{display:block;margin-top:4px;min-height:40px;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:14px var(--font-body)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0 26px}
+  .kpi{padding:14px 16px;border-radius:14px;background:var(--surface)}
+  .kpi b{display:block;font:500 28px/1.2 var(--font-head)}.kpi span{font-size:13px;color:var(--muted)}
+  .help{display:grid;gap:12px;margin:8px 0 28px}
+  .help article{padding:16px 18px;border-radius:14px;background:var(--surface);border-left:5px solid var(--coral)}
+  .help article.soft{border-left-color:#d99413}
+  .help h3{margin:0 0 2px}.help p{margin:0 0 8px;font-size:14px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{padding:4px 10px;border-radius:999px;background:var(--bg);font-size:13px;border:1px solid var(--line)}
+  .chip small{color:var(--muted)}
+  .tablewrap{overflow-x:auto;border-radius:14px;background:var(--surface)}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+  th,td{padding:10px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-weight:600;font-size:13px;color:var(--muted);position:sticky;top:0;background:var(--surface)}
+  td.sk{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .st{display:inline-block;min-width:66px;padding:3px 8px;border-radius:8px;font-size:12px;text-align:center}
+  .st.up{background:#d8efe5;color:#145c48}.st.pass{background:#e8efe9;color:#2d5a4a}.st.stuck{background:#f8d9d4;color:#8f2b1d}.st.wait{background:#f6e7c9;color:#7a5410}.st.none{color:var(--muted)}
+  [data-theme=dark] .st.up{background:#1f4a3d;color:#bfeedd}[data-theme=dark] .st.pass{background:#24362f;color:#cfe6dc}[data-theme=dark] .st.stuck{background:#5a2620;color:#ffd6cf}[data-theme=dark] .st.wait{background:#4d3b16;color:#f6dfaa}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);margin:8px 0}
+  .classrow{display:grid;grid-template-columns:minmax(150px,1.2fr) 1fr 1fr;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .meter{height:10px;border-radius:999px;background:var(--bg);overflow:hidden}.meter i{display:block;height:100%;background:#2f8a74}
+  .meter.pre i{background:#9aa1b1}
+  #empty{color:var(--muted)}
+  @media (max-width:760px){.classrow{grid-template-columns:1fr 1fr}.classrow>:first-child{grid-column:1/-1}}
+</style>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="../index.html">หน้าแรก</a></header>
+<main>
+<h1>รายงานครู: ใครยังติดเรื่องไหน</h1>
+<p class="lead">เส้นทางเรียน "โมลและมวล" ก่อนเรียน → ทบทวน → หลังเรียน ดูทีละทักษะ เพื่อเลือกว่าจะช่วยนักเรียนกลุ่มไหนก่อน</p>
+
+<section class="drop" id="drop" aria-labelledby="dropTitle">
+  <h2 id="dropTitle" style="margin:0">เปิดไฟล์ผลสอบ</h2>
+  <ol class="steps"><li>เปิด Google Sheet ผลสอบของครู (แผ่น attempts หรือแผ่นในโฟลเดอร์ Drive ของครู)</li><li>ไฟล์ → ดาวน์โหลด → CSV (.csv)</li><li>ลากไฟล์มาวางที่นี่ หรือกดเลือกไฟล์ จะเลือกหลายไฟล์พร้อมกันก็ได้</li></ol>
+  <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv" multiple aria-label="เลือกไฟล์ CSV">
+  <details><summary>หรือวางข้อมูลที่คัดลอกจากชีท (รวมแถวหัวตาราง)</summary><textarea id="paste" placeholder="คัดลอกทั้งแผ่นจาก Google Sheet แล้ววางที่นี่"></textarea><button id="usePaste">ใช้ข้อมูลที่วาง</button></details>
+  <p class="muted" style="margin:0">ไฟล์อ่านในเบราว์เซอร์นี้เท่านั้น ไม่ส่งขึ้นอินเทอร์เน็ต ปิดหน้าแล้วข้อมูลหายไป <button id="sample" style="min-height:32px;padding:4px 10px;font-size:13px">ลองด้วยข้อมูลตัวอย่าง</button></p>
+</section>
+
+<div id="report" hidden>
+  <div class="bar">
+    <label>โรงเรียน<select id="fSchool"></select></label>
+    <label>ค้นชื่อ<input id="fName" placeholder="ชื่อนักเรียน" autocomplete="off"></label>
+    <label class="check" style="color:var(--ink)"><input type="checkbox" id="fStuck"> เฉพาะคนที่ยังติด</label>
+    <button id="export">ดาวน์โหลดรายชื่อที่ต้องช่วย (CSV)</button>
+  </div>
+  <div class="kpis" id="kpis"></div>
+
+  <h2>ช่วยใครก่อน</h2>
+  <p class="muted">จัดกลุ่มตามทักษะ กลุ่มสีแดงทำหลังเรียนแล้วยังผิด ควรช่วยก่อน กลุ่มสีเหลืองผิดตอนก่อนเรียนและยังไม่ทำหลังเรียน ใต้ชื่อคือความผิดพลาดที่ระบบจับได้</p>
+  <div class="help" id="help"></div>
+
+  <h2>ภาพรวมทั้งชั้น รายทักษะ</h2>
+  <p class="muted">จำนวนนักเรียนที่ตอบถูก ทักษะละ 1 ข้อต่อครั้ง ข้อก่อนและหลังเรียนเป็นคนละข้อในแนวเดียวกัน ใช้ดูทิศทาง ไม่ใช่คะแนนตัดสิน</p>
+  <div id="classView"></div>
+
+  <h2 style="margin-top:28px">รายนักเรียน</h2>
+  <div class="legend"><span><span class="st up">ดีขึ้น</span> ผิดก่อนเรียน ถูกหลังเรียน</span><span><span class="st pass">ผ่าน</span> ถูกทุกครั้งที่ทำ</span><span><span class="st stuck">ยังติด</span> หลังเรียนยังผิด</span><span><span class="st wait">รอหลังเรียน</span> ผิดก่อนเรียน</span></div>
+  <div class="tablewrap"><table aria-label="ผลรายนักเรียน รายทักษะ"><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+  <p id="empty" hidden>ไม่พบนักเรียนตามตัวกรอง</p>
+</div>
+
+<section class="note-box"><p>หน้านี้อ่านเฉพาะแถวของเส้นทางเรียน (คอลัมน์ size เป็น path-pre, path-prac, path-post) และใช้คอลัมน์ detail ที่บอกทักษะของแต่ละข้อ ผลมาจากเครื่องของนักเรียน ใช้วางแผนการช่วยเหลือ ไม่ใช่หลักฐานตัดเกรด</p></section>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="path-report.js"></script>
+</body></html>
