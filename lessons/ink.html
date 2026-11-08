@@ -1,0 +1,125 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>วาดโมเลกุลด้วยปากกา · ChemLab</title>
+<meta name="description" content="วาดโครงสร้างโมเลกุลด้วยนิ้วหรือปากกา iPad ระบบดัดเส้นให้ตรง จัดมุม และแปลงวงแหวนอัตโนมัติ แล้วตั้งชื่อ IUPAC ด้วยกฎในเครื่อง">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css"><link rel="stylesheet" href="board.css"><link rel="stylesheet" href="ink.css">
+<script>try{var t=localStorage.getItem('chemlab.theme');if(t)document.documentElement.dataset.theme=t;else if(matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
+</head><body>
+
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>วาดโมเลกุล แล้วรู้จักชื่อ</h1>
+<p class="lead">ใช้นิ้วหรือปากกา iPad วาดคร่าว ๆ ระบบดัดเส้นให้ตรง จัดมุม 120° และแปลงวงแหวนให้เอง แล้วตั้งชื่อ IUPAC ด้วยกฎชุดเดียวกับกระดานวาด</p>
+<nav class="board-switch" aria-label="เลือกกระดาน"><a href="draw.html"><svg class="ic"><use href="#i-mouse"/></svg>กระดานเมาส์</a><a href="ink.html" aria-current="page"><svg class="ic"><use href="#i-pen"/></svg>ปากกา / นิ้ว</a></nav>
+
+<section aria-labelledby="nameTitle">
+ <div class="name-row">
+  <label id="nameTitle" for="name-input">ชื่อสาร → โครงสร้าง<input id="name-input" maxlength="200" autocomplete="off" placeholder="เช่น ethyl ethanoate, (E)-but-2-ene, cyclohexanol"></label>
+  <button id="btn-name-to-struct" class="primary" type="button"><svg class="ic"><use href="#i-flask"/></svg>แปลงชื่อเป็นโครงสร้าง</button>
+  <button id="btn-search-pubchem-name" type="button"><svg class="ic"><use href="#i-search"/></svg>ค้นใน PubChem</button>
+ </div>
+ <span id="name-status-badge" role="status" aria-live="polite">พิมพ์ชื่อ IUPAC ภาษาอังกฤษ ชื่อสามัญ หรือตัวอย่างภาษาไทย</span>
+ <div class="chip-row" aria-label="ตัวอย่างสาร"><span>ลองเริ่มจาก</span>
+  <button type="button" data-preset="ethanol">เอทานอล</button><button type="button" data-preset="acetic">กรดแอซีติก</button><button type="button" data-preset="acetone">แอซีโตน</button>
+  <button type="button" data-preset="benzene">เบนซีน</button><button type="button" data-preset="cyclohexanol">ไซโคลเฮกซานอล</button><button type="button" data-preset="ethyl ethanoate">ethyl ethanoate</button>
+  <button type="button" data-preset="(Z)-but-2-ene">(Z)-but-2-ene</button><button type="button" data-preset="N-methylethanamine">N-methylethanamine</button><button type="button" data-preset="aspirin">แอสไพริน</button>
+ </div>
+</section>
+
+<section id="ipad-guide-banner" aria-labelledby="guideTitle">
+ <div class="head"><h2 id="guideTitle">วาดมือเปล่า ระบบดัดให้ตรงแบบโครงสร้างในหนังสือ</h2><button id="btn-close-guide" type="button">ซ่อน</button></div>
+ <ul class="gesture-grid">
+  <li><svg viewBox="0 0 24 24"><path d="M3 15.5l4.5-7 4.5 7 4.5-7 4.5 7"/></svg><span><b>ลากซิกแซกเส้นเดียว</b>ได้โซ่คาร์บอนมุม 120° ยาวเท่ากัน</span></li>
+  <li><svg viewBox="0 0 24 24"><path d="M12 3.5l7.4 4.25v8.5L12 20.5l-7.4-4.25v-8.5z"/><circle cx="12" cy="12" r="4.2"/></svg><span><b>วาดวงปิด 3–8 เหลี่ยม</b>ได้วงด้านเท่า วาดวงกลมข้างในหกเหลี่ยมได้เบนซีน</span></li>
+  <li><svg viewBox="0 0 24 24"><path d="M4.2 15.6L17 5.6M7 18.4L19.8 8.4"/></svg><span><b>ขีดเส้นขนานพันธะเดิม</b>เปลี่ยนพันธะเดี่ยวเป็นพันธะคู่ แล้วเป็นพันธะสาม</span></li>
+  <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg><span><b>แตะที่มุมอะตอม</b>เปลี่ยนธาตุหรือเติมหมู่ -OH, -COOH · ขีดไปมาทับเส้นเพื่อลบ</span></li>
+ </ul>
+</section>
+
+<div class="ink-workspace">
+ <section class="board" aria-labelledby="boardTitle">
+  <div class="board-head">
+   <h2 id="boardTitle">กระดานโครงสร้าง</h2>
+   <div class="snap-opts">
+    <label><input id="chk-angle-snap" type="checkbox" checked><svg class="ic"><use href="#i-lock"/></svg>ล็อกมุม 30° / 120°</label>
+    <button id="btn-beautify" type="button"><svg class="ic"><use href="#i-tidy"/></svg>จัดโครงสร้างให้เป็นระเบียบ</button>
+    <button id="btn-toggle-guide" type="button"><svg class="ic"><use href="#i-book"/></svg>วิธีวาด</button>
+   </div>
+  </div>
+
+  <div class="board-frame" data-board="ink">
+   <div class="board-top" data-board-top role="toolbar" aria-label="เครื่องมือวาด"></div>
+   <div class="board-left" data-board-left role="toolbar" aria-label="อะตอมและหมู่"></div>
+   <div class="board-stage">
+  <div id="chem-canvas-wrap">
+   <canvas id="chem-canvas" width="820" height="460" aria-label="กระดานวาดโครงสร้าง"></canvas>
+   <div id="smart-snap-toast" aria-live="polite"><span id="smart-snap-toast-text">ดัดเส้นแล้ว</span></div>
+   <span id="canvas-mode-pill">โหมด: ปากกาดัดเส้นอัตโนมัติ</span>
+   <div id="floating-atom-picker" class="floating-atom-menu hidden">
+    <div class="picker-head"><span>เปลี่ยนธาตุ / หมู่</span><button id="btn-close-picker" type="button" aria-label="ปิด">✕</button></div>
+    <button type="button" class="atom-pill el-C" data-pick-atom="C">C</button><button type="button" class="atom-pill el-O" data-pick-atom="O">O</button><button type="button" class="atom-pill el-N" data-pick-atom="N">N</button>
+    <button type="button" class="atom-pill el-S" data-pick-atom="S">S</button><button type="button" class="atom-pill el-F" data-pick-atom="F">F</button><button type="button" class="atom-pill el-Cl" data-pick-atom="Cl">Cl</button>
+    <button type="button" class="atom-pill el-Br" data-pick-atom="Br">Br</button><button type="button" class="atom-pill el-I" data-pick-atom="I">I</button>
+    <button type="button" class="atom-pill fg el-O" data-pick-fg="OH">-OH</button><button type="button" class="atom-pill fg el-N" data-pick-fg="NH2">-NH₂</button><button type="button" class="atom-pill fg el-O" data-pick-fg="COOH">-COOH</button>
+    <button type="button" class="atom-pill fg" data-pick-delete="1" aria-label="ลบอะตอมนี้"><svg class="ic"><use href="#i-trash"/></svg></button>
+   </div>
+  </div>
+   </div>
+   <div class="board-name" id="board-name"><small>ชื่อ</small><b id="board-name-text">—</b></div>
+  </div>
+
+  <div class="board-actions">
+   <button id="btn-structure-to-name" class="primary" type="button"><svg class="ic"><use href="#i-tag"/></svg>ตั้งชื่อจากโครงสร้าง</button>
+   <button id="btn-search-pubchem-struct" type="button"><svg class="ic"><use href="#i-search"/></svg>ค้นโครงสร้างใน PubChem</button>
+   <button id="btn-download-mol" type="button"><svg class="ic"><use href="#i-down"/></svg>ดาวน์โหลด MOL</button>
+   <button id="btn-save-image" type="button"><svg class="ic"><use href="#i-image"/></svg>บันทึกรูปพร้อมชื่อ</button>
+   <button id="btn-copy-smiles" type="button"><svg class="ic"><use href="#i-copy"/></svg>คัดลอก SMILES</button>
+   <button id="btn-clear-board" type="button"><svg class="ic"><use href="#i-trash"/></svg>ล้างกระดาน</button>
+  </div>
+  <label class="smiles-label" for="smiles-output">SMILES ของภาพปัจจุบัน <span id="copy-feedback">คัดลอกแล้ว</span><input id="smiles-output" readonly placeholder="รหัสโครงสร้างจะแสดงเมื่อเริ่มวาด"></label>
+ </section>
+
+ <aside class="identity" aria-labelledby="idTitle">
+  <h2 id="idTitle">ชื่อและข้อมูลสาร</h2>
+  <span id="info-source-tag">กฎในเครื่อง</span>
+  <div class="field-label">ชื่อ IUPAC</div>
+  <div id="out-iupac" aria-live="polite">—</div>
+  <div id="out-thai-name">วาดโครงสร้างบนกระดาน หรือพิมพ์ชื่อสารด้านบน</div>
+  <ol id="out-rule-breakdown"></ol>
+  <dl class="facts">
+   <div><dt>สูตรโมเลกุล</dt><dd id="out-formula">—</dd></div>
+   <div><dt>มวลโมเลกุล</dt><dd id="out-mw">—</dd></div>
+   <div><dt>ชื่อสามัญ</dt><dd id="out-common">—</dd></div>
+   <div><dt>PubChem CID</dt><dd id="out-cid">—</dd></div>
+  </dl>
+  <a id="out-pubchem-link" href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer"><svg class="ic"><use href="#i-out"/></svg>ดูข้อมูลสารใน PubChem</a>
+
+  <div class="challenges">
+   <h3>โจทย์ฝึกวาด</h3>
+   <p class="caption">เลือกโจทย์ แล้ววาดด้วยปากกาหรือนิ้ว ระบบบอกเมื่อโครงสร้างตรงโจทย์</p>
+   <button type="button" class="challenge" data-challenge="pentane"><svg viewBox="0 0 24 24"><path d="M2.5 15.5l4.7-7 4.8 7 4.8-7 4.7 7"/></svg><span><b>ซิกแซก 4 ขยัก → pentane</b><small>ลากขึ้น-ลง ต่อเนื่องเส้นเดียว</small></span></button>
+   <button type="button" class="challenge" data-challenge="cyclohexane"><svg viewBox="0 0 24 24"><path d="M12 3.5l7.4 4.25v8.5L12 20.5l-7.4-4.25v-8.5z"/></svg><span><b>วงหกเหลี่ยม → cyclohexane</b><small>วาดวงปิด 6 มุมคร่าว ๆ</small></span></button>
+   <button type="button" class="challenge" data-challenge="benzene"><svg viewBox="0 0 24 24"><path d="M12 3.5l7.4 4.25v8.5L12 20.5l-7.4-4.25v-8.5z"/><circle cx="12" cy="12" r="4.2"/></svg><span><b>วงกลมในหกเหลี่ยม → benzene</b><small>วาดหกเหลี่ยมก่อน แล้ววงกลมด้านใน</small></span></button>
+   <div id="challenge-banner" class="hidden" role="status"></div>
+  </div>
+ </aside>
+</div>
+
+<section class="how" aria-label="วิธีใช้">
+ <ol>
+  <li><b>วาดโครงคาร์บอน</b>ลากเส้น ซิกแซก หรือวงปิด ระบบปรับความยาวพันธะและมุมให้เท่ากัน</li>
+  <li><b>เปลี่ยนพันธะและอะตอม</b>ขีดซ้ำขนานเส้นเดิมเพื่อเพิ่มพันธะ แตะมุมเพื่อเปลี่ยนเป็น O, N, Cl หรือเติมหมู่ฟังก์ชัน</li>
+  <li><b>ตั้งชื่อและส่งออก</b>ชื่อขึ้นทันทีที่วาดเสร็จ ส่งออกเป็น SMILES หรือไฟล์ MOL ได้</li>
+ </ol>
+</section>
+<details class="scope"><summary>ขอบเขตกฎการตั้งชื่อและการดัดเส้น</summary>
+ <p><b>ตั้งชื่อ:</b> ใช้กฎชุดเดียวกับกระดานเมาส์ สารเป็นกลางที่มี C, N, O, F, Cl, Br, I · วงคาร์บอน 3–8 อะตอมหรือเบนซีน หลายวงได้ถ้าไม่เชื่อมติดกัน · หมู่ฟังก์ชัน กรด &gt; เอสเทอร์ &gt; เอไมด์ &gt; ไนไตรล์ &gt; แอลดีไฮด์ &gt; คีโตน &gt; แอลกอฮอล์ &gt; เอมีน และอีเทอร์ · หมู่แทนที่มีกิ่งย่อย · E/Z จากรูปทรงที่วาด · ทุกชื่อแปลงกลับมาตรวจก่อนแสดง ไม่รองรับ R/S (ลิ่มและเส้นประ) ประจุ หมู่ nitro S, P วงที่มี O/N ในวง และวงเชื่อมติดกัน</p>
+ <p><b>ดัดเส้น:</b> ลดจุดรบกวนของลายมือด้วย Ramer–Douglas–Peucker แยกเส้นตรง ซิกแซก และวงปิด แล้วปรับความยาวพันธะและล็อกมุมทุก 30°</p>
+ <p><b>PubChem:</b> ส่งเฉพาะชื่อสารหรือ SMILES เมื่อกดปุ่มค้นเท่านั้น ไม่ส่งข้อมูลส่วนตัว</p>
+</details>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="board-ui.js"></script>
+<script src="name-rules.js"></script>
+<script src="ink.js"></script>
+</body></html>

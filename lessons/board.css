@@ -1,0 +1,38 @@
+/* Shared frame for both molecule boards: tools on top, atoms on the left, white stage, name underneath (like JSME). */
+.ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.board-frame{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"top top" "left stage" "left name";margin-top:12px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface)}
+.board-top{grid-area:top;display:flex;flex-wrap:wrap;align-items:center;gap:2px;padding:5px;border-bottom:1px solid var(--line)}
+.board-left{grid-area:left;display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:6px;border-right:1px solid var(--line);overflow-y:auto}
+.board-stage{grid-area:stage;position:relative;min-width:0;background:#fff;color-scheme:light}
+.board-name{grid-area:name;display:flex;align-items:baseline;justify-content:center;gap:10px;min-height:52px;padding:10px 16px;background:#fff;color:#1a1a1a;border-top:1px dashed #e2ddd5;text-align:center}
+.board-name small{font-size:12px;color:#6b655e}
+.board-name b{font:500 20px/1.3 var(--font-head);overflow-wrap:anywhere}
+.board-name[data-state=warn] b{font:400 14px var(--font-body);color:#b4532a}
+.board-top .sep{width:1px;align-self:stretch;margin:6px 3px;background:var(--line)}
+.board-left .sep.h{height:1px;margin:4px 2px;background:var(--line)}
+.board-top .spacer{flex:1}
+.tool-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
+.tool-btn .ic{width:21px;height:21px}
+.tool-btn:hover{background:var(--bg);border-color:var(--line)}
+.tool-btn.active{background:var(--bg);border-color:#c84b31;color:#c84b31;box-shadow:0 0 0 2px rgba(200,75,49,.15)}
+.tool-btn.smart-active{background:var(--bg);border-color:#1f6f61;color:#1f6f61;box-shadow:0 0 0 2px rgba(31,111,97,.16)}
+[data-theme=dark] .tool-btn.active{color:#ff9b84;border-color:#ff9b84}
+[data-theme=dark] .tool-btn.smart-active{color:#7fd3c0;border-color:#7fd3c0}
+.tool-btn:disabled{opacity:.4}
+.atom-pill{min-width:48px;min-height:38px;padding:2px 6px;border-radius:9px;border:1px solid var(--line);background:var(--bg);font:600 15px var(--font-mono);color:var(--el,var(--ink));display:inline-flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.atom-pill.el::after{content:"";position:absolute;left:10px;right:10px;bottom:4px;height:3px;border-radius:2px;background:var(--el)}
+.atom-pill.fg{font-size:12px}
+.atom-pill .ic{width:20px;height:20px}
+.atom-pill.active{border-color:#c84b31;box-shadow:0 0 0 2px rgba(200,75,49,.15)}
+.el-C{--el:#1a1a1a}.el-O{--el:#d62d20}.el-N{--el:#2563eb}.el-S{--el:#b45309}.el-P{--el:#d97706}.el-F,.el-Cl{--el:#0f8a5f}.el-Br{--el:#9333ea}.el-I{--el:#7c3aed}
+[data-theme=dark] .el-C{--el:#f1ece4}[data-theme=dark] .el-O{--el:#ff7a6b}[data-theme=dark] .el-N{--el:#7aa7ff}[data-theme=dark] .el-F,[data-theme=dark] .el-Cl{--el:#4fd1a0}[data-theme=dark] .el-Br{--el:#c79bff}[data-theme=dark] .el-I{--el:#b59cff}
+.board-switch{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:4px 0 18px}
+.board-switch a{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:6px 14px;border-radius:9px;color:var(--ink);text-decoration:none!important;font-size:14px}
+.board-switch a[aria-current=page]{background:var(--ink);color:var(--bg)}
+@media(max-width:600px){
+ .board-frame{grid-template-columns:1fr;grid-template-areas:"top" "left" "stage" "name"}
+ .board-left{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line)}
+ .board-left .sep.h{width:1px;height:auto;margin:4px}
+ .tool-btn{width:40px;height:40px}
+ .atom-pill{min-width:42px}
+}
