@@ -606,13 +606,23 @@ dialog.tdlg{max-width:720px;max-height:min(88vh,780px);overflow:auto;padding:20p
 .qcard .qhead{padding-right:120px}
 .pad{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;flex-direction:column}
 .pad.on{display:flex}
+/* writing surface: no text selection, no iOS callout (Copy / Look Up) while the pencil is on the pad */
+.pad,.pad *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.padq{touch-action:pan-y}
+.padq.min .padbody{display:none}
+.padqhead{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.padqhead b{color:var(--ink)}
+.padqhead button{min-height:36px;padding:4px 12px;font-size:13px;border-radius:999px}
+.padbody{margin-top:6px;color:var(--ink)}
+.padchoices{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-size:14px}
+.padchoices span b{margin-right:6px;color:var(--soft)}
 .padbar{display:flex;gap:8px;align-items:center;padding:8px 16px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--surface)}
 .padbar .grp{display:inline-flex;gap:4px;align-items:center;padding:3px;border-radius:12px;background:var(--bg2)}
 .tool{border:0;background:transparent;min-width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-size:18px}
 .tool.on{background:var(--surface);box-shadow:var(--shadow)}
 .tool .dotc{width:20px;height:20px;border-radius:50%;border:2px solid var(--lit-14);box-shadow:0 0 0 1px var(--lit-15)}
 .tool .sz{border-radius:50%;background:var(--ink)}
-.padq{padding:8px 16px;font-size:15px;color:var(--soft);max-height:18vh;overflow:auto;border-bottom:1px dashed var(--line);background:var(--surface)}
+.padq{padding:8px 16px;font-size:15px;color:var(--soft);max-height:34vh;overflow:auto;border-bottom:1px dashed var(--line);background:var(--surface)}
 .padq b{color:var(--ink)}
 .padwrap{flex:1;position:relative;min-height:0}
 #padCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;
@@ -692,7 +702,7 @@ dialog .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
   .padbar .tool{min-width:36px;height:36px;font-size:15px}
   .padbar .btn{padding:8px 8px;min-height:36px!important}
   .padbar .lbl,.padbar .spacer,.padhint{display:none}
-  .padq{max-height:14vh;font-size:14px}
+  .padq{max-height:30vh;font-size:14px}
   .drawbtn{top:12px;right:12px}
   .qcard .qhead{padding-right:96px}
   .lv{min-height:128px;padding:16px}
@@ -1155,6 +1165,7 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
     <span class="grp">
       <button class="tool" id="padUndo" title="ย้อนกลับ" aria-label="ย้อนกลับ">↶</button>
       <button class="tool" id="padClear" title="ล้างหน้า" aria-label="ล้างหน้า">ล้าง</button>
+      <button class="tool" id="padPT" title="ตารางธาตุ" aria-label="เปิดตารางธาตุ" style="min-width:auto;padding:0 12px;font-size:15px">ตารางธาตุ</button>
     </span>
     <span class="spacer"></span>
     <span style="display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap">
@@ -6966,15 +6977,25 @@ function openPad(qid){
   if(!S) return;
   PAD.qid=qid; PAD.strokes = S.draw[qid] = S.draw[qid] || [];
   const q=QBY[qid];
-  $('#padQ').innerHTML=`<b>ข้อ ${S.ids.indexOf(qid)+1}.</b> ${q.text}`;
+  const padChoices = q.type==='mc' && S.perm[qid] ? `<div class="padchoices">${S.perm[qid].map((oi,k)=>`<span><b>${KEYS[k]}</b>${q.choices[oi].t}</span>`).join('')}</div>`
+    : q.type==='num' && q.unit ? `<div class="padchoices"><span>ตอบเป็นตัวเลข หน่วย ${q.unit}</span></div>` : '';
+  $('#padQ').classList.remove('min');
+  $('#padQ').innerHTML=`<div class="padqhead"><b>ข้อ ${S.ids.indexOf(qid)+1}</b><button type="button" class="btn ghost" id="padQToggle" aria-expanded="true">ซ่อนโจทย์</button></div><div class="padbody">${q.text}${padChoices}</div>`;
+  $('#padQToggle').onclick=()=>{ const m=$('#padQ').classList.toggle('min'); $('#padQToggle').textContent=m?'ดูโจทย์':'ซ่อนโจทย์'; $('#padQToggle').setAttribute('aria-expanded',String(!m)); requestAnimationFrame(padResize); };
   $('#pad').classList.add('on'); document.body.style.overflow='hidden';
+  try{ getSelection().removeAllRanges(); document.activeElement?.blur?.(); }catch(err){}
   requestAnimationFrame(padResize);
 }
 function closePad(){ $('#pad').classList.remove('on'); document.body.style.overflow=''; PAD.qid=null; if(S) renderQ(); }
 $('#padClose').onclick=closePad;
+$('#padPT').onclick=()=>{ openPT(); $('#ptFind').blur(); };   // no on-screen keyboard over the table
+// iOS: a pencil stroke that starts on text opens the selection menu; block it everywhere on the pad
+for(const t of ['selectstart','contextmenu','dragstart']) $('#pad').addEventListener(t,e=>e.preventDefault());
+cv.addEventListener('touchstart',e=>e.preventDefault(),{passive:false});
+cv.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 $('#openPadSide').onclick=()=>{ if(S) openPad(S.ids[S.i]); };
 window.addEventListener('resize',()=>{ if($('#pad').classList.contains('on')) padResize(); });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('#pad').classList.contains('on')) closePad(); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && $('#pad').classList.contains('on') && !$('#ptDlg').open) closePad(); });
 
 /* ---- export: white paper + header, rendered from the vector strokes ---- */
 function collectDraws(st){
