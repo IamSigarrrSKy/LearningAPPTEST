@@ -1,0 +1,119 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ห้องเรียนของครู · ChemLab</title>
+<meta name="description" content="ครูอัปโหลดข้อสอบหรือแบบฝึกของตัวเอง ใส่เฉลย เชิญนักเรียนในห้อง แล้วดูคะแนนได้ทันที">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../lessons/lab.css"><link rel="stylesheet" href="../lessons/chemlab-theme.css">
+<link rel="stylesheet" href="classroom.css">
+<script>try{var t=localStorage.getItem("chemlab.theme");if(t)document.documentElement.dataset.theme=t;else if(matchMedia("(prefers-color-scheme:dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}</script>
+</head><body>
+<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><button class="back" id="logout" hidden>ออกจากระบบ</button></header>
+<main>
+<h1>ห้องเรียนของครู</h1>
+<p class="lead">ครูอัปโหลดข้อสอบหรือแบบฝึกของตัวเอง ใส่เฉลย แล้วเชิญนักเรียนในห้องมาทำ ทุกอย่างเห็นเฉพาะครูและนักเรียนที่ครูเพิ่มอีเมลไว้</p>
+
+<div class="gate" id="gate">
+  <p id="gateText">กำลังตรวจสอบบัญชี…</p>
+  <div class="row"><button class="btn primary" id="login" hidden>เข้าสู่ระบบด้วย Google</button></div>
+</div>
+
+<div id="app" hidden>
+  <!-- student -->
+  <section class="block" id="studentArea">
+    <h2>ห้องเรียนของฉัน</h2>
+    <div class="chips" id="myClasses" role="group" aria-label="เลือกห้องเรียน"></div>
+    <div id="mySets"></div>
+  </section>
+
+  <section class="block" id="exam" hidden>
+    <div class="row between"><h2 id="examTitle" style="margin:0"></h2><button id="examBack">← กลับ</button></div>
+    <p class="note" id="progress"></p>
+    <nav class="nav" id="nav" aria-label="เลือกข้อ"></nav>
+    <h3 id="qTitle" style="margin:0 0 8px"></h3>
+    <div class="paper" id="paper"><div class="wait">เลือกข้อ</div></div>
+    <div class="answer" id="answer"></div>
+    <div class="stepper"><button id="prev">← ข้อก่อน</button><button class="btn primary" id="submit">ส่งคำตอบ</button><button id="next">ข้อถัดไป →</button></div>
+    <div id="result"></div>
+  </section>
+
+  <!-- teacher request -->
+  <section class="block" id="requestArea" hidden>
+    <details id="requestBox">
+      <summary>สำหรับครู: ขอสิทธิ์สร้างห้องเรียน</summary>
+      <p class="note">ผู้ดูแลเว็บจะตรวจและอนุมัติก่อนใช้งาน</p>
+      <div class="form">
+        <label>ชื่อที่นักเรียนจะเห็น<input id="reqName" maxlength="80" placeholder="ครูสมชาย"></label>
+        <label>โรงเรียน<input id="reqSchool" maxlength="120"></label>
+        <div class="row"><button class="btn primary" id="reqSend">ส่งคำขอ</button><span class="status" id="reqStatus"></span></div>
+      </div>
+    </details>
+    <p class="note" id="pendingNote" hidden>ส่งคำขอสิทธิ์ครูแล้ว รอผู้ดูแลอนุมัติ</p>
+  </section>
+
+  <!-- teacher -->
+  <div class="teacher" id="teacher" hidden>
+    <h2>เครื่องมือครู</h2>
+    <section>
+      <h3>ห้องเรียน</h3>
+      <div class="chips" id="classes" role="group" aria-label="ห้องเรียนของครู"></div>
+      <div class="row"><input id="newClass" maxlength="80" placeholder="ชื่อห้องใหม่ เช่น ม.4/2 เคมี"><button id="addClass">สร้างห้อง</button><span class="status" id="classStatus"></span></div>
+    </section>
+
+    <div id="classTools" hidden>
+      <section>
+        <h3>นักเรียนในห้อง <span class="note" id="className"></span></h3>
+        <p class="note">ใส่อีเมล Google ของนักเรียน คั่นด้วยการขึ้นบรรทัดใหม่ เว้นวรรค หรือจุลภาค นักเรียนต้องเข้าสู่ระบบด้วยอีเมลนั้น</p>
+        <textarea id="emails" placeholder="student1@example.com"></textarea>
+        <div class="row"><button id="addEmails">เพิ่ม</button><span class="status" id="peopleStatus"></span></div>
+        <div class="people" id="people"></div>
+        <details class="danger"><summary>ลบห้องนี้</summary><p class="note">ลบห้อง ชุดข้อสอบ เฉลย และคำตอบของนักเรียนในห้องนี้ทั้งหมด กู้คืนไม่ได้</p><button id="delClass">ลบห้องนี้ถาวร</button></details>
+      </section>
+
+      <section>
+        <h3>ชุดข้อสอบ / แบบฝึก</h3>
+        <div class="chips" id="sets" role="group" aria-label="ชุดข้อสอบ"></div>
+        <div class="row"><input id="newSet" maxlength="120" placeholder="ชื่อชุด เช่น แบบฝึกโมล ชุด 1"><button id="addSet">สร้างชุด</button><span class="status" id="setStatus"></span></div>
+      </section>
+
+      <section id="setTools" hidden>
+        <h3 id="setName"></h3>
+        <div class="row">
+          <label class="switch"><input type="checkbox" id="isOpen"> เปิดให้นักเรียนทำ</label>
+          <label class="switch"><input type="checkbox" id="showKey"> ให้นักเรียนเห็นเฉลยหลังส่ง</label>
+          <button id="delSet">ลบชุดนี้</button>
+        </div>
+        <h4>เพิ่มโจทย์</h4>
+        <p class="note">เลือกรูปโจทย์ได้หลายรูป (ไฟล์ละ 1 ข้อ เรียงตามชื่อไฟล์) หรือเลือก PDF แล้วลากกรอบตัดทีละข้อ</p>
+        <div class="row"><label class="btn">รูปภาพ<input type="file" id="pickImages" accept="image/*" multiple hidden></label><label class="btn">PDF<input type="file" id="pickPdf" accept="application/pdf" hidden></label><span class="status" id="uploadStatus"></span></div>
+        <div id="cropper" hidden>
+          <div class="row between"><div class="row"><button id="pgPrev">← หน้าก่อน</button><span id="pgInfo" class="note"></span><button id="pgNext">หน้าถัดไป →</button></div>
+            <div class="row"><button id="cropWhole">ทั้งหน้าเป็น 1 ข้อ</button><button class="btn primary" id="cropAdd" disabled>เพิ่มกรอบเป็นข้อถัดไป</button><button id="cropClose">ปิด PDF</button></div></div>
+          <p class="note">ลากเมาส์หรือนิ้วบนหน้า PDF เพื่อวาดกรอบรอบโจทย์ 1 ข้อ แล้วกด "เพิ่มกรอบเป็นข้อถัดไป"</p>
+          <div class="cropwrap" id="cropWrap"><canvas id="pdfCanvas"></canvas><div class="box" id="cropBox" hidden></div></div>
+        </div>
+        <h4>โจทย์และเฉลย <span class="note" id="itemCount"></span></h4>
+        <p class="note">แตะตัวอักษรใต้รูปเพื่อตั้งเฉลย ข้อที่ยังไม่มีเฉลยจะไม่ถูกนับคะแนน</p>
+        <div class="items" id="items"></div>
+      </section>
+
+      <section id="resultTools" hidden>
+        <h3>คะแนนของห้อง</h3>
+        <div class="row"><button id="loadResults">โหลดคะแนนชุดนี้</button><button id="csv" hidden>ดาวน์โหลด CSV</button><span class="status" id="resultStatus"></span></div>
+        <div class="tablewrap" id="resultTable"></div>
+      </section>
+    </div>
+
+    <section id="ownerTools" hidden>
+      <h3>คำขอสิทธิ์ครู (ผู้ดูแลเว็บ)</h3>
+      <div class="tablewrap" id="requests"></div>
+    </section>
+  </div>
+</div>
+</main>
+<footer>ChemLab by Sky · ข้อสอบในห้องเรียนเป็นของครูผู้อัปโหลด ใช้ในชั้นเรียนของครูเท่านั้น</footer>
+<script src="../account/supabase-2.118.0.js"></script>
+<script src="../account/supabase-config.js"></script>
+<script src="../vendor/pdfjs/pdf.min.js"></script>
+<script src="classroom.js"></script>
+</body></html>
