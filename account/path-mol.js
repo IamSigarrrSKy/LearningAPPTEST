@@ -142,9 +142,8 @@
 
   const prevRender = renderResult;
   renderResult = function (rec) { prevRender(rec); try { panel(rec); } catch (e) { console.error(e); } };
-  const prevRefresh = typeof refreshHome === 'function' ? refreshHome : null;
-  if (prevRefresh) refreshHome = function () { prevRefresh.apply(this, arguments); try { homeCard(); } catch (e) { console.error(e); } };
-  homeCard();
+  // Home card removed from the home page (2026-11-12, user request). The path still opens via #path=mol
+  // and the result-page panel; call homeCard() here again to bring the card back.
   if (location.hash === '#path=mol') setTimeout(() => { const s = latest(); s ? renderResult(s.post || s.pre) : startPre(); }, 0);
   window.ChemLabPath = { startPre, latest };
 })();
