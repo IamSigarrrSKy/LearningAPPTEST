@@ -1271,6 +1271,7 @@ dialog.acct-legacy>button{display:block;width:100%;margin:8px 0}
 
 <!-- real-exam answer keys and image list; the page still works if this file is missing -->
 <script src="exam/exam-data.js"></script>
+<script src="exam/mwit-practice.js"></script>
 <!-- optional: sets window.CHEMLAB_BACKEND, the Apps Script web-app URL shared by every visitor -->
 <script src="config.js"></script>
 <script src="guides.js"></script>
@@ -6189,14 +6190,14 @@ const EXAM_TOPIC_RULES = [
 ];
 const guessTopic = exp => (EXAM_TOPIC_RULES.find(([,re])=>re.test(exp))||['stoich'])[0];
 const EXQ = EXAM_SETS.flatMap((s,si)=>s.q.map(x=>{
-  const base={id:30000+si*100+x.no, exam:s.id, series:s.series||'A-Level', examName:s.name, no:x.no, fixedOrder:true, src:`${s.name} ข้อ ${x.no}`,
-    topic:guessTopic(x.exp), kind:x.type==='num'||/[=÷×]/.test(x.exp)?'calc':'concept', sim:.5,
+  const base={id:30000+si*100+x.no, exam:s.id, series:s.series||'A-Level', examName:s.name, real:s.real!==false, no:x.no, fixedOrder:true, src:`${s.name} ข้อ ${x.no}`,
+    topic:x.topic||guessTopic(x.exp), kind:x.type==='num'||/[=÷×]/.test(x.exp)?'calc':'concept', sim:.5,
     short:`${s.name} ข้อ ${x.no}`, steps:[x.exp],
     text:`<img class="qimg" src="${x.img}" width="${x.w}" height="${x.h}" loading="lazy" alt="โจทย์ ${s.name} ข้อ ${x.no}">`};
   if(x.type==='num') return {...base, type:'num', answer:parseFloat(x.ans), ansText:x.ans, unit:'', tol:.01, numErr:[]};
   // a few keys accept two answers ("ตอบ 3) หรือ 5)") — both count as correct
   const okSet=new Set([x.ans, ...(x.alt||[])]);
-  return {...base, type:'mc', choices:[1,2,3,4,5].map(n=>okSet.has(String(n)) ? {t:String(n), ok:1}
+  return {...base, type:'mc', choices:[1,2,3,4,5].slice(0,x.nch||5).map(n=>okSet.has(String(n)) ? {t:String(n), ok:1}
     : {t:String(n), err:'exam', why:'ดูแนวคิดในเฉลยของข้อนี้'})};
 }));
 Q.push(...EXQ);
@@ -6430,6 +6431,7 @@ const SERIES=[
   {id:'A-Level', name:'A-Level / 9 วิชาสามัญ', ico:'🎯', c:'#9b5de5', desc:'ข้อสอบจริงวิชาเคมี รายปีและคละปีแบบสนามจริง'},
   {id:'IJSO', name:'IJSO', ico:'🌏', c:'#16936a', desc:'โอลิมปิกวิทยาศาสตร์ระดับต้นระหว่างประเทศ'},
   {id:'NETSAT', name:'NETSAT', ico:'🧭', c:'#ff6b4a', desc:'ข้อสอบวัดความรู้ความสามารถเฉพาะ มข.'},
+  {id:'MWIT', name:'แนวข้อสอบเข้า ม.4 MWIT', ico:'🔬', c:'#2f80d1', desc:'ข้อแต่งใหม่แนวเดียวกับข้อสอบเข้า ม.4 วิทย์รวม (ไม่ใช่ข้อสอบจริง)'},
 ];
 let EXSERIES='A-Level';
 const seriesSets = id => EXAM_SETS.filter(s=>(s.series||'A-Level')===id);
@@ -6567,7 +6569,7 @@ function renderStart(){
   const n = SIZE==='aonly'?ALEVEL_IDS.length : SIZE==='year'?(exSet?exSet.q.length:0) : SIZE==='mix'?Math.min(EXSERIES==='A-Level'?MIX_MC+MIX_NUM:30,serN)
     : SIZE==='mix20'?Math.min(20,serN) : SIZE==='all'?np : Math.min(+SIZE,np);
   const scope = LV!=='alevel' ? `${LEVELS[LV].name} · ${SEL.size} เรื่อง`
-    : SIZE==='year' ? `ข้อสอบจริง ${exSet?exSet.name:''}` : SIZE==='aonly' ? 'โจทย์ท้าทายจากชีท' : `${EXSERIES} คละชุด`;
+    : SIZE==='year' ? `${exSet&&exSet.real===false?'':'ข้อสอบจริง '}${exSet?exSet.name:''}` : SIZE==='aonly' ? 'โจทย์ท้าทายจากชีท' : `${EXSERIES} คละชุด`;
   const tip = LV==='alevel' && SIZE!=='aonly'
     ? (SIZE==='year' ? 'เรียงข้อตามสนามจริง · จับเวลาเหมือนสอบจริง แล้วดูเฉลยพร้อมแนวคิดตอนส่ง' : 'สุ่มข้อจากทุกปี เลือกข้อที่ยังไม่เคยทำก่อน · ปรนัยก่อน แล้วตามด้วยข้อเติมตัวเลข เหมือนข้อสอบจริง')
     : 'ทุกข้อให้เลือกความมั่นใจด้วย — ระบบแยกข้อที่ “เดาถูก” กับ “มั่นใจแต่เข้าใจผิด”';
@@ -7372,7 +7374,7 @@ function scopeLabelOf(rec){
   const m = rec.meta || {lv:'alevel', topics:[], size:'all'};
   const examName = m.lv==='alevel' && m.size==='year' ? (EXAM_SETS.find(s=>s.id===(m.topics||[])[0])||{}).name : null;
   return !rec.meta ? 'ทุกบท' : m.lv!=='alevel' ? `${LEVELS[m.lv].name} · ${m.topics.map(t=>TOPICS[t]?.name||t).join(', ')}`
-    : m.size==='aonly' ? 'โจทย์ท้าทายจากชีท' : examName ? `ข้อสอบจริง ${examName}` : `${seriesOfTopics(m.topics)} คละชุด`;
+    : m.size==='aonly' ? 'โจทย์ท้าทายจากชีท' : examName ? `${(EXAM_SETS.find(s=>s.name===examName)||{}).real===false?'':'ข้อสอบจริง '}${examName}` : `${seriesOfTopics(m.topics)} คละชุด`;
 }
 function renderResult(rec){
   show('result');
@@ -7563,7 +7565,7 @@ function renderResult(rec){
     const conf=['ไม่ระบุ','เดา','พอได้','มั่นใจ'][x.conf];
     return `<details class="ritem" id="rv${id}" ${!x.c?'':''}>
       <summary><span class="mk ${cls}">${x.c?'✓':(x.err==='skip'?'—':'✗')}</span>
-        <span><b>ข้อ ${k+1}.</b> ${q.short}<br><small style="color:var(--muted)">${TOPICS[q.topic].name} · ${q.kind==='calc'?'คำนวณ':'ความเข้าใจ'} · ${x.time}s · ${conf}${q.exam?' · ข้อสอบจริง':q.src?` · ชีทบทที่ ${TOPICS[q.topic].ch} ข้อ ${q.src}`:''}</small></span>
+        <span><b>ข้อ ${k+1}.</b> ${q.short}<br><small style="color:var(--muted)">${TOPICS[q.topic].name} · ${q.kind==='calc'?'คำนวณ':'ความเข้าใจ'} · ${x.time}s · ${conf}${q.exam?(q.real?' · ข้อสอบจริง':' · ข้อแต่งแนวข้อสอบ'):q.src?` · ชีทบทที่ ${TOPICS[q.topic].ch} ข้อ ${q.src}`:''}</small></span>
         <span style="color:var(--muted)">▾</span></summary>
       <div class="body">
         <div>${q.text}</div>
@@ -7604,7 +7606,7 @@ refreshHome();
 function goChick(){ MODE='chick'; document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('sel', x.dataset.mode==='chick')); openSubject(); }
 $('#ctaChick').onclick=$('#rxChick').onclick=goChick;
 $('#ctaExam').onclick=$('#rxExam').onclick=()=>openSeries('A-Level');
-{ const bank=Q.filter(q=>!q.exam&&!q.posn).length, real=EXQ.length, years=new Set(EXAM_SETS.map(s=>s.year)).size;
+{ const bank=Q.filter(q=>!q.exam&&!q.posn).length, real=EXQ.filter(q=>q.real).length, years=new Set(EXAM_SETS.filter(s=>s.real!==false).map(s=>s.year)).size;
   const n=v=>v.toLocaleString('th-TH');
   $('#heroStats').innerHTML=[[n(bank),'+','ข้อฝึกพร้อมเฉลย'],[n(real),'','ข้อสอบจริง '+years+' ปี'],['11','','บท E-book อ่านฟรี'],['3','','โหมด สอบ · ฝึก · ลูกเจี๊ยบ']]
     .map(([v,u,l])=>`<div><dt>${v}${u?`<small>${u}</small>`:''}</dt><dd>${l}</dd></div>`).join(''); }
