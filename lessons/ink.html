@@ -6,7 +6,7 @@
 <script>try{var t=localStorage.getItem('chemlab.theme');if(t)document.documentElement.dataset.theme=t;else if(matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
 </head><body>
 
-<header><a class="brand" href="../index.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<header><a class="brand" href="../index-v3.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
 <main>
 <h1>วาดโมเลกุล แล้วรู้จักชื่อ</h1>
 <p class="lead">ใช้นิ้วหรือปากกา iPad วาดคร่าว ๆ ระบบดัดเส้นให้ตรง จัดมุม 120° และแปลงวงแหวนให้เอง แล้วตั้งชื่อ IUPAC ด้วยกฎชุดเดียวกับกระดานวาด</p>
@@ -72,6 +72,7 @@
    <button id="btn-structure-to-name" class="primary" type="button"><svg class="ic"><use href="#i-tag"/></svg>ตั้งชื่อจากโครงสร้าง</button>
    <button id="btn-search-pubchem-struct" type="button"><svg class="ic"><use href="#i-search"/></svg>ค้นโครงสร้างใน PubChem</button>
    <button id="btn-download-mol" type="button"><svg class="ic"><use href="#i-down"/></svg>ดาวน์โหลด MOL</button>
+   <button id="btn-copy-image" type="button"><svg class="ic"><use href="#i-copy"/></svg>คัดลอกรูป</button>
    <button id="btn-save-image" type="button"><svg class="ic"><use href="#i-image"/></svg>บันทึกรูปพร้อมชื่อ</button>
    <button id="btn-copy-smiles" type="button"><svg class="ic"><use href="#i-copy"/></svg>คัดลอก SMILES</button>
    <button id="btn-clear-board" type="button"><svg class="ic"><use href="#i-trash"/></svg>ล้างกระดาน</button>
@@ -119,6 +120,7 @@
 </details>
 </main>
 <footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="layout2d.js"></script>
 <script src="board-ui.js"></script>
 <script src="name-rules.js"></script>
 <script src="ink.js"></script>

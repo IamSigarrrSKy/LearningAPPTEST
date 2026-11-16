@@ -58,6 +58,7 @@ function toolbar(mode){
   btn('data-tool="move"','i-move','เลื่อนอะตอม'),btn('data-tool="erase"','i-erase','ลบอะตอมหรือพันธะ'),
   ink?'':btn('data-tool="charge"','i-charge','เปลี่ยนประจุ (แตะอะตอม)'),
   '<span class="spacer"></span>',
+  `<button id="btn-tidy" type="button" class="tool-btn tidy" title="จัดรูปให้ตรง: เส้นตรง มุม 120° วงเป็นรูปเหลี่ยมด้านเท่า" aria-label="จัดรูปให้ตรง">${ic('i-tidy')}<span class="lbl">จัดรูป</span></button>`,
   `<button id="btn-undo" type="button" class="tool-btn" title="ย้อนกลับ" aria-label="ย้อนกลับ">${ic('i-undo')}</button>`,
   `<button id="btn-redo" type="button" class="tool-btn" title="ทำซ้ำ" aria-label="ทำซ้ำ">${ic('i-redo')}</button>`,
   `<button id="btn-center-view" type="button" class="tool-btn" title="จัดให้อยู่กลางกระดาน" aria-label="จัดกึ่งกลาง">${ic('i-center')}</button>`].join('');
@@ -73,7 +74,7 @@ document.querySelectorAll('[data-board]').forEach(frame=>{
  frame.querySelector('[data-board-left]').innerHTML=t.left});
 
 /* PNG of the drawing with the name underneath; the white margin around the structure is trimmed */
-async function saveImage({svg,canvas,name,file}){
+async function compose({svg,canvas,name}){
  const scale=2,src=document.createElement('canvas');
  if(svg){const img=new Image(),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
   await new Promise((ok,bad)=>{img.onload=ok;img.onerror=bad;img.src=url});
@@ -87,7 +88,14 @@ async function saveImage({svg,canvas,name,file}){
  const o=out.getContext('2d');o.fillStyle='#fff';o.fillRect(0,0,out.width,out.height);
  o.drawImage(src,x0,y0,x1-x0,y1-y0,(out.width-(x1-x0))/2,pad,x1-x0,y1-y0);
  if(label){o.fillStyle='#1a1a1a';o.textAlign='center';o.font=`600 ${fs}px "IBM Plex Sans Thai", "Mitr", sans-serif`;o.fillText(label,out.width/2,h+fs*1.1)}
- const a=document.createElement('a');a.href=out.toDataURL('image/png');a.download=(file||label||'structure').replace(/[^\w\-(),]+/g,'_').slice(0,80)+'.png';
+ return {out,label}}
+async function saveImage(opts){const {out,label}=await compose(opts);
+ const a=document.createElement('a');a.href=out.toDataURL('image/png');a.download=(opts.file||label||'structure').replace(/[^\w\-(),]+/g,'_').slice(0,80)+'.png';
  document.body.append(a);a.click();a.remove()}
-window.ChemBoard={saveImage};
+// copy as a picture to paste into Word, Docs, PowerPoint, chat (ClipboardItem takes a promise so Safari keeps the click)
+async function copyImage(opts){
+ if(!window.ClipboardItem||!navigator.clipboard?.write)throw Error('เบราว์เซอร์นี้คัดลอกรูปไม่ได้ ใช้ปุ่มบันทึกรูปแทน');
+ const blob=compose(opts).then(({out})=>new Promise(ok=>out.toBlob(ok,'image/png')));
+ await navigator.clipboard.write([new ClipboardItem({'image/png':blob})])}
+window.ChemBoard={saveImage,copyImage};
 })();

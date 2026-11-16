@@ -558,7 +558,7 @@
           const inside6Ring = detect6RingContainingPoint(cx, cy);
           if (inside6Ring) {
             convertRingToBenzene(inside6Ring);
-            showSnapToast('เปลี่ยนเป็นวงเบนซีน (Aromatic Ring) ตามแบบ!');
+            showSnapToast('เปลี่ยนเป็นวงเบนซีน (Aromatic Ring) ตามแบบ');
             renderCanvas();
             updateMoleculeAnalysis();
             return;
@@ -578,11 +578,11 @@
           const nearBond = findNearestBond(cx, cy, BOND_LEN * 0.95);
           if (nearBond && atoms.length >= 2) {
             fuseRingToBond(nearBond, nSides, false);
-            showSnapToast(`เชื่อมวงแหวน ${nSides} เหลี่ยมเข้ากับโครงสร้างเดิม!`);
+            showSnapToast(`เชื่อมวงแหวน ${nSides} เหลี่ยมเข้ากับโครงสร้างเดิม`);
           } else {
             addRingAtCenter(cx, cy, nSides, false);
             const ringNames = { 3: 'สามเหลี่ยม (Cyclopropane)', 4: 'สี่เหลี่ยม (Cyclobutane)', 5: 'ห้าเหลี่ยม (Cyclopentane)', 6: 'หกเหลี่ยม (Cyclohexane)' };
-            showSnapToast(`ดัดเป็นวง${ringNames[nSides] || nSides + ' เหลี่ยม'}ด้านเท่าตามแบบ!`);
+            showSnapToast(`ดัดเป็นวง${ringNames[nSides] || nSides + ' เหลี่ยม'}ด้านเท่าตามแบบ`);
           }
           renderCanvas();
           updateMoleculeAnalysis();
@@ -674,7 +674,7 @@
           addOrUpdateBond(prevAtom.id, nextAtom.id, 1);
           prevAtom = nextAtom;
         }
-        showSnapToast(`ดัดเส้นซิกแซกเป็นโซ่คาร์บอน ${simplified.length} อะตอมตามแบบ!`);
+        showSnapToast(`ดัดเส้นซิกแซกเป็นโซ่คาร์บอน ${simplified.length} อะตอมตามแบบ`);
         renderCanvas();
         updateMoleculeAnalysis();
       }
@@ -682,7 +682,20 @@
       // =========================================================================
       // 6. BEAUTIFY / 2D CLEANUP TO ACS STANDARD GEOMETRY
       // =========================================================================
+      // straighten with the shared layout engine (rings as regular polygons, 120° zigzag, 180° at triple bonds)
       function beautifyStructure() {
+        if (atoms.length === 0) return;
+        if (!window.ChemLayout2D) return beautifyStructureLegacy();
+        saveHistory();
+        const idx = new Map(atoms.map((a, i) => [a.id, i]));
+        const P = window.ChemLayout2D.layout(atoms.map(a => a.el), bonds.map(b => ({ a: idx.get(b.a1), b: idx.get(b.a2), o: b.aromatic ? 4 : b.order })), atoms.map(a => [a.x, -a.y]));
+        atoms.forEach((a, i) => { a.x = P[i][0] * BOND_LEN; a.y = -P[i][1] * BOND_LEN; });
+        centerStructureOnCanvas(false);
+        showSnapToast('จัดรูปแล้ว: พันธะยาวเท่ากัน มุม 120° วงเป็นรูปเหลี่ยมด้านเท่า');
+        renderCanvas();
+        updateMoleculeAnalysis();
+      }
+      function beautifyStructureLegacy() {
         if (atoms.length === 0) return;
         saveHistory();
 
@@ -2312,7 +2325,7 @@
           document.getElementById('out-mw').textContent = `${prop.MolecularWeight} g/mol`;
           document.getElementById('out-pubchem-link').href = `https://pubchem.ncbi.nlm.nih.gov/compound/${prop.CID}`;
           tag.textContent = 'ยืนยันจาก PubChem API ✓';
-          showSnapToast('ดึงชื่อ IUPAC และ CID จาก PubChem สำเร็จ!');
+          showSnapToast('ดึงชื่อ IUPAC และ CID จาก PubChem สำเร็จ');
         } catch (err) {
           // Offline or custom structure fallback
           updateMoleculeAnalysis();
@@ -2500,13 +2513,13 @@
       // 15. UI CONTROLS, TOOLBAR BINDINGS & CHALLENGES
       // =========================================================================
       const modeNames = {
-        'smart': 'ปากกา iPad อัจฉริยะ (วาดเส้น/ซิกแซก/วงแหวน แล้วดัดตรงอัตโนมัติ)',
+        'smart': 'ปากกา iPad จัดรูปให้ (วาดเส้น/ซิกแซก/วงแหวน แล้วดัดตรงอัตโนมัติ)',
         'bond-1': '— โหมดลากพันธะเดี่ยว (ล็อกมุม 30°/120°)',
         'bond-2': '= โหมดวางพันธะคู่',
         'bond-3': '≡ โหมดวางพันธะสาม',
         'bond-wedge': '▲ โหมดพันธะทึบ (Wedge Sterochemistry)',
         'bond-dash': '⋯ โหมดพันธะประ (Dash Stereochemistry)',
-        'chain': '〰️ โหมดลากโซ่ซิกแซกหลายอะตอมต่อเนื่อง',
+        'chain': 'โหมดลากโซ่ซิกแซกหลายอะตอมต่อเนื่อง',
         'move': 'โหมดเลื่อนจัดตำแหน่งอะตอม',
         'erase': 'โหมดยางลบ (แตะหรือลากผ่านเพื่อลบ)',
         'ring-3': '△ แตะกระดานเพื่อวางวงสามเหลี่ยม (Cyclopropane)',
@@ -2609,6 +2622,15 @@
       document.getElementById('btn-redo').addEventListener('click', redo);
       document.getElementById('btn-center-view').addEventListener('click', () => centerStructureOnCanvas(true));
       document.getElementById('btn-beautify').addEventListener('click', beautifyStructure);
+      document.getElementById('btn-tidy').addEventListener('click', beautifyStructure);
+      document.getElementById('btn-copy-image').addEventListener('click', () => {
+        if (!atoms.length) { showSnapToast('วาดโครงสร้างก่อนคัดลอกรูป'); return; }
+        hideAtomPicker(); hoverAtomId = null; hoverBondId = null; renderCanvas();
+        const name = document.getElementById('out-iupac').textContent.trim();
+        window.ChemBoard.copyImage({ canvas, name: name !== '—' ? name : '' })
+          .then(() => showSnapToast('คัดลอกรูปพร้อมชื่อแล้ว วางใน Word, Docs หรือแชตได้เลย'))
+          .catch(err => showSnapToast(err.message));
+      });
 
       // Guide banner toggle
       const guideBanner = document.getElementById('ipad-guide-banner');
@@ -2646,13 +2668,13 @@
         if (!currentChallenge) return;
         const banner = document.getElementById('challenge-banner');
         if (currentChallenge === 'pentane' && iupac === 'pentane') {
-          banner.textContent = 'สำเร็จ! ระบบดัดเส้นซิกแซกของคุณเป็นโซ่ Pentane (C₅H₁₂) มุม 120° ตรงตามแบบแล้ว!';
+          banner.textContent = 'ระบบดัดเส้นซิกแซกของคุณเป็นโซ่ Pentane (C₅H₁₂) มุม 120° ตรงตามแบบแล้ว';
           currentChallenge = null;
         } else if (currentChallenge === 'cyclohexane' && iupac === 'cyclohexane') {
-          banner.textContent = 'สำเร็จ! ระบบดัดวงปิดของคุณเป็นวงหกเหลี่ยม Cyclohexane (C₆H₁₂) ด้านเท่าเรียบร้อย!';
+          banner.textContent = 'ระบบดัดวงปิดของคุณเป็นวงหกเหลี่ยม Cyclohexane (C₆H₁₂) ด้านเท่าเรียบร้อย';
           currentChallenge = null;
         } else if (currentChallenge === 'benzene' && iupac === 'benzene') {
-          banner.textContent = 'ยอดเยี่ยม! คุณสร้างวงอะโรมาติก Benzene (C₆H₆) ด้วยการวาดวงกลมด้านในสำเร็จ!';
+          banner.textContent = 'คุณสร้างวงอะโรมาติก Benzene (C₆H₆) ด้วยการวาดวงกลมด้านในสำเร็จ';
           currentChallenge = null;
         }
       }

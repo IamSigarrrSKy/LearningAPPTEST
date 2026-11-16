@@ -1,0 +1,142 @@
+<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>เขียนและดุลสมการเคมี · ChemLab</title>
+<meta name="description" content="พิมพ์สมการเคมีแบบข้อความธรรมดา ระบบดุลให้ จัดตัวห้อยตัวยก แล้วคัดลอกไปใช้ใน Word, Google Docs หรือ LaTeX สำหรับทำข้อสอบ">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lab.css"><link rel="stylesheet" href="chemlab-theme.css">
+<script>try{var t=localStorage.getItem('chemlab.theme');if(t)document.documentElement.dataset.theme=t;else if(matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}</script>
+<style>
+ .ic{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+ main>h1{margin-top:8px}
+ .eq-input label{display:block;font-size:14px}
+ .eq-input textarea{display:block;width:100%;margin-top:8px;min-height:64px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);font:18px/1.5 var(--font-mono);resize:vertical}
+ .palette,.examples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:10px 0}
+ .palette button{min-width:44px;min-height:40px;padding:4px 10px;font:500 15px var(--font-mono);border-radius:10px}
+ .examples>span,.palette>span{font-size:13px;color:var(--muted);margin-right:4px}
+ .examples button{min-height:36px;padding:4px 12px;border-radius:999px;font:13px var(--font-mono)}
+ .result{margin-top:22px;padding:22px 20px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+ .result .label{font-size:12px;color:var(--muted)}
+ .eq-out{font:500 clamp(20px,3.2vw,30px)/1.6 "Cambria Math","STIX Two Math","Times New Roman",serif;margin:8px 0 4px;overflow-wrap:anywhere;color:var(--ink)}
+ .eq-out sub,.eq-out sup{font-size:.62em}
+ .eq-out .st{font-size:.6em;color:var(--muted);margin-left:1px}
+ .eq-out .arrow{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 .35em;line-height:1}
+ .eq-out .arrow small{font:400 13px var(--font-body);color:var(--muted);margin-bottom:-2px}
+ .eq-out .arrow span{font-size:1.15em}
+ .eq-out .k{color:#c84b31;font-weight:600}
+ [data-theme=dark] .eq-out .k{color:#ff9b84}
+ #status{min-height:24px;margin:6px 0 0;font-size:14px}
+ #status[data-state=warn]{color:var(--coral)}
+ #status[data-state=ok]{color:#1f6f61}
+ [data-theme=dark] #status[data-state=ok]{color:#7fd3c0}
+ .copy-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+ .copy-row button{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+ .copy-row small{display:block;font-size:11px;color:var(--muted);font-weight:400}
+ .formats{display:grid;gap:6px;margin-top:14px;font:13px var(--font-mono)}
+ .formats div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:baseline}
+ .formats dt{font:12px var(--font-body);color:var(--muted)}
+ .formats dd{margin:0;overflow-wrap:anywhere;user-select:all}
+ .atoms{margin-top:22px}
+ .atoms h2{font-size:18px}
+ .atoms table{border-collapse:collapse;font-size:14px;min-width:280px}
+ .atoms th,.atoms td{padding:6px 14px;border-bottom:1px solid var(--line);text-align:center}
+ .atoms th:first-child,.atoms td:first-child{text-align:left}
+ .atoms td.bad{color:var(--coral);font-weight:600}
+ .how{border-top:1px solid var(--line);margin-top:32px;padding-top:20px}
+ .how ul{padding-left:20px;font-size:14px}
+ .how code{font:13px var(--font-mono);background:var(--surface);padding:1px 6px;border-radius:6px}
+ #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);padding:10px 18px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+ #toast.show{opacity:1}
+ @media(max-width:600px){header,main{padding:16px}.formats div{grid-template-columns:1fr}.copy-row button{flex:1 1 45%}}
+</style>
+</head><body>
+<header><a class="brand" href="../index-v3.html"><span class="tile"><small>6</small>C</span>ChemLab<span class="long"> by Sky</span></a><a class="back" href="index.html">ห้องทดลองทั้งหมด</a></header>
+<main>
+<h1>เขียนสมการเคมี แล้วดุลให้</h1>
+<p class="lead">พิมพ์สมการแบบข้อความธรรมดา ระบบดุลสมการ จัดตัวห้อยตัวยกให้ แล้วคัดลอกไปวางใน Word, Google Docs หรือ LaTeX สำหรับทำข้อสอบได้ทันที</p>
+
+<section class="eq-input" aria-label="พิมพ์สมการ">
+ <label for="eqIn">สมการ (ไม่ต้องใส่สัมประสิทธิ์ ถ้าใส่มา ระบบจะตรวจให้ว่าดุลถูกไหม)
+  <textarea id="eqIn" spellcheck="false" autocomplete="off" placeholder="เช่น Fe + O2 -> Fe2O3"></textarea></label>
+ <div class="palette" aria-label="ใส่สัญลักษณ์"><span>แทรก</span>
+  <button type="button" data-ins=" -> " title="ลูกศรไปข้างหน้า">→</button><button type="button" data-ins=" <=> " title="ลูกศรสมดุล">⇌</button>
+  <button type="button" data-ins=" ->[Δ] " title="ลูกศรมีเงื่อนไข (ให้ความร้อน)">→Δ</button><button type="button" data-ins=" + ">+</button>
+  <button type="button" data-ins="(s)">(s)</button><button type="button" data-ins="(l)">(l)</button><button type="button" data-ins="(g)">(g)</button><button type="button" data-ins="(aq)">(aq)</button>
+  <button type="button" data-ins="^+" title="ประจุบวก">⁺</button><button type="button" data-ins="^-" title="ประจุลบ">⁻</button><button type="button" data-ins="·" title="น้ำผลึก (hydrate)">·</button><button type="button" data-ins=" + e-" title="อิเล็กตรอน">e⁻</button>
+ </div>
+ <div class="examples" aria-label="ตัวอย่าง"><span>ลองตัวอย่าง</span>
+  <button type="button">C3H8 + O2 -> CO2 + H2O</button><button type="button">KMnO4 + HCl -> KCl + MnCl2 + Cl2 + H2O</button>
+  <button type="button">Cu + HNO3 -> Cu(NO3)2 + NO + H2O</button><button type="button">MnO4^- + Fe^2+ + H^+ -> Mn^2+ + Fe^3+ + H2O</button>
+  <button type="button">N2(g) + H2(g) <=> NH3(g)</button><button type="button">KClO3(s) ->[Δ] KCl(s) + O2(g)</button><button type="button">CuSO4·5H2O(s) -> CuSO4(s) + H2O(g)</button>
+ </div>
+</section>
+
+<section class="result" aria-live="polite" aria-label="สมการที่ดุลแล้ว">
+ <div class="label">สมการที่ดุลแล้ว</div>
+ <div class="eq-out" id="eqOut">—</div>
+ <p id="status" role="status"></p>
+ <div class="copy-row">
+  <button type="button" class="primary" id="copyWord"><svg class="ic" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></svg><span>คัดลอกไป Word / Docs<small>ตัวห้อยตัวยกจริง</small></span></button>
+  <button type="button" id="copyUni"><svg class="ic" viewBox="0 0 24 24"><path d="M5 6h14M9 6v13M15 10h4M17 10v9"/></svg><span>คัดลอกข้อความ<small>H₂O, Fe³⁺ วางได้ทุกที่</small></span></button>
+  <button type="button" id="copyTex"><svg class="ic" viewBox="0 0 24 24"><path d="M8 7l-4 5 4 5M16 7l4 5-4 5"/></svg><span>คัดลอก LaTeX<small>\ce{} (mhchem)</small></span></button>
+  <button type="button" id="copyPlain"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h13"/></svg><span>คัดลอกแบบพิมพ์<small>H2O ธรรมดา</small></span></button>
+ </div>
+ <dl class="formats">
+  <div><dt>ข้อความ</dt><dd id="fUni">—</dd></div>
+  <div><dt>LaTeX</dt><dd id="fTex">—</dd></div>
+  <div><dt>แบบพิมพ์</dt><dd id="fPlain">—</dd></div>
+ </dl>
+</section>
+
+<section class="atoms" aria-labelledby="atomsTitle">
+ <h2 id="atomsTitle">ตรวจจำนวนอะตอมสองข้าง</h2>
+ <table><thead><tr><th>ธาตุ</th><th>ซ้าย (สารตั้งต้น)</th><th>ขวา (ผลิตภัณฑ์)</th></tr></thead><tbody id="atomRows"><tr><td colspan="3">—</td></tr></tbody></table>
+</section>
+
+<section class="how" aria-label="วิธีพิมพ์">
+ <h2>วิธีพิมพ์</h2>
+ <ul>
+  <li>ลูกศร: <code>-&gt;</code> หรือ <code>=</code> · สมดุล <code>&lt;=&gt;</code> · เงื่อนไขเหนือลูกศร <code>-&gt;[Δ]</code> หรือ <code>-&gt;[Pt, 500 °C]</code></li>
+  <li>ตัวเลขในสูตรเป็นตัวห้อยอัตโนมัติ: <code>Fe2O3</code> → Fe₂O₃ · วงเล็บ <code>Ca(OH)2</code>, <code>K4[Fe(CN)6]</code></li>
+  <li>ประจุ: <code>Fe^3+</code> หรือ <code>Fe3+</code>, <code>SO4^2-</code>, <code>H^+</code> · อิเล็กตรอน <code>e-</code> (ใช้ดุลครึ่งปฏิกิริยาได้)</li>
+  <li>สถานะ <code>(s) (l) (g) (aq)</code> และน้ำผลึก <code>CuSO4·5H2O</code> (ใช้ <code>*</code> แทน <code>·</code> ได้)</li>
+  <li>ตัวพิมพ์ใหญ่-เล็กสำคัญ: <code>Co</code> คือโคบอลต์ <code>CO</code> คือคาร์บอนมอนอกไซด์</li>
+ </ul>
+ <p class="caption">ระบบดุลด้วยการนับอะตอม (และประจุ) ให้เท่ากันทั้งสองข้าง ได้สัมประสิทธิ์เป็นจำนวนเต็มน้อยที่สุด ไม่ได้ตรวจว่าปฏิกิริยานั้นเกิดขึ้นได้จริงหรือไม่ ทุกอย่างคำนวณในเครื่องนี้ ไม่ส่งข้อมูลออก</p>
+</section>
+<div id="toast" role="status"></div>
+</main>
+<footer>ChemLab by Sky: ทดลอง สังเกต แล้วอธิบาย</footer>
+<script src="equation.js"></script>
+<script>
+(function(){'use strict';
+const $=id=>document.getElementById(id),input=$('eqIn');let last=null,timer=0;
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('show'),1800)}
+function status(t,state){$('status').textContent=t;$('status').dataset.state=state||''}
+function render(){
+ const text=input.value.trim();try{localStorage.setItem('chemlab.equation',input.value)}catch(e){}
+ if(!text){last=null;$('eqOut').textContent='—';status('');['fUni','fTex','fPlain'].forEach(id=>$(id).textContent='—');$('atomRows').innerHTML='<tr><td colspan="3">—</td></tr>';return}
+ let r;try{r=ChemEquation.solve(text)}catch(e){last=null;$('eqOut').textContent='—';status(e.message,'warn');return}
+ last=r;
+ // coefficients in accent colour on screen only
+ $('eqOut').innerHTML=r.html.replace(/(^|\+ |<\/span><\/span> )(\d+)(?=[A-Ze(])/g,'$1<span class="k">$2</span>');
+ $('fUni').textContent=r.unicode;$('fTex').textContent=r.tex;$('fPlain').textContent=r.plain;
+ if(!r.balanced.ok)status(r.balanced.why,'warn');
+ else if(r.typed&&!r.typed.ok)status('สัมประสิทธิ์ที่พิมพ์มายังไม่ดุล ด้านบนคือสมการที่ดุลถูกต้อง','warn');
+ else if(r.typed)status('สัมประสิทธิ์ที่พิมพ์มาดุลถูกแล้ว','ok');
+ else status('ดุลแล้ว: จำนวนอะตอม'+(r.balanced.useCharge?'และประจุ':'')+'เท่ากันทั้งสองข้าง','ok');
+ $('atomRows').replaceChildren(...r.table.rows.map(x=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${x.e}</td><td>${x.L}</td><td>${x.R}</td>`;if(x.L!==x.R)tr.querySelectorAll('td').forEach((td,i)=>i&&td.classList.add('bad'));return tr}))}
+input.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(render,180)});
+document.querySelectorAll('[data-ins]').forEach(b=>b.onclick=()=>{const s=input.selectionStart??input.value.length,e=input.selectionEnd??s,ins=b.dataset.ins;
+ input.value=input.value.slice(0,s)+ins+input.value.slice(e);input.focus();input.setSelectionRange(s+ins.length,s+ins.length);render()});
+document.querySelectorAll('.examples button').forEach(b=>b.onclick=()=>{input.value=b.textContent;render()});
+async function copyText(t,msg){try{await navigator.clipboard.writeText(t);toast(msg)}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast(msg)}}
+$('copyWord').onclick=async()=>{if(!last)return toast('พิมพ์สมการก่อน');
+ try{await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([last.word],{type:'text/html'}),'text/plain':new Blob([last.unicode],{type:'text/plain'})})]);toast('คัดลอกแล้ว วางใน Word / Docs ได้เลย')}
+ catch(e){copyText(last.unicode,'คัดลอกเป็นข้อความแล้ว (เบราว์เซอร์นี้ไม่รองรับแบบจัดรูป)')}};
+$('copyUni').onclick=()=>last?copyText(last.unicode,'คัดลอกข้อความแล้ว'):toast('พิมพ์สมการก่อน');
+$('copyTex').onclick=()=>last?copyText(last.tex,'คัดลอก LaTeX แล้ว (ต้องใช้แพ็กเกจ mhchem)'):toast('พิมพ์สมการก่อน');
+$('copyPlain').onclick=()=>last?copyText(last.plain,'คัดลอกแบบพิมพ์แล้ว'):toast('พิมพ์สมการก่อน');
+let saved='';try{saved=localStorage.getItem('chemlab.equation')||''}catch(e){}
+input.value=new URLSearchParams(location.search).get('eq')||saved||'Fe + O2 -> Fe2O3';render();
+})();
+</script>
+</body></html>

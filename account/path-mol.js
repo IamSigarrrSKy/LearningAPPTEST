@@ -49,7 +49,7 @@
   const skillOf = id => PATH.skills.find(s => s.pat === patOf(QBY[id]));
   function bySkill(rec) { const out = {}; for (const [id, a] of Object.entries(rec.per)) { const s = skillOf(+id); if (!s) continue; const o = out[s.id] || (out[s.id] = { ok: 0, n: 0, errs: [] }); o.n++; if (a.c) o.ok++; else if (a.err) o.errs.push({ err: a.err, why: a.why, id: +id }); } return out; }
   function byMistake(rec) { const out = {}; for (const a of Object.values(rec.per)) if (!a.c && a.err) out[a.err] = (out[a.err] || 0) + 1; return Object.entries(out).sort((a, b) => b[1] - a[1]); }
-  const ebook = s => `ebook/shelf.html#read=${PATH.book}&p=${s.pages[0]}`;
+  const ebook = s => `ebook/shelf-v3.html#read=${PATH.book}&p=${s.pages[0]}`;
   const labUrl = s => `${PATH.lab.split('#')[0]}?from=${PATH.book}-${s.pages[0]}#${PATH.lab.split('#')[1]}`;
   // practice never uses the post-test items; a skill with few items borrows from its related patterns
   function practice(s, run, postIds) {
@@ -87,7 +87,7 @@
   function homeCard() {
     let el = document.getElementById('pathCard');
     if (!el) { el = document.createElement('section'); el.id = 'pathCard'; el.className = 'pathcard'; el.setAttribute('aria-labelledby', 'pathTitle');
-      const anchor = document.querySelector('#home .rxn'); if (!anchor) return; anchor.after(el); }
+      const anchor = document.querySelector('#home .toolrow') || document.querySelector('#home .rxn'); if (!anchor) return; anchor.after(el); }
     const st = latest(), stage = !st ? 0 : st.post ? 4 : st.practice.length ? 2 : 1;
     const steps = ['ทำก่อนเรียน 5 ข้อ', 'ดูจุดที่ติด', 'ทบทวน: ไกด์ ห้องทดลอง ชีท', 'ทำหลังเรียน 5 ข้อ', 'เทียบรายทักษะ'];
     el.innerHTML = `<h2 id="pathTitle">เส้นทางเรียน: ${PATH.name}</h2>

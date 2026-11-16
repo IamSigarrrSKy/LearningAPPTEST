@@ -59,12 +59,23 @@ function attach(editor,hostEl){
  document.getElementById('btn-undo').onclick=()=>{if(!hist.length)return;redo.push(last);restore(hist.pop())};
  document.getElementById('btn-redo').onclick=()=>{if(!redo.length)return;hist.push(last);restore(redo.pop())};
  document.getElementById('btn-center-view').onclick=()=>{const s=ed.jmeFile();if(s)restore(s)};
+ document.getElementById('btn-tidy').onclick=tidy;
  // start like JSME: single bond tool
  const first=frame.querySelector('[data-tool="bond-1"]');select(first);ed.setAction(202);
  last=ed.jmeFile()||'';refreshName()}
 
+// straighten the drawing with the same layout engine as the pen board (layout2d.js)
+function tidy(){
+ const src=ed&&ed.jmeFile();if(!src)return;const m=parseJme(src);
+ const atoms=m.atoms.map(a=>a[0]),bonds=m.bonds.map(b=>({a:b[0]-1,b:b[1]-1,o:Math.abs(b[2])}));
+ const P=ChemLayout2D.layout(atoms,bonds,m.atoms.map(a=>[a[1],a[2]]));
+ m.atoms.forEach((a,i)=>{a[1]=P[i][0]*1.4;a[2]=P[i][1]*1.4});
+ const next=jmeOf(m);hist.push(last);redo=[];restore(next)}
+async function copyImage(){
+ if(!ed)return false;let smiles='';try{smiles=ed.smiles()}catch{}if(!smiles)return false;
+ const r=nameNow();await ChemBoard.copyImage({svg:ed.getMolecularAreaGraphicsString(),name:r.why?'':r.name});return true}
 async function saveImage(){
  if(!ed)return;let smiles='';try{smiles=ed.smiles()}catch{}if(!smiles)return false;
  const r=nameNow();await ChemBoard.saveImage({svg:ed.getMolecularAreaGraphicsString(),name:r.why?'':r.name,file:r.why?'structure':r.name});return true}
-window.ChemBoardJsme={attach,changed,saveImage};
+window.ChemBoardJsme={attach,changed,saveImage,copyImage,tidy};
 })();

@@ -69,7 +69,7 @@
     }
 
     input[type="range"].exp-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.12);
+      transform: translateY(-1px);
       background: var(--accent-terra-hover);
     }
 
@@ -103,7 +103,7 @@
       padding: 8px 16px;
       font-weight: 600;
       font-size: 0.88rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -123,7 +123,7 @@
       padding: 8px 16px;
       font-weight: 600;
       font-size: 0.88rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -143,7 +143,7 @@
       padding: 8px 14px;
       font-weight: 500;
       font-size: 0.88rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -160,7 +160,7 @@
       background-color: var(--accent-terra-soft);
       border-color: var(--accent-terra);
       color: var(--accent-terra);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .tab-pill {
@@ -168,7 +168,7 @@
       border-radius: 10px;
       font-size: 0.86rem;
       font-weight: 600;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       border: 1px solid transparent;
       white-space: nowrap;
@@ -194,8 +194,6 @@
     .step-eyebrow {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.73rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
       color: var(--text-light);
     }
 
@@ -227,13 +225,13 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a class="lab-brand" href="../index.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 4 ปริมาณสารสัมพันธ์</span>
+          <a class="lab-brand" href="../index-v3.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 4 ปริมาณสารสัมพันธ์</span>
         </div>
         <button id="btnOpenConstModal" class="md:hidden btn-outline-warm !py-1.5 !px-3 !text-xs">ค่าคงที่</button>
       </div>
 
       <!-- Mode Switcher Tabs -->
-      <div class="lab-links"><a href="../ebook/shelf.html#read=4">อ่าน e-book บทที่ 4</a><a href="../index.html#ch=4">ทำโจทย์บทที่ 4</a></div>
+      <div class="lab-links"><a href="../ebook/shelf-v3.html#read=4">อ่าน e-book บทที่ 4</a><a href="../index-v3.html#ch=4">ทำโจทย์บทที่ 4</a></div>
       <nav class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" aria-label="เลือกห้องทดลอง">
         <button data-tab="lab1" class="tab-pill active">01 นับโมล & อะตอมย่อย</button>
         <button data-tab="lab2" class="tab-pill">02 สารละลาย & จุดเดือด</button>
@@ -248,7 +246,7 @@
   <main class="max-w-6xl mx-auto px-4 sm:px-6 pt-6">
 
     <!-- ===================================================================
-         LAB 1: การนับโมล โมเลกุล อะตอมย่อย & สะพานโมล (NO GRAPHS!)
+         LAB 1: การนับโมล โมเลกุล อะตอมย่อย & สะพานโมล
          =================================================================== -->
     <section id="view_lab1" class="space-y-6">
       <!-- Title Banner -->
@@ -423,7 +421,7 @@
               น้ำบริสุทธิ์: Tb = 100 °C (Kb=0.51) · Tf = 0 °C (Kf=1.86)
             </div>
             <div class="text-xs text-[#6e6a61] leading-relaxed">
-              ยิ่งมี <b>"จำนวนอนุภาคของตัวถูกละลาย"</b> ในตัวทำละลายมาก จุดเดือดยิ่งสูงขึ้น และจุดเยือกแข็งยิ่งต่ำลง (สารที่แตกตัวเป็นไอออนจะให้ผลคูณตามจำนวนไอออน!)
+              ยิ่งมี <b>"จำนวนอนุภาคของตัวถูกละลาย"</b> ในตัวทำละลายมาก จุดเดือดยิ่งสูงขึ้น และจุดเยือกแข็งยิ่งต่ำลง (สารที่แตกตัวเป็นไอออนจะให้ผลคูณตามจำนวนไอออน)
             </div>
           </div>
         </div>
@@ -498,7 +496,7 @@
 
             <!-- Unit Denominator Visual Box (matching Figure 4.10 on page 25!) -->
             <div class="mt-4">
-              <div class="text-xs font-bold text-[#1d232a] mb-2">เทียบหน่วยความเข้มข้นจากบีกเกอร์ใบนี้ (ระวังตัวหาร!):</div>
+              <div class="text-xs font-bold text-[#1d232a] mb-2">เทียบหน่วยความเข้มข้นจากบีกเกอร์ใบนี้ (ระวังตัวหาร):</div>
               <div id="l2_unitCards" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"></div>
             </div>
           </div>
@@ -529,7 +527,7 @@
           </div>
 
           <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
-            <b>ทำไมยิ่งเข้มข้นจุดเดือดยิ่งสูงขึ้น?</b> เพราะอนุภาคตัวถูกละลายที่ระเหยยากไปแทรกตัวขวางโมเลกุลน้ำที่ผิวหน้า ทำให้น้ำระเหยเป็นไอได้ยากขึ้น ต้องใช้อุณหภูมิสูงกว่า 100 °C จึงจะเดือด!
+            <b>ทำไมยิ่งเข้มข้นจุดเดือดยิ่งสูงขึ้น?</b> เพราะอนุภาคตัวถูกละลายที่ระเหยยากไปแทรกตัวขวางโมเลกุลน้ำที่ผิวหน้า ทำให้น้ำระเหยเป็นไอได้ยากขึ้น ต้องใช้อุณหภูมิสูงกว่า 100 °C จึงจะเดือด
           </div>
         </div>
 
@@ -692,10 +690,10 @@
             <!-- Step-by-Step Animation Action Buttons -->
             <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
               <button id="l4_btnStepPair" class="btn-terra !py-2 !px-3.5 !text-xs">
-                ⏭️ จับคู่ทำปฏิกิริยาทีละ 1 ชุด
+                จับคู่ทำปฏิกิริยาทีละ 1 ชุด
               </button>
               <button id="l4_btnAutoPair" class="btn-teal !py-2 !px-3.5 !text-xs">
-                ▶️ เล่นแอนิเมชันจนจบ
+                เล่นแอนิเมชันจนจบ
               </button>
               <button id="l4_btnResetPair" class="btn-outline-warm !py-2 !px-3 !text-xs">
                 รีเซ็ตก่อนเริ่ม
@@ -706,7 +704,7 @@
           </div>
 
           <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
-            <b>กฎเหล็ก:</b> นำ <code>โมลเริ่มต้น ÷ เลขสัมประสิทธิ์หน้าสารนั้น</code> ตัวที่ได้ค่าน้อยที่สุดคือ <b>สารกำหนดปริมาณ (หมดก่อน)</b> เมื่อตัวนี้หมด ปฏิกิริยาจะหยุดทันที!
+            <b>กฎเหล็ก:</b> นำ <code>โมลเริ่มต้น ÷ เลขสัมประสิทธิ์หน้าสารนั้น</code> ตัวที่ได้ค่าน้อยที่สุดคือ <b>สารกำหนดปริมาณ (หมดก่อน)</b> เมื่อตัวนี้หมด ปฏิกิริยาจะหยุดทันที
           </div>
         </div>
 
@@ -897,7 +895,7 @@
           { label: 'Na⁺', color: '#c24d2c', count: 1 },
           { label: 'Cl⁻', color: '#1f6f61', count: 1 }
         ],
-        desc: 'สารไอออนิก แตกตัวในน้ำได้ 2 ไอออน (Na⁺ 1 ส่วน + Cl⁻ 1 ส่วน → ผลคอลลิเกทีฟคิดเป็น 2 เท่า!)'
+        desc: 'สารไอออนิก แตกตัวในน้ำได้ 2 ไอออน (Na⁺ 1 ส่วน + Cl⁻ 1 ส่วน → ผลคอลลิเกทีฟคิดเป็น 2 เท่า)'
       },
       {
         formula: 'CaCl₂', name: 'แคลเซียมคลอไรด์', MW: 111.0, i: 3,
@@ -905,7 +903,7 @@
           { label: 'Ca²⁺', color: '#7c3aed', count: 1 },
           { label: 'Cl⁻', color: '#1f6f61', count: 2 }
         ],
-        desc: 'สารไอออนิก แตกตัวในน้ำได้ 3 ไอออน (Ca²⁺ 1 ส่วน + Cl⁻ 2 ส่วน → ผลคอลลิเกทีฟคิดเป็น 3 เท่า!)'
+        desc: 'สารไอออนิก แตกตัวในน้ำได้ 3 ไอออน (Ca²⁺ 1 ส่วน + Cl⁻ 2 ส่วน → ผลคอลลิเกทีฟคิดเป็น 3 เท่า)'
       },
       {
         formula: '(NH₂)₂CO', name: 'ยูเรีย (ไม่แตกตัว)', MW: 60.0, i: 1,
@@ -1180,7 +1178,7 @@
           <text x="55" y="152" font-size="11" fill="#1d232a" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">${N_val}×10²³</text>
         </g>
 
-        <!-- STATION 3: STP Gas Volume (or Liquid Trap Alert!) -->
+        <!-- STATION 3: STP Gas Volume (or Liquid Trap Alert) -->
         <g transform="translate(355, 25)">
           <rect x="0" y="0" width="125" height="165" rx="12" fill="${isLiquidWater ? '#fef2f2' : '#ffffff'}" stroke="${isLiquidWater ? '#ef4444' : '#e4dfd5'}" stroke-width="1.5"/>
           <text x="62" y="22" font-size="11" fill="${isLiquidWater ? '#b91c1c' : '#6e6a61'}" text-anchor="middle" font-weight="600">
@@ -1203,8 +1201,8 @@
       `;
 
       document.getElementById('l1_bridgeSteps').innerHTML = isLiquidWater ? `
-        <div class="text-[#b91c1c] font-bold">กับดักข้อสอบ (หน้า 10 และข้อ 20): น้ำบริสุทธิ์ที่ 0 °C เป็นของเหลว ไม่ใช่แก๊ส!</div>
-        <div>• ห้ามใช้ <span class="font-mono-num">22.4 dm³/mol</span> เด็ดขาด! ต้องแปลงผ่านความหนาแน่นของน้ำ (<span class="font-mono-num">d = 1.0 g/cm³</span>)</div>
+        <div class="text-[#b91c1c] font-bold">กับดักข้อสอบ (หน้า 10 และข้อ 20): น้ำบริสุทธิ์ที่ 0 °C เป็นของเหลว ไม่ใช่แก๊ส</div>
+        <div>• ห้ามใช้ <span class="font-mono-num">22.4 dm³/mol</span> เด็ดขาด ต้องแปลงผ่านความหนาแน่นของน้ำ (<span class="font-mono-num">d = 1.0 g/cm³</span>)</div>
         <div>• น้ำ <span class="font-mono-num">${n.toFixed(2)} mol</span> หนัก <span class="font-mono-num">${dispG.toFixed(1)} g</span> → จึงมีปริมาตรเท่ากับ <b><span class="font-mono-num">${dispG.toFixed(1)} cm³</span></b></div>
       ` : `
         <div><b class="text-[#c24d2c]">1) แปลงโมลเป็นมวล (g):</b> <span class="font-mono-num">g = n × MW = ${n.toFixed(2)} × ${dispMW} = <b>${dispG.toFixed(2)} g</b></span></div>
@@ -1407,7 +1405,7 @@
         <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
           <div class="text-[11px] font-mono-num text-[#c24d2c] font-semibold">โมแลลิตี (mol/kg หรือ m)</div>
           <div class="text-base font-bold font-mono-num text-[#c24d2c] my-0.5">${molality.toFixed(2)} mol/kg</div>
-          <div class="text-[11px] text-[#c24d2c]">ตัวหาร = <b>มวลน้ำตัวทำละลายอย่างเดียว!</b> (${wKg.toFixed(2)} kg)</div>
+          <div class="text-[11px] text-[#c24d2c]">ตัวหาร = <b>มวลน้ำตัวทำละลายอย่างเดียว</b> (${wKg.toFixed(2)} kg)</div>
         </div>
       `;
 
@@ -1444,7 +1442,7 @@
           <circle cx="179" cy="98" r="11" fill="#0284c7"/>
         </g>
 
-        <!-- Bottom Section: Phase Range Bar (Figure 4.19 in Sheet!) -->
+        <!-- Bottom Section: Phase Range Bar (Figure 4.19 in Sheet) -->
         <g transform="translate(20, 152)">
           <rect x="0" y="0" width="440" height="86" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
           <text x="220" y="20" font-size="11" fill="#1d232a" text-anchor="middle" font-weight="700">
@@ -1598,7 +1596,7 @@
         const waterAdded = L.dilute_V - L.dilute_V0;
 
         eyebrow.textContent = 'STATION 01 / DILUTION LAB (การเจือจาง)';
-        title.textContent = 'กดเติมน้ำกลั่น: ปริมาตรเพิ่มขึ้น ความเข้มข้นลดลง แต่โมลเท่าเดิม!';
+        title.textContent = 'กดเติมน้ำกลั่น: ปริมาตรเพิ่มขึ้น ความเข้มข้นลดลง แต่โมลเท่าเดิม';
         badge.textContent = 'c₁V₁ = c₂V₂ (n คงที่)';
 
         toolbar.innerHTML = `
@@ -1633,12 +1631,12 @@
           <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
             <div class="font-bold text-[#c24d2c] text-xs">หลังเติมน้ำอีก ${waterAdded} cm³ (ปริมาตรรวม V₂ = ${L.dilute_V} cm³):</div>
             <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">c₂ = c₁V₁ ÷ V₂ = (${c1.toFixed(2)} × ${L.dilute_V0}) ÷ ${L.dilute_V} = <b>${c2.toFixed(2)} mol/dm³</b></div>
-            <div class="text-xs text-[#1d232a] mt-1">✓ จำนวนเม็ดตัวละลายในบีกเกอร์ยังคงเท่ากับ <b>${L.dilute_n.toFixed(2)} mol</b> เท่าเดิม!</div>
+            <div class="text-xs text-[#1d232a] mt-1">✓ จำนวนเม็ดตัวละลายในบีกเกอร์ยังคงเท่ากับ <b>${L.dilute_n.toFixed(2)} mol</b> เท่าเดิม</div>
           </div>
         `;
 
-        caption.innerHTML = `สังเกตในบีกเกอร์: เมื่อกด <b>"กดเติมน้ำกลั่น"</b> ระดับน้ำจะสูงขึ้น สีของสารละลายจะจางลง แต่จำนวนเม็ดสีส้ม (โมลตัวละลาย) ในบีกเกอร์มีจำนวนเม็ดเท่าเดิมเป๊ะ!`;
-        tipBox.innerHTML = `<b>กับดักข้อสอบเจือจาง (เช่น ข้อ 72):</b> ในสูตร <code>c₁V₁ = c₂V₂</code> ตัวแปร <b>V₂ คือปริมาตรรวมสุดท้าย</b> ดังนั้นถ้าโจทย์ถามว่า <i>"ต้องเติมน้ำอีกกี่ cm³"</i> ต้องนำ <b>V₂ − V₁ = ${L.dilute_V} − ${L.dilute_V0} = ${waterAdded} cm³</b>`;
+        caption.innerHTML = `สังเกตในบีกเกอร์: เมื่อกด <b>"กดเติมน้ำกลั่น"</b> ระดับน้ำจะสูงขึ้น สีของสารละลายจะจางลง แต่จำนวนเม็ดสีส้ม (โมลตัวละลาย) ในบีกเกอร์มีจำนวนเม็ดเท่าเดิมเป๊ะ`;
+        tipBox.innerHTML = `<b>กับดักข้อสอบเจือจาง (เช่น ข้อ 72):</b> ในสูตร <code>c₁V₁ = c₂V₂</code> ตัวแปร <b>V₂ คือปริมาตรรวมสุดท้าย</b> ดังนั้นถ้าโจทย์ถามว่า <b>"ต้องเติมน้ำอีกกี่ cm³"</b> ต้องนำ <b>V₂ − V₁ = ${L.dilute_V} − ${L.dilute_V0} = ${waterAdded} cm³</b>`;
 
         document.getElementById('l3_btnPour100').addEventListener('click', () => {
           L.dilute_V = Math.min(1000, L.dilute_V + 100);
@@ -1669,7 +1667,7 @@
         const nRemain = nStock - nTake;
 
         eyebrow.textContent = 'STATION 02 / ALIQUOT SAMPLING (การตักแบ่งสารละลาย)';
-        title.textContent = 'ตักแบ่งสารละลายออกมา: ความเข้มข้นเท่าเดิมเป๊ะ แต่จำนวนโมลลดลง!';
+        title.textContent = 'ตักแบ่งสารละลายออกมา: ความเข้มข้นเท่าเดิมเป๊ะ แต่จำนวนโมลลดลง';
         badge.textContent = 'c(ที่ตักมา) = c(ขวดเดิม)';
 
         toolbar.innerHTML = `
@@ -1703,7 +1701,7 @@
           </div>
           <div class="p-3 rounded-xl bg-[#fbece7] border border-[#f3d1c6]">
             <div class="font-bold text-[#c24d2c] text-xs">2) บีกเกอร์เล็กที่ตักแบ่งออกมา (${L.aliq_Vtake} cm³):</div>
-            <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">ความเข้มข้น = <b>${L.aliq_c.toFixed(2)} M เท่าเดิม!</b> (สีความเข้มเท่ากันเป๊ะ)</div>
+            <div class="font-mono-num text-sm mt-0.5 text-[#c24d2c]">ความเข้มข้น = <b>${L.aliq_c.toFixed(2)} M เท่าเดิม</b> (สีความเข้มเท่ากันเป๊ะ)</div>
             <div class="font-mono-num text-xs text-[#1d232a] mt-1">แต่มีโมลตัวละลายติดมาเพียง n = c × V = ${L.aliq_c.toFixed(2)} × ${(L.aliq_Vtake / 1000).toFixed(2)} = <b>${nTake.toFixed(3)} mol</b> (เหลือในบีกเกอร์ใหญ่ ${nRemain.toFixed(3)} mol)</div>
           </div>
         `;
@@ -1730,7 +1728,7 @@
         badge.textContent = 'c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)';
 
         toolbar.innerHTML = `
-          <button id="l3_btnPourMix" class="btn-terra">กดเทผสมรวมกัน!</button>
+          <button id="l3_btnPourMix" class="btn-terra">กดเทผสมรวมกัน</button>
           <button id="l3_btnUnmix" class="btn-outline-warm">แยกกลับเป็น 2 บีกเกอร์ก่อนผสม</button>
         `;
 
@@ -1764,8 +1762,8 @@
           </div>
         `;
 
-        caption.innerHTML = `เมื่อกด <b>"กดเทผสมรวมกัน!"</b> เม็ดตัวละลายจากทั้งสองบีกเกอร์จะไหลมารวมกันในบีกเกอร์ใบกลาง ความเข้มข้นหลังผสม (${cFinal.toFixed(2)} M) จะอยู่ระหว่างความเข้มข้นของบีกเกอร์ทั้งสองเสมอ`;
-        tipBox.innerHTML = `<b>ทริกคิดเร็ว:</b> สามารถแทนค่าหน่วย cm³ ลงในสูตร <code>c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)</code> ได้เลยโดยไม่ต้องแปลงเป็น dm³ เพราะหน่วยปริมาตรตัวเศษกับตัวส่วนจะตัดกันเอง!`;
+        caption.innerHTML = `เมื่อกด <b>"กดเทผสมรวมกัน"</b> เม็ดตัวละลายจากทั้งสองบีกเกอร์จะไหลมารวมกันในบีกเกอร์ใบกลาง ความเข้มข้นหลังผสม (${cFinal.toFixed(2)} M) จะอยู่ระหว่างความเข้มข้นของบีกเกอร์ทั้งสองเสมอ`;
+        tipBox.innerHTML = `<b>ทริกคิดเร็ว:</b> สามารถแทนค่าหน่วย cm³ ลงในสูตร <code>c(รวม) = (c₁V₁ + c₂V₂) ÷ (V₁ + V₂)</code> ได้เลยโดยไม่ต้องแปลงเป็น dm³ เพราะหน่วยปริมาตรตัวเศษกับตัวส่วนจะตัดกันเอง`;
 
         document.getElementById('l3_btnPourMix').addEventListener('click', () => {
           L.mix_isMixed = true;
@@ -1850,7 +1848,7 @@
         ctx.fillStyle = '#c24d2c';
         ctx.fillText(`c = ${c.toFixed(2)} M`, bx + bw + 14, liqY + 24);
         ctx.fillStyle = '#1f6f61';
-        ctx.fillText(`อนุภาค = ${numDots} เม็ดคงที่!`, bx + bw + 14, liqY + 42);
+        ctx.fillText(`อนุภาค = ${numDots} เม็ดคงที่`, bx + bw + 14, liqY + 42);
 
       } else if (L.mode === 'aliquot') {
         // Left: Stock Beaker (1000 cm3) | Middle: Ladle/Pipette transfer | Right: Small Scooped Beaker
@@ -1933,7 +1931,7 @@
         ctx.fillText(`ส่วนที่ตักมา (${L.aliq_Vtake} cm³)`, b2x + b2w / 2, 278);
         ctx.fillStyle = '#c24d2c';
         ctx.font = 'bold 12px "IBM Plex Mono", monospace';
-        ctx.fillText(`ความเข้มข้น = ${c.toFixed(2)} M เท่ากัน!`, b2x + b2w / 2, 92);
+        ctx.fillText(`ความเข้มข้น = ${c.toFixed(2)} M เท่ากัน`, b2x + b2w / 2, 92);
 
       } else {
         // Mode: Mixing 2 Beakers into a Central Combined Beaker
@@ -2146,7 +2144,7 @@
         statusBadge.textContent = `กำลังจับคู่ชุดที่ ${L.completedSets + 1} / ${maxSets}...`;
         statusBadge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fbece7] text-[#c24d2c]';
       } else if (L.completedSets >= maxSets && maxSets > 0) {
-        statusBadge.textContent = `จบปฏิกิริยา (${limName} หมด!)`;
+        statusBadge.textContent = `จบปฏิกิริยา (${limName} หมด)`;
         statusBadge.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e6f3f0] text-[#1f6f61]';
       } else {
         statusBadge.textContent = `จับคู่แล้ว ${L.completedSets} / ${maxSets} ชุด`;
@@ -2205,10 +2203,10 @@
 
         heatBreakdown.innerHTML = `
           <div><b class="text-[#1f6f61]">อัตราส่วนโดยโมล (และปริมาตรแก๊สที่ T, P เดียวกัน):</b> <span class="font-mono-num">${mr.A} : ${mr.B} : ผลิตภัณฑ์ = <b>${mr.a} : ${mr.b} : ${mr.p}</b> → เมื่อคูณ ${k.toFixed(1)} เท่า ใช้ <b>${nA.toFixed(1)} mol : ${nB.toFixed(1)} mol → ได้ ${nP.toFixed(1)} mol</b></span></div>
-          <div><b class="text-[#c24d2c]">แปลงเป็นมวล (g = n × MW):</b> <span class="font-mono-num">ใช้ ${mr.A} = <b>${gA.toFixed(1)} g</b> + ${mr.B} = <b>${gB.toFixed(1)} g</b> → ได้ผลิตภัณฑ์รวม = <b>${gTotal.toFixed(1)} g</b> (มวลรวมก่อน = หลังเสมอ!)</span></div>
+          <div><b class="text-[#c24d2c]">แปลงเป็นมวล (g = n × MW):</b> <span class="font-mono-num">ใช้ ${mr.A} = <b>${gA.toFixed(1)} g</b> + ${mr.B} = <b>${gB.toFixed(1)} g</b> → ได้ผลิตภัณฑ์รวม = <b>${gTotal.toFixed(1)} g</b> (มวลรวมก่อน = หลังเสมอ)</span></div>
           <div class="text-[#6e6a61]">${mr.note}</div>
         `;
-        heatFooter.innerHTML = `<b>ข้อควรระวัง:</b> เลขสัมประสิทธิ์หน้าสมการบอก <b>อัตราส่วนโดยโมล</b> (และอัตราส่วนปริมาตรแก๊ส) เท่านั้น ไม่ใช่อัตราส่วนโดยมวล!`;
+        heatFooter.innerHTML = `<b>ข้อควรระวัง:</b> เลขสัมประสิทธิ์หน้าสมการบอก <b>อัตราส่วนโดยโมล</b> (และอัตราส่วนปริมาตรแก๊ส) เท่านั้น ไม่ใช่อัตราส่วนโดยมวล`;
 
         document.getElementById('l4_moleRxnSelect').addEventListener('change', e => {
           L.moleRxnIdx = parseInt(e.target.value, 10);
@@ -2248,8 +2246,8 @@
         const statusMass = Math.abs(unitA - unitB) < 1e-4
           ? 'รวมตัวกันหมดพอดีตามสัดส่วนคงที่ (ไม่เหลือสารใดเลย)'
           : unitA < unitB
-            ? `${mr.A} หมดก่อน! เหลือ ${mr.B} = ${remMassB.toFixed(1)} g`
-            : `${mr.B} หมดก่อน! เหลือ ${mr.A} = ${remMassA.toFixed(1)} g`;
+            ? `${mr.A} หมดก่อน เหลือ ${mr.B} = ${remMassB.toFixed(1)} g`
+            : `${mr.B} หมดก่อน เหลือ ${mr.A} = ${remMassA.toFixed(1)} g`;
 
         ratioControls.innerHTML = `
           <div class="mb-2.5">
@@ -2476,11 +2474,11 @@
         if (L.completedSets >= maxSets && maxSets > 0) {
           ctx.fillStyle = '#c24d2c';
           ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
-          ctx.fillText('หยุดเกิดปฏิกิริยา!', centerRx, centerRy - 12);
+          ctx.fillText('หยุดเกิดปฏิกิริยา', centerRx, centerRy - 12);
           ctx.fillStyle = '#1d232a';
           ctx.font = '10px "IBM Plex Sans Thai", sans-serif';
           const whoOut = waitingA < rxn.a && waitingB < rxn.b
-            ? 'หมดพอดีทั้งคู่!'
+            ? 'หมดพอดีทั้งคู่'
             : (waitingA < rxn.a ? `เพราะ ${rxn.nameA} หมดก่อน` : `เพราะ ${rxn.nameB} หมดก่อน`);
           ctx.fillText(whoOut, centerRx, centerRy + 6);
           ctx.fillStyle = '#1f6f61';
@@ -2489,7 +2487,7 @@
         } else {
           ctx.fillStyle = '#948f84';
           ctx.font = '10.5px "IBM Plex Sans Thai", sans-serif';
-          ctx.fillText('กดปุ่ม "⏭️ จับคู่ทีละ 1 ชุด"', centerRx, centerRy - 4);
+          ctx.fillText('กดปุ่ม "จับคู่ทีละ 1 ชุด"', centerRx, centerRy - 4);
           ctx.fillText('เพื่อดูอนุภาคชนกัน', centerRx, centerRy + 14);
         }
       }
@@ -2550,7 +2548,7 @@
           ctx.fillStyle = '#1f6f61';
           ctx.font = 'bold 11px "IBM Plex Sans Thai", sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('✓ ไม่เหลือสารตกค้างเลย!', rxBox + rwBox / 2, 198);
+          ctx.fillText('✓ ไม่เหลือสารตกค้างเลย', rxBox + rwBox / 2, 198);
         }
       } else {
         ctx.fillStyle = '#6e6a61';
@@ -2701,7 +2699,7 @@
         ctx.font = 'bold 11.5px "IBM Plex Mono", monospace';
         if (remA < 0.05 && remB < 0.05) {
           ctx.fillStyle = '#1f6f61';
-          ctx.fillText('ไม่เหลือสารใดเลย!', 384, 192);
+          ctx.fillText('ไม่เหลือสารใดเลย', 384, 192);
         } else if (remA >= remB) {
           ctx.fillText(`เหลือ ${mr.A.split(' ')[0]} ${remA.toFixed(1)} g`, 384, 192);
         } else {
@@ -2845,7 +2843,7 @@
               'จำนวนอะตอมย่อย = n × จำนวนอะตอมนั้นใน 1 โมเลกุล × 6.02 × 10²³'
             ],
             tips: [
-              'กับดักข้อสอบ: 22.4 dm³ ใช้ได้เฉพาะแก๊สที่ STP เท่านั้น! น้ำ (H₂O) ที่ 0 °C เป็นของเหลว ห้ามใช้ 22.4 เด็ดขาด'
+              'กับดักข้อสอบ: 22.4 dm³ ใช้ได้เฉพาะแก๊สที่ STP เท่านั้น น้ำ (H₂O) ที่ 0 °C เป็นของเหลว ห้ามใช้ 22.4 เด็ดขาด'
             ]
           }
         ]
@@ -2930,7 +2928,7 @@
             heading: '4.5–4.8 สารกำหนดปริมาณ (Limiting Reagent) & ผลได้ร้อยละ',
             formulas: [
               'สมการ aA + bB → pP : n(A)/a = n(B)/b = n(P)/p',
-              'สารกำหนดปริมาณ : นำ (โมลเริ่มต้น ÷ เลขสัมประสิทธิ์) ตัวที่ได้ค่าน้อยที่สุดคือตัวหมดก่อน!',
+              'สารกำหนดปริมาณ : นำ (โมลเริ่มต้น ÷ เลขสัมประสิทธิ์) ตัวที่ได้ค่าน้อยที่สุดคือตัวหมดก่อน',
               'ผลได้ร้อยละ (%Yield) = (ผลได้จริง ÷ ผลได้ตามทฤษฎี) × 100'
             ],
             tips: [
@@ -3000,7 +2998,7 @@
         id: 'Q126', cat: 'p4', source: 'ข้อที่ 126 หน้า 61',
         q: 'เผาไหม้ CH₄ 8.0 g ในแก๊ส O₂ 48 g ตามสมการ CH₄ + 2O₂ → CO₂ + 2H₂O ได้ CO₂ กี่กรัม และเหลือ O₂ กี่กรัม',
         choices: ['CO₂ 33 g เหลือ O₂ 8 g', 'CO₂ 44 g ไม่เหลือ O₂', 'CO₂ 22 g เหลือ O₂ 16 g', 'CO₂ 22 g เหลือ O₂ 32 g'], ans: 2,
-        exp: 'n(CH₄) = 8.0/16 = 0.50 mol (หาร 1 = 0.50); n(O₂) = 48/32 = 1.50 mol (หาร 2 = 0.75) → CH₄ หมดก่อน! เกิด CO₂ 0.50 mol (22 g) และใช้ O₂ ไป 1.00 mol (32 g) เหลือ O₂ = 48 − 32 = 16 g'
+        exp: 'n(CH₄) = 8.0/16 = 0.50 mol (หาร 1 = 0.50); n(O₂) = 48/32 = 1.50 mol (หาร 2 = 0.75) → CH₄ หมดก่อน เกิด CO₂ 0.50 mol (22 g) และใช้ O₂ ไป 1.00 mol (32 g) เหลือ O₂ = 48 − 32 = 16 g'
       },
       {
         id: 'Q136', cat: 'alevel', source: 'ข้อที่ 136 (9 วิชาสามัญ 64) · หน้า 65',
@@ -3321,6 +3319,6 @@
     });
   </script>
 <script>/* ChemLab: #lab2 opens that tab; ?from=N-P (opened from the e-book) turns the e-book link into a way back to page P */
-addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
+addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf-v3.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
 </body>
 </html>

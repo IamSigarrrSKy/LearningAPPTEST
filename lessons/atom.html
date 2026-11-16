@@ -69,7 +69,7 @@
     }
 
     input[type="range"].exp-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.12);
+      transform: translateY(-1px);
       background: var(--accent-terra-hover);
     }
 
@@ -103,7 +103,7 @@
       padding: 8px 15px;
       font-weight: 600;
       font-size: 0.86rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -123,7 +123,7 @@
       padding: 8px 15px;
       font-weight: 600;
       font-size: 0.86rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -143,7 +143,7 @@
       padding: 7px 13px;
       font-weight: 500;
       font-size: 0.85rem;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -160,7 +160,7 @@
       background-color: var(--accent-terra-soft);
       border-color: var(--accent-terra);
       color: var(--accent-terra);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .tab-pill {
@@ -168,7 +168,7 @@
       border-radius: 10px;
       font-size: 0.85rem;
       font-weight: 600;
-      transition: all 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
       cursor: pointer;
       border: 1px solid transparent;
       white-space: nowrap;
@@ -194,8 +194,6 @@
     .step-eyebrow {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
       color: var(--text-light);
     }
 
@@ -221,7 +219,7 @@
       justify-content: center;
       font-family: 'JetBrains Mono', monospace;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
     }
 
     .no-scrollbar::-webkit-scrollbar {
@@ -242,13 +240,13 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <a class="lab-brand" href="../index.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 2 อะตอมและตารางธาตุ</span>
+          <a class="lab-brand" href="../index-v3.html"><span class="tile"><small>6</small>C</span><span>ChemLab<span class="long"> by Sky</span></span></a><span class="lab-chapter">ห้องทดลองบทที่ 2 อะตอมและตารางธาตุ</span>
         </div>
         <button id="btnOpenRefModal" class="md:hidden btn-outline-warm !py-1.5 !px-3 !text-xs">สรุปค่าคงที่</button>
       </div>
 
       <!-- Mode Switcher Tabs -->
-      <div class="lab-links"><a href="../ebook/shelf.html#read=2">อ่าน e-book บทที่ 2</a><a href="../index.html#ch=2">ทำโจทย์บทที่ 2</a></div>
+      <div class="lab-links"><a href="../ebook/shelf-v3.html#read=2">อ่าน e-book บทที่ 2</a><a href="../index-v3.html#ch=2">ทำโจทย์บทที่ 2</a></div>
       <nav class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0" aria-label="เลือกห้องทดลอง">
         <button data-tab="lab1" class="tab-pill active">01 แบบจำลอง & การทดลอง</button>
         <button data-tab="lab2" class="tab-pill">02 จัดเรียงอิเล็กตรอน</button>
@@ -561,7 +559,7 @@
           </div>
 
           <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]">
-            <b>จำสั้นๆ:</b> <b>"ยิ่งอะตอมเล็ก ยิ่งดึงอิเล็กตรอนเก่ง"</b> ดังนั้น <b>EN, IE₁, EA</b> จะเพิ่มขึ้นจากซ้ายไปขวา และจากล่างขึ้นบน (ตรงข้ามกับขนาดอะตอมเป๊ะ!) โดย <b>F</b> มีค่า EN สูงที่สุดในตารางธาตุ
+            <b>จำสั้นๆ:</b> <b>"ยิ่งอะตอมเล็ก ยิ่งดึงอิเล็กตรอนเก่ง"</b> ดังนั้น <b>EN, IE₁, EA</b> จะเพิ่มขึ้นจากซ้ายไปขวา และจากล่างขึ้นบน (ตรงข้ามกับขนาดอะตอมเป๊ะ) โดย <b>F</b> มีค่า EN สูงที่สุดในตารางธาตุ
           </div>
         </div>
 
@@ -584,7 +582,7 @@
           </div>
 
           <div class="mt-3 pt-2.5 border-t border-[#f0ece3] text-xs text-[#6e6a61]" id="l3_rightFooter">
-            <b>สมการ IE ต้องเป็นสถานะแก๊สเสมอ</b> และดึงทีละ 1 ตัว เช่น IE₂ คือ <code>X⁺(g) → X²⁺(g) + e⁻</code> (ถ้าค่า IE กระโดดพุ่งสูงมากระหว่าง IE₃ ไป IE₄ แปลว่ามีเวเลนซ์ 3 ตัว = อยู่หมู่ IIIA!)
+            <b>สมการ IE ต้องเป็นสถานะแก๊สเสมอ</b> และดึงทีละ 1 ตัว เช่น IE₂ คือ <code>X⁺(g) → X²⁺(g) + e⁻</code> (ถ้าค่า IE กระโดดพุ่งสูงมากระหว่าง IE₃ ไป IE₄ แปลว่ามีเวเลนซ์ 3 ตัว = อยู่หมู่ IIIA)
           </div>
         </div>
 
@@ -794,12 +792,12 @@
       { z: 21, sym: 'Sc', name: 'สแกนเดียม', A: 45, group: 'IIIB (แทรนซิชัน)', period: 4 },
       { z: 22, sym: 'Ti', name: 'ไทเทเนียม', A: 48, group: 'IVB (แทรนซิชัน)', period: 4 },
       { z: 23, sym: 'V', name: 'วาเนเดียม', A: 51, group: 'VB (แทรนซิชัน)', period: 4 },
-      { z: 24, sym: 'Cr', name: 'โครเมียม (ข้อยกเว้นบรรจุครึ่ง!)', A: 52, group: 'VIB (แทรนซิชัน)', period: 4 },
+      { z: 24, sym: 'Cr', name: 'โครเมียม (ข้อยกเว้นบรรจุครึ่ง)', A: 52, group: 'VIB (แทรนซิชัน)', period: 4 },
       { z: 25, sym: 'Mn', name: 'แมงกานีส', A: 55, group: 'VIIB (แทรนซิชัน)', period: 4 },
       { z: 26, sym: 'Fe', name: 'เหล็ก', A: 56, group: 'VIIIB (แทรนซิชัน)', period: 4 },
       { z: 27, sym: 'Co', name: 'โคบอลต์', A: 59, group: 'VIIIB (แทรนซิชัน)', period: 4 },
       { z: 28, sym: 'Ni', name: 'นิกเกิล', A: 59, group: 'VIIIB (แทรนซิชัน)', period: 4 },
-      { z: 29, sym: 'Cu', name: 'ทองแดง (ข้อยกเว้นบรรจุเต็ม!)', A: 64, group: 'IB (แทรนซิชัน)', period: 4 },
+      { z: 29, sym: 'Cu', name: 'ทองแดง (ข้อยกเว้นบรรจุเต็ม)', A: 64, group: 'IB (แทรนซิชัน)', period: 4 },
       { z: 30, sym: 'Zn', name: 'สังกะสี', A: 65, group: 'IIB (แทรนซิชัน)', period: 4 },
       { z: 31, sym: 'Ga', name: 'แกลเลียม', A: 70, group: 'IIIA', period: 4 },
       { z: 32, sym: 'Ge', name: 'เจอร์เมเนียม', A: 73, group: 'IVA', period: 4 },
@@ -925,7 +923,7 @@
         year: 'พ.ศ. 2351 John Dalton',
         info: `
           <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง:</b> อะตอมเป็น <b>"ทรงกลมตัน"</b> ขนาดเล็กที่สุด แบ่งแยกไม่ได้ สร้างใหม่หรือทำให้สูญหายไม่ได้</div>
-          <div><b class="text-[#1f6f61]">ข้อที่ยังใช้ได้ในปัจจุบัน (ข้อ 4 ข้อเดียว!):</b> โมเลกุลของสารประกอบเกิดจากอะตอมของธาตุตั้งแต่ 2 ชนิดขึ้นไปมารวมกันด้วยอัตราส่วนเลขลงตัวน้อยๆ</div>
+          <div><b class="text-[#1f6f61]">ข้อที่ยังใช้ได้ในปัจจุบัน (ข้อ 4 ข้อเดียว):</b> โมเลกุลของสารประกอบเกิดจากอะตอมของธาตุตั้งแต่ 2 ชนิดขึ้นไปมารวมกันด้วยอัตราส่วนเลขลงตัวน้อยๆ</div>
           <div class="text-[#6e6a61]">ข้ออื่นตกไปเพราะ: ค้นพบอนุภาคมูลฐาน (p, n, e⁻), ค้นพบไอโซโทปที่มวลต่างกัน, และเกิดปฏิกิริยานิวเคลียร์เปลี่ยนธาตุได้</div>
         `,
         footer: 'ดอลตันเป็นคนแรกที่เสนอ "ทฤษฎีอะตอม" อย่างเป็นระบบ (5 ข้อ)'
@@ -951,7 +949,7 @@
         info: `
           <div><b class="text-[#c24d2c]">ลักษณะแบบจำลอง:</b> อิเล็กตรอนเคลื่อนที่รอบนิวเคลียสเป็นวงกลมตาม <b>"ระดับพลังงาน" (n = 1, 2, 3, ... หรือชั้น K, L, M, N)</b> คล้ายวงโคจรดาวเคราะห์</div>
           <div><b class="text-[#1f6f61]">การเกิดสเปกตรัม:</b> เมื่อ e⁻ ดูดพลังงานจะกระโดดขึ้นชั้นสูง (Excited State) ซึ่งไม่เสถียร จึงตกลงมาชั้นต่ำและ <b>คายพลังงานเป็นแสงสเปกตรัม (E = hf = hc/λ)</b></div>
-          <div class="text-[#6e6a61]">• ตกลงชั้น n=1 (ไลมาน: UV) · ตกลงชั้น n=2 (บาลเมอร์: แสงที่ตามองเห็น!) · ตกลงชั้น n=3 (พาสเชน: อินฟราเรด)</div>
+          <div class="text-[#6e6a61]">• ตกลงชั้น n=1 (ไลมาน: UV) · ตกลงชั้น n=2 (บาลเมอร์: แสงที่ตามองเห็น) · ตกลงชั้น n=3 (พาสเชน: อินฟราเรด)</div>
         `,
         footer: 'จุดสังเกต: ยิ่งระดับพลังงานสูงขึ้น (ห่างนิวเคลียส) ช่องว่างระหว่างชั้นจะยิ่งแคบลง (E₂₁ > E₃₂ > E₄₃ > E₅₄)'
       },
@@ -966,7 +964,7 @@
     };
 
     const GOLDSTEIN_GASES = [
-      { sym: 'H₂ (แก๊สไฮโดรเจน)', ion: 'H⁺ (โปรตอน)', mass: 1, em: '9.58 × 10⁴ C/g (สูงสุด! เพราะเบาที่สุด)', deflection: 38 },
+      { sym: 'H₂ (แก๊สไฮโดรเจน)', ion: 'H⁺ (โปรตอน)', mass: 1, em: '9.58 × 10⁴ C/g (สูงสุด เพราะเบาที่สุด)', deflection: 38 },
       { sym: 'He (แก๊สฮีเลียม)', ion: 'He⁺', mass: 4, em: '2.41 × 10⁴ C/g', deflection: 20 },
       { sym: 'Ne (แก๊สนีออน)', ion: 'Ne⁺', mass: 20, em: '4.78 × 10³ C/g', deflection: 10 },
       { sym: 'Ar (แก๊สอาร์กอน)', ion: 'Ar⁺', mass: 40, em: '2.42 × 10³ C/g (เบนน้อยสุด เพราะหนักมาก)', deflection: 6 }
@@ -1007,7 +1005,7 @@
                 L.bohrPhotonText = `คายแสง UV (ชุดไลมาน n=${prevN}→1)`;
               } else if (targetN === 2) {
                 L.bohrPhotonColor = prevN === 3 ? '#ef4444' : '#0284c7';
-                L.bohrPhotonText = `คายแสงที่ตามองเห็น! (ชุดบาลเมอร์ n=${prevN}→2)`;
+                L.bohrPhotonText = `คายแสงที่ตามองเห็น (ชุดบาลเมอร์ n=${prevN}→2)`;
               } else {
                 L.bohrPhotonColor = '#d97706';
                 L.bohrPhotonText = `คายรังสีอินฟราเรด (ชุดพาสเชน n=${prevN}→3)`;
@@ -1057,8 +1055,8 @@
           </button>
         `;
         expInfo.innerHTML = `
-          <div><b class="text-[#c24d2c]">สิ่งที่ทอมสันสังเกตเห็น:</b> รังสีพุ่งจากขั้วแคโทด (−) ไปแอโนด (+) · <b>ทำให้กังหันหมุนได้และไม่ทะลุแผ่นโลหะ</b> (แปลว่ามีมวล/ตัวตน) · <b>เบนเข้าหาขั้วบวก</b> (แปลว่ามีประจุลบ!)</div>
-          <div><b class="text-[#1f6f61]">การวัดค่าประจุต่อมวล (e/m):</b> เมื่อปรับสนามไฟฟ้าและสนามแม่เหล็กให้หักล้างกันจนลำรังสีพุ่งตรง (v = E/B) คำนวณได้ <b>e/m = 1.76 × 10⁸ C/g คงที่เสมอ</b> ไม่ว่าจะเปลี่ยนโลหะขั้วแคโทดหรือแก๊สเป็นชนิดใด!</div>
+          <div><b class="text-[#c24d2c]">สิ่งที่ทอมสันสังเกตเห็น:</b> รังสีพุ่งจากขั้วแคโทด (−) ไปแอโนด (+) · <b>ทำให้กังหันหมุนได้และไม่ทะลุแผ่นโลหะ</b> (แปลว่ามีมวล/ตัวตน) · <b>เบนเข้าหาขั้วบวก</b> (แปลว่ามีประจุลบ)</div>
+          <div><b class="text-[#1f6f61]">การวัดค่าประจุต่อมวล (e/m):</b> เมื่อปรับสนามไฟฟ้าและสนามแม่เหล็กให้หักล้างกันจนลำรังสีพุ่งตรง (v = E/B) คำนวณได้ <b>e/m = 1.76 × 10⁸ C/g คงที่เสมอ</b> ไม่ว่าจะเปลี่ยนโลหะขั้วแคโทดหรือแก๊สเป็นชนิดใด</div>
         `;
         expFooter.textContent = 'สรุป: อิเล็กตรอนของทุกธาตุเหมือนกัน และเป็นองค์ประกอบพื้นฐานของอะตอมทุกชนิด';
 
@@ -1076,10 +1074,10 @@
           `).join('')}
         `;
         expInfo.innerHTML = `
-          <div><b class="text-[#c24d2c]">รังสีบวก (รังสีแคแนล) เกิดได้อย่างไร?:</b> อิเล็กตรอนจากรังสีแคโทดวิ่งไปชนอะตอมของ <b>${gGas.sym}</b> ในหลอดจนเสีย e⁻ กลายเป็นไอออนบวก (<b>${gGas.ion}</b>) วิ่งสวนทางลอดรูขั้วแคโทด (−) ไปด้านหลัง และเบนเข้าหาขั้วลบ!</div>
+          <div><b class="text-[#c24d2c]">รังสีบวก (รังสีแคแนล) เกิดได้อย่างไร?:</b> อิเล็กตรอนจากรังสีแคโทดวิ่งไปชนอะตอมของ <b>${gGas.sym}</b> ในหลอดจนเสีย e⁻ กลายเป็นไอออนบวก (<b>${gGas.ion}</b>) วิ่งสวนทางลอดรูขั้วแคโทด (−) ไปด้านหลัง และเบนเข้าหาขั้วลบ</div>
           <div><b class="text-[#1f6f61]">ค่า e/m ของรังสีบวก "ไม่คงที่":</b> ขึ้นกับมวลของแก๊สที่บรรจุ ขณะนี้ใช้ <b>${gGas.sym}</b> ได้ค่า <b>e/m = ${gGas.em}</b></div>
         `;
-        expFooter.textContent = 'ข้อสอบชอบถาม: แก๊สไฮโดรเจน (H₂) ให้ไอออนบวก H⁺ (โปรตอน) ที่เบาที่สุด จึงมีค่า e/m สูงที่สุดในบรรดารังสีบวก!';
+        expFooter.textContent = 'ข้อสอบชอบถาม: แก๊สไฮโดรเจน (H₂) ให้ไอออนบวก H⁺ (โปรตอน) ที่เบาที่สุด จึงมีค่า e/m สูงที่สุดในบรรดารังสีบวก';
 
         expControls.querySelectorAll('.gold-gas-btn').forEach(btn => {
           btn.addEventListener('click', () => {
@@ -1096,7 +1094,7 @@
             <div class="flex justify-between text-xs font-bold mb-1">
               <span>ปรับความต่างศักย์แผ่นโลหะ (สนามไฟฟ้า E):</span>
               <span class="font-mono-num ${isBalanced ? 'text-[#1f6f61]' : 'text-[#c24d2c]'}">
-                ${isBalanced ? '✓ สมดุลพอดี! หยดน้ำมันลอยนิ่ง (qE = mg)' : (L.millikanVoltage < 60 ? 'แรงไฟฟ้าน้อยกว่า mg (หยดตกลง)' : 'แรงไฟฟ้ามากกว่า mg (หยดลอยขึ้น)')}
+                ${isBalanced ? '✓ สมดุลพอดี หยดน้ำมันลอยนิ่ง (qE = mg)' : (L.millikanVoltage < 60 ? 'แรงไฟฟ้าน้อยกว่า mg (หยดตกลง)' : 'แรงไฟฟ้ามากกว่า mg (หยดลอยขึ้น)')}
               </span>
             </div>
             <input type="range" id="l1_sl_millikan" class="exp-slider" min="10" max="100" step="5" value="${L.millikanVoltage}">
@@ -1104,7 +1102,7 @@
           <button id="l1_btnBalanceOil" class="btn-teal !py-1 !px-3 !text-xs">ปรับสนามไฟฟ้าให้หยดน้ำมันลอยนิ่งพอดี (qE = mg)</button>
         `;
         expInfo.innerHTML = `
-          <div><b class="text-[#1d232a]">หลักการของมิลลิแกน:</b> พ่นหยดน้ำมันเล็กๆ แล้วฉายรังสีเอกซ์ให้มีประจุลบ จากนั้นปรับสนามไฟฟ้าจนแรงดึงขึ้นเท่ากับน้ำหนักดึงลง (<b>qE = mg</b>) หยดน้ำมันจึงลอยนิ่ง!</div>
+          <div><b class="text-[#1d232a]">หลักการของมิลลิแกน:</b> พ่นหยดน้ำมันเล็กๆ แล้วฉายรังสีเอกซ์ให้มีประจุลบ จากนั้นปรับสนามไฟฟ้าจนแรงดึงขึ้นเท่ากับน้ำหนักดึงลง (<b>qE = mg</b>) หยดน้ำมันจึงลอยนิ่ง</div>
           <div><b class="text-[#c24d2c]">ผลลัพธ์ที่ได้:</b> ประจุบนหยดน้ำมันทุกหยดเป็นจำนวนเต็มเท่าของ <b>1.6 × 10⁻¹⁹ C</b> เสมอ จึงสรุปว่าประจุของอิเล็กตรอน 1 ตัว (e) = <b>1.6 × 10⁻¹⁹ C</b></div>
           <div><b class="text-[#1f6f61]">รวมพลังทอมสัน + มิลลิแกน:</b> หามวลอิเล็กตรอน m = e ÷ (e/m) = 1.6×10⁻¹⁹ ÷ 1.76×10⁸ = <b>9.11 × 10⁻²⁸ กรัม</b></div>
         `;
@@ -1124,14 +1122,14 @@
         expControls.innerHTML = `
           <span class="text-xs font-semibold text-[#1f6f61]">เส้นสีเขียว = ทะลุตรง (ส่วนใหญ่)</span>
           <span class="text-xs font-semibold text-[#d97706]">เส้นสีส้ม = เบี่ยงเบน (ส่วนน้อย)</span>
-          <span class="text-xs font-semibold text-[#c24d2c]">เส้นสีแดง = สะท้อนกลับ (น้อยที่สุด!)</span>
+          <span class="text-xs font-semibold text-[#c24d2c]">เส้นสีแดง = สะท้อนกลับ (น้อยที่สุด)</span>
         `;
         expInfo.innerHTML = `
           <div><b class="text-[#1f6f61]">1) ส่วนใหญ่ทะลุผ่านเป็นเส้นตรง:</b> แสดงว่าอะตอมส่วนใหญ่เป็น <b>"ที่ว่างเปล่า"</b></div>
           <div><b class="text-[#d97706]">2) ส่วนน้อยเบี่ยงเบนไปจากแนวเดิม:</b> แสดงว่าภายในอะตอมมีจุดที่มี <b>ประจุบวก</b> ผลักอนุภาคแอลฟา (+) ให้เบนไป</div>
           <div><b class="text-[#c24d2c]">3) ส่วนน้อยที่สุดสะท้อนกลับ:</b> แสดงว่าจุดประจุบวกนั้น <b>มีขนาดเล็กมากแต่มีมวลมาก</b> (รวมมวลเกือบทั้งหมดของอะตอมไว้) เรียกว่า <b>"นิวเคลียส"</b></div>
         `;
-        expFooter.textContent = 'โอกาสเกิดจากมากไปน้อย: ทะลุผ่านตรง >> เบี่ยงเบน > สะท้อนกลับ (ข้อสอบถามบ่อยมาก!)';
+        expFooter.textContent = 'โอกาสเกิดจากมากไปน้อย: ทะลุผ่านตรง >> เบี่ยงเบน > สะท้อนกลับ (ข้อสอบถามบ่อยมาก)';
 
       } else {
         // Chadwick (Neutron discovery)
@@ -1689,7 +1687,7 @@
 
         ctx.fillStyle = '#1f6f61';
         ctx.font = 'bold 11.5px "IBM Plex Sans Thai", sans-serif';
-        ctx.fillText('นิวตรอน (¹₀n) เป็นกลาง → พุ่งตรงไม่เบนในสนามไฟฟ้า!', 320, 215);
+        ctx.fillText('นิวตรอน (¹₀n) เป็นกลาง → พุ่งตรงไม่เบนในสนามไฟฟ้า', 320, 215);
       }
     }
 
@@ -1903,7 +1901,7 @@
       } else if (L.Z === 29 && L.charge === 0) {
         specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">ข้อยกเว้น ₂₉Cu: จัดเป็น [Ar] 4s¹ 3d¹⁰ (2, 8, 18, 1) เพื่อให้ 3d บรรจุเต็ม (10 ใน 10) ซึ่งเสถียรกว่า 4s² 3d⁹!</div>`;
       } else if (L.Z >= 21 && L.Z <= 30 && L.charge > 0) {
-        specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">กับดักไอออนแทรนซิชัน: ตอนเติม e⁻ เติม 4s ก่อน 3d แต่ตอนเสีย e⁻ ต้องดึงออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ!</div>`;
+        specialNote = `<div class="p-2 rounded bg-[#fbece7] text-[#c24d2c] font-bold">กับดักไอออนแทรนซิชัน: ตอนเติม e⁻ เติม 4s ก่อน 3d แต่ตอนเสีย e⁻ ต้องดึงออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ</div>`;
       } else {
         specialNote = `<div class="text-[#1f6f61] font-semibold">✓ จัดเรียงตามหลักเอาฟบาวปกติ: เติม 4s ให้เต็มก่อนแล้วจึงเติม 3d</div>`;
       }
@@ -1996,7 +1994,7 @@
         group: 'IIA (มีเวเลนซ์ e⁻ 2 ตัว)',
         ies: [738, 1451, 7733, 10540],
         jumpAfter: 2,
-        desc: 'IE₁ และ IE₂ ดึงออกจากชั้นนอกสุด (ชั้น M) จึงใช้พลังงานน้อย แต่พอตัวที่ 3 (IE₃ = 7,733) ต้องดึงข้ามเข้าไปในชั้นใน (ชั้น L) ค่า IE จึงกระโดดพุ่งขึ้นกว่า 5 เท่า!'
+        desc: 'IE₁ และ IE₂ ดึงออกจากชั้นนอกสุด (ชั้น M) จึงใช้พลังงานน้อย แต่พอตัวที่ 3 (IE₃ = 7,733) ต้องดึงข้ามเข้าไปในชั้นใน (ชั้น L) ค่า IE จึงกระโดดพุ่งขึ้นกว่า 5 เท่า'
       },
       {
         sym: '₁₃Al (หมู่ IIIA · 2, 8, 3)',
@@ -2036,7 +2034,7 @@
       if (L.radMode === 'period_group') {
         radSvg.innerHTML = `
           <rect x="10" y="10" width="450" height="230" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
-          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ในคาบเดียวกัน (ซ้าย → ขวา): จำนวนชั้นเท่ากัน แต่โปรตอนมากขึ้น ดึงให้เล็กลง!</text>
+          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ในคาบเดียวกัน (ซ้าย → ขวา): จำนวนชั้นเท่ากัน แต่โปรตอนมากขึ้น ดึงให้เล็กลง</text>
           ${[
             { s: '₁₁Na', p: '11p+', r: 36, x: 75 },
             { s: '₁₂Mg', p: '12p+', r: 30, x: 175 },
@@ -2048,7 +2046,7 @@
             <text x="${it.x}" y="144" font-size="10" fill="#6e6a61" text-anchor="middle" font-family="IBM Plex Mono">(${it.p} · 3 ชั้น)</text>
           `).join('')}
           <line x1="35" y1="162" x2="435" y2="162" stroke="#f0ece3"/>
-          <text x="235" y="184" font-size="12" fill="#1f6f61" text-anchor="middle" font-weight="700">สรุปทิศทางแนวโน้มตารางธาตุ (จำคู่ตรงข้าม!)</text>
+          <text x="235" y="184" font-size="12" fill="#1f6f61" text-anchor="middle" font-weight="700">สรุปทิศทางแนวโน้มตารางธาตุ (จำคู่ตรงข้าม)</text>
           <text x="235" y="206" font-size="11" fill="#1d232a" text-anchor="middle">• ขนาดอะตอม & ความเป็นโลหะ: ใหญ่ขึ้นทาง ซ้าย-ล่าง</text>
           <text x="235" y="224" font-size="11" fill="#c24d2c" text-anchor="middle" font-weight="600">• EN, IE₁, EA & ความเป็นอโลหะ: สูงขึ้นทาง ขวา-บน</text>
         `;
@@ -2059,7 +2057,7 @@
       } else if (L.radMode === 'isoelectronic') {
         radSvg.innerHTML = `
           <rect x="10" y="10" width="450" height="230" rx="12" fill="#ffffff" stroke="#e4dfd5"/>
-          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ไอโซอิเล็กทรอนิก (มี 10 e⁻ จัดเรียง 2, 8 เท่ากันหมด): โปรตอนมาก = เล็กสุด!</text>
+          <text x="235" y="34" font-size="12" fill="#1d232a" text-anchor="middle" font-weight="700">ไอโซอิเล็กทรอนิก (มี 10 e⁻ จัดเรียง 2, 8 เท่ากันหมด): โปรตอนมาก = เล็กสุด</text>
           ${[
             { s: '₇N³⁻', p: '7 โปรตอน', r: 42, x: 68, c: '#0284c7' },
             { s: '₈O²⁻', p: '8 โปรตอน', r: 35, x: 158, c: '#0284c7' },
@@ -2075,7 +2073,7 @@
           <text x="235" y="222" font-size="11.5" fill="#1f6f61" text-anchor="middle" font-family="IBM Plex Mono" font-weight="700">เรียงขนาดจากเล็กไปใหญ่: Mg²⁺ &lt; Na⁺ &lt; F⁻ &lt; O²⁻ &lt; N³⁻</text>
         `;
         radExp.innerHTML = `
-          <div><b class="text-[#c24d2c]">กฎเปรียบเทียบขนาดไอออน:</b> ① ดูจำนวนชั้นก่อน (ชั้นน้อยกว่า = เล็กกว่าเสมอ) ② ถ้าจำนวนชั้นเท่ากัน (Isoelectronic) <b>ตัวที่มีโปรตอนมากกว่าจะดึงดูดกลุ่มหมอกอิเล็กตรอนเข้ามามากกว่า จึงมีขนาดเล็กกว่า!</b></div>
+          <div><b class="text-[#c24d2c]">กฎเปรียบเทียบขนาดไอออน:</b> ① ดูจำนวนชั้นก่อน (ชั้นน้อยกว่า = เล็กกว่าเสมอ) ② ถ้าจำนวนชั้นเท่ากัน (Isoelectronic) <b>ตัวที่มีโปรตอนมากกว่าจะดึงดูดกลุ่มหมอกอิเล็กตรอนเข้ามามากกว่า จึงมีขนาดเล็กกว่า</b></div>
         `;
       } else {
         radSvg.innerHTML = `
@@ -2128,7 +2126,7 @@
                 <div class="p-2 rounded-lg ${isPulled ? (isBigJump ? 'bg-[#fbece7] border border-[#c24d2c]' : 'bg-white border border-[#e4dfd5]') : 'opacity-40 bg-white border border-dashed border-[#d2cbc0]'}">
                   <div class="flex justify-between text-xs font-mono-num mb-1">
                     <span class="font-bold ${isBigJump ? 'text-[#c24d2c]' : 'text-[#1d232a]'}">
-                      IE${stepNum} ${isBigJump ? 'กระโดดใหญ่! (ดึงชั้นใน)' : '(ดึงชั้นนอกสุด)'}
+                      IE${stepNum} ${isBigJump ? 'กระโดดใหญ่ (ดึงชั้นใน)' : '(ดึงชั้นนอกสุด)'}
                     </span>
                     <span class="font-bold">${val.toLocaleString()} kJ/mol</span>
                   </div>
@@ -2303,11 +2301,11 @@
         rContent.innerHTML = `
           <div class="p-3.5 rounded-xl ${canReact ? 'bg-[#e6f3f0] border border-[#1f6f61]' : 'bg-[#fbece7] border border-[#c24d2c]'}">
             <div class="font-bold text-sm ${canReact ? 'text-[#1f6f61]' : 'text-[#c24d2c]'}">
-              ${canReact ? '✓ เกิดปฏิกิริยาการแทนที่! (แย่งอิเล็กตรอนสำเร็จ)' : '✗ ไม่เกิดปฏิกิริยาการแทนที่'}
+              ${canReact ? '✓ เกิดปฏิกิริยาการแทนที่ (แย่งอิเล็กตรอนสำเร็จ)' : '✗ ไม่เกิดปฏิกิริยาการแทนที่'}
             </div>
             <div class="text-xs mt-1 text-[#1d232a]">
               ${canReact
-                ? `เพราะ <b>${L.halX2.replace('2', '₂')}</b> อยู่บนกว่า จึงว่องไวกว่าและแย่งอิเล็กตรอนจากไอออนใน <b>${L.halSalt}</b> ได้ กลายเป็นโมเลกุล <b>${saltHal.replace('2', '₂')}</b> ลงไปละลายในชั้น CCl₄ ด้านล่าง!`
+                ? `เพราะ <b>${L.halX2.replace('2', '₂')}</b> อยู่บนกว่า จึงว่องไวกว่าและแย่งอิเล็กตรอนจากไอออนใน <b>${L.halSalt}</b> ได้ กลายเป็นโมเลกุล <b>${saltHal.replace('2', '₂')}</b> ลงไปละลายในชั้น CCl₄ ด้านล่าง`
                 : `เพราะ <b>${L.halX2.replace('2', '₂')}</b> ว่องไวน้อยกว่า (หรือเป็นตัวเดียวกัน) จึงแย่งอิเล็กตรอนจาก <b>${L.halSalt}</b> ไม่ได้ สีในชั้น CCl₄ จึงเป็นสีของ ${L.halX2.replace('2', '₂')} เดิม`
               }
             </div>
@@ -2320,7 +2318,7 @@
             <div>• <b>Cl⁻ + Ag⁺ → AgCl(s)</b> ตะกอนสีขาว</div>
             <div>• <b>Br⁻ + Ag⁺ → AgBr(s)</b> ตะกอนสีเหลืองอ่อน (ครีม)</div>
             <div>• <b>I⁻ + Ag⁺ → AgI(s)</b> ตะกอนสีเหลือง</div>
-            <div>• <b>F⁻ + Ag⁺ → ไม่ตกตะกอน</b> (เพราะ AgF ละลายน้ำได้!)</div>
+            <div>• <b>F⁻ + Ag⁺ → ไม่ตกตะกอน</b> (เพราะ AgF ละลายน้ำได้)</div>
           </div>
         `;
         caption.innerHTML = `<b>หลักการละลาย:</b> โมเลกุลแฮโลเจน (X₂) ไม่มีขั้ว จึงละลายในชั้น <b>CCl₄ (ไม่มีขั้ว อยู่ชั้นล่างเพราะหนักกว่าน้ำ)</b> ได้ดีกว่าในน้ำมาก`;
@@ -2378,10 +2376,10 @@
 
         controlsBar.innerHTML = `
           <button id="l4_btnToggleNuc" class="btn-teal !py-1.5 !px-3 !text-xs">
-            ${L.nucSubMode === 'halflife' ? 'สลับดูอำนาจทะลุผ่าน & สนามไฟฟ้า (α, β⁻, γ)' : '⏳ สลับดูการสลายตัวครึ่งชีวิต (T½)'}
+            ${L.nucSubMode === 'halflife' ? 'สลับดูอำนาจทะลุผ่าน & สนามไฟฟ้า (α, β⁻, γ)' : 'สลับดูการสลายตัวครึ่งชีวิต (T½)'}
           </button>
           ${L.nucSubMode === 'halflife' ? `
-            <button id="l4_btnStepHalfLife" class="btn-terra !py-1.5 !px-3.5 !text-xs">⏳ ผ่านไปอีก +1 ครึ่งชีวิต (T½)</button>
+            <button id="l4_btnStepHalfLife" class="btn-terra !py-1.5 !px-3.5 !text-xs">ผ่านไปอีก +1 ครึ่งชีวิต (T½)</button>
             <button id="l4_btnResetHalfLife" class="btn-outline-warm !py-1.5 !px-3 !text-xs">เริ่มต้น N₀ (100%)</button>
           ` : ''}
         `;
@@ -2412,7 +2410,7 @@
         caption.innerHTML = L.nucSubMode === 'halflife'
           ? `สังเกตเม็ดนิวเคลียสในกล่อง: ทุกๆ ครั้งที่กด <b>"ผ่านไปอีก +1 ครึ่งชีวิต"</b> จำนวนนิวเคลียสที่เหลืออยู่ (สีส้มอิฐ) จะลดลงเหลือครึ่งหนึ่งของรอบก่อนหน้าเสมอ`
           : `เปรียบเทียบอำนาจทะลุผ่านของรังสีทั้ง 3 ชนิด และมุมการเบี่ยงเบนเมื่อผ่านสนามไฟฟ้า`;
-        examTip.innerHTML = `<b>ระวังโจทย์หลอกครึ่งชีวิต:</b> ถ้าโจทย์บอกว่า <i>"สลายตัวไป 7/8 ของปริมาณเดิม"</i> ต้องแปลงเป็น <b>"เหลืออยู่ 1/8"</b> ก่อนเสมอ (1/8 = 1/2³ แปลว่าผ่านไป n = 3 ครึ่งชีวิต!)`;
+        examTip.innerHTML = `<b>ระวังโจทย์หลอกครึ่งชีวิต:</b> ถ้าโจทย์บอกว่า <b>"สลายตัวไป 7/8 ของปริมาณเดิม"</b> ต้องแปลงเป็น <b>"เหลืออยู่ 1/8"</b> ก่อนเสมอ (1/8 = 1/2³ แปลว่าผ่านไป n = 3 ครึ่งชีวิต)`;
 
         document.getElementById('l4_btnToggleNuc').addEventListener('click', () => {
           L.nucSubMode = L.nucSubMode === 'halflife' ? 'radiation' : 'halflife';
@@ -2679,7 +2677,7 @@
               'รัทเทอร์ฟอร์ด : ยิง α ใส่แผ่นทองคำบาง → ส่วนใหญ่ทะลุตรง (ที่ว่าง), ส่วนน้อยเบน, น้อยสุดสะท้อนกลับ (นิวเคลียส)'
             ],
             tips: [
-              'อัตราส่วนค่า e/m ของ e⁻ ต่อ H⁺ ≈ 1,836 เท่า แปลว่าโปรตอนมีมวลมากกว่าอิเล็กตรอนประมาณ 1,836 เท่า!'
+              'อัตราส่วนค่า e/m ของ e⁻ ต่อ H⁺ ≈ 1,836 เท่า แปลว่าโปรตอนมีมวลมากกว่าอิเล็กตรอนประมาณ 1,836 เท่า'
             ]
           },
           {
@@ -2699,7 +2697,7 @@
         part: 's2',
         badge: 'ส่วนที่ 1.6 – 1.7 · หน้า 16–31',
         title: '2. สเปกตรัม แบบจำลองโบร์ และการจัดเรียงอิเล็กตรอน 3 รูปแบบ',
-        summary: 'จัดระดับหลักให้คล่อง ระวังข้อยกเว้น Cr/Cu และตอนทำเป็นไอออนบวกแทรนซิชันต้องดึง 4s ออกก่อน 3d เสมอ!',
+        summary: 'จัดระดับหลักให้คล่อง ระวังข้อยกเว้น Cr/Cu และตอนทำเป็นไอออนบวกแทรนซิชันต้องดึง 4s ออกก่อน 3d เสมอ',
         cards: [
           {
             heading: '1.6.1–1.6.2 คลื่นแม่เหล็กไฟฟ้า & สเปกตรัมของโบร์',
@@ -2720,7 +2718,7 @@
               'ข้อยกเว้นเสถียรพิเศษ : ₂₄Cr = [Ar] 4s¹ 3d⁵ (2,8,13,1) และ ₂₉Cu = [Ar] 4s¹ 3d¹⁰ (2,8,18,1)'
             ],
             tips: [
-              'การจัดไอออนบวก (เช่น Fe²⁺, Fe³⁺, Mn²⁺): ต้องจัดอะตอมกลางก่อน แล้วดึง e⁻ ออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ!'
+              'การจัดไอออนบวก (เช่น Fe²⁺, Fe³⁺, Mn²⁺): ต้องจัดอะตอมกลางก่อน แล้วดึง e⁻ ออกจาก 4s (ชั้นนอกสุด n=4) ก่อน 3d เสมอ'
             ]
           }
         ]
@@ -2823,7 +2821,7 @@
         q: 'การเปลี่ยนระดับพลังงานของอะตอมไฮโดรเจนข้อใด "ปล่อย" โฟตอนที่มีพลังงานสูงที่สุด',
         choices: ['n = 1 ไป n = 2', 'n = 2 ไป n = 1', 'n = 2 ไป n = 6', 'n = 6 ไป n = 2'],
         ans: 1,
-        exp: 'การ "ปล่อย" (คาย) โฟตอนต้องตกลงจากชั้นสูงมาชั้นต่ำ (ตัด ก และ ค) และช่องว่างระหว่างชั้น n=2 กับ n=1 กว้างกว่าผลรวมของชั้นบนทั้งหมด (ตกลง n=1 ให้รังสี UV ชุดไลมาน) ดังนั้น n=2 ไป n=1 พลังงานสูงสุด!'
+        exp: 'การ "ปล่อย" (คาย) โฟตอนต้องตกลงจากชั้นสูงมาชั้นต่ำ (ตัด ก และ ค) และช่องว่างระหว่างชั้น n=2 กับ n=1 กว้างกว่าผลรวมของชั้นบนทั้งหมด (ตกลง n=1 ให้รังสี UV ชุดไลมาน) ดังนั้น n=2 ไป n=1 พลังงานสูงสุด'
       },
       {
         id: 'Q57', cat: 'config', source: 'ข้อที่ 57 หน้า 25',
@@ -2837,14 +2835,14 @@
         q: 'ไอออน Fe³⁺ (Z = 26) มีการจัดอิเล็กตรอนในระดับพลังงานย่อยตามข้อใด',
         choices: ['[Ar] 4s² 3d³', '[Ar] 4s¹ 3d⁴', '[Ar] 3d⁵', '[Ar] 4s² 3d⁶'],
         ans: 2,
-        exp: 'อะตอมกลาง ₂₆Fe คือ [Ar] 4s² 3d⁶ เมื่อเสีย 3 อิเล็กตรอนเป็น Fe³⁺ ต้องดึงออกจาก 4s ก่อน 2 ตัว แล้วดึงจาก 3d อีก 1 ตัว เหลือ [Ar] 3d⁵ (บรรจุครึ่ง เสถียร!)'
+        exp: 'อะตอมกลาง ₂₆Fe คือ [Ar] 4s² 3d⁶ เมื่อเสีย 3 อิเล็กตรอนเป็น Fe³⁺ ต้องดึงออกจาก 4s ก่อน 2 ตัว แล้วดึงจาก 3d อีก 1 ตัว เหลือ [Ar] 3d⁵ (บรรจุครึ่ง เสถียร)'
       },
       {
         id: 'Q82', cat: 'periodic', source: 'ข้อที่ 82 หน้า 36',
         q: 'เรียงลำดับขนาดไอออนจากเล็กไปใหญ่ : N³⁻, O²⁻, F⁻, K⁺ (เลขอะตอม N=7, O=8, F=9, K=19)',
         choices: ['F⁻ < O²⁻ < N³⁻ < K⁺', 'F⁻ < N³⁻ < O²⁻ < K⁺', 'O²⁻ < F⁻ < N³⁻ < K⁺', 'N³⁻ < O²⁻ < F⁻ < K⁺'],
         ans: 0,
-        exp: 'N³⁻, O²⁻, F⁻ มี 10 e⁻ (2, 8 → 2 ชั้น) โดยโปรตอน F(9) > O(8) > N(7) จึงเรียงจากเล็กไปใหญ่ได้ F⁻ < O²⁻ < N³⁻ ส่วน K⁺ มี 18 e⁻ (2, 8, 8 → 3 ชั้น) มีจำนวนชั้นมากกว่าจึงใหญ่ที่สุด!'
+        exp: 'N³⁻, O²⁻, F⁻ มี 10 e⁻ (2, 8 → 2 ชั้น) โดยโปรตอน F(9) > O(8) > N(7) จึงเรียงจากเล็กไปใหญ่ได้ F⁻ < O²⁻ < N³⁻ ส่วน K⁺ มี 18 e⁻ (2, 8, 8 → 3 ชั้น) มีจำนวนชั้นมากกว่าจึงใหญ่ที่สุด'
       },
       {
         id: 'Q85', cat: 'periodic', source: 'ข้อที่ 85 หน้า 39',
@@ -2858,7 +2856,7 @@
         q: 'เติมน้ำคลอรีน (Cl₂) ลงในสารละลาย KI แล้วเติม CCl₄ เขย่าและตั้งทิ้งไว้ ชั้น CCl₄ จะมีสีใด',
         choices: ['ส้ม', 'ม่วง', 'เหลืองอ่อน', 'ไม่มีสี'],
         ans: 1,
-        exp: 'Cl₂ อยู่เหนือ I₂ จึงแย่งอิเล็กตรอนจาก I⁻ ใน KI ได้เกิดเป็นโมเลกุล I₂ (Cl₂ + 2KI → 2KCl + I₂) ซึ่ง I₂ ละลายในชั้น CCl₄ ให้สีม่วง!'
+        exp: 'Cl₂ อยู่เหนือ I₂ จึงแย่งอิเล็กตรอนจาก I⁻ ใน KI ได้เกิดเป็นโมเลกุล I₂ (Cl₂ + 2KI → 2KCl + I₂) ซึ่ง I₂ ละลายในชั้น CCl₄ ให้สีม่วง'
       },
       {
         id: 'Q117', cat: 'groups', source: 'ข้อที่ 117 หน้า 57',
@@ -2877,7 +2875,7 @@
           '⁵⁶₂₆D²⁺ มี 26 อิเล็กตรอน'
         ],
         ans: 0,
-        exp: 'ธาตุ A มี e⁻ = 2+8+18+2 = 30 (Zn) ไอออนเสถียรคือ A²⁺ มี 28 e⁻ → อะตอม D มี e⁻ น้อยกว่าอยู่ 2 คือ 28 − 2 = 26 ตัว (ดังนั้น Z ของ D = 26) และมีนิวตรอนมากกว่าอยู่ 4 คือ n = 26 + 4 = 30 ตัว → เลขมวล A = 26 + 30 = 56 ได้สัญลักษณ์ ⁵⁶₂₆D²⁺ ซึ่งมีอิเล็กตรอน = 26 − 2 = 24 ตัว!'
+        exp: 'ธาตุ A มี e⁻ = 2+8+18+2 = 30 (Zn) ไอออนเสถียรคือ A²⁺ มี 28 e⁻ → อะตอม D มี e⁻ น้อยกว่าอยู่ 2 คือ 28 − 2 = 26 ตัว (ดังนั้น Z ของ D = 26) และมีนิวตรอนมากกว่าอยู่ 4 คือ n = 26 + 4 = 30 ตัว → เลขมวล A = 26 + 30 = 56 ได้สัญลักษณ์ ⁵⁶₂₆D²⁺ ซึ่งมีอิเล็กตรอน = 26 − 2 = 24 ตัว'
       },
       {
         id: 'QB1', cat: 'olympiad', source: 'ข้อ B1 (IJSO ครั้งที่ 21) · หน้า 64',
@@ -3099,7 +3097,7 @@
     });
   </script>
 <script>/* ChemLab: #lab2 opens that tab; ?from=N-P (opened from the e-book) turns the e-book link into a way back to page P */
-addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
+addEventListener('DOMContentLoaded',()=>{const t=location.hash.slice(1);const b=t&&document.querySelector('[data-tab="'+CSS.escape(t)+'"]');if(b)b.click();document.querySelectorAll('[data-tab]').forEach(x=>x.addEventListener('click',()=>history.replaceState(null,'','#'+x.dataset.tab)));const m=new URLSearchParams(location.search).get('from')?.match(/^(\d+)-(\d+)$/),a=document.querySelector('.lab-links a');if(m&&a){a.href='../ebook/shelf-v3.html#read='+m[1]+'&p='+m[2];a.textContent='กลับไป e-book หน้า '+m[2];}});</script>
 <script src="bohr.js"></script>
 </body>
 </html>

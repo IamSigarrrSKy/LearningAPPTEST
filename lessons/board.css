@@ -11,6 +11,8 @@
 .board-top .sep{width:1px;align-self:stretch;margin:6px 3px;background:var(--line)}
 .board-left .sep.h{height:1px;margin:4px 2px;background:var(--line)}
 .board-top .spacer{flex:1}
+.tool-btn.tidy{width:auto;padding:0 12px;gap:6px;font:500 13px var(--font-body);border-color:var(--line)}
+.tool-btn.tidy .lbl{white-space:nowrap}
 .tool-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
 .tool-btn .ic{width:21px;height:21px}
 .tool-btn:hover{background:var(--bg);border-color:var(--line)}
